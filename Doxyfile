@@ -1,0 +1,6 @@
+PROJECT_NAME = "System Monitor GUI v 0.0.0.1"
+
+GENERATE_XML = TRUE
+INPUT = "source"
+OUTPUT_DIRECTORY = "build/documentation"
+RECURSIVE = YES 
