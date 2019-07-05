@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include "dynamiccustomtab.h"
-#include "ordertable.h"
 #include "redisclient.h"
 #include "tabstyle_horizontaltext.h"
 
