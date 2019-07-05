@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // TODO: This should be set to length of OrderList JSON data
     ui->tableWidget->setRowCount(OrderList.size());
     ui->tableWidget->setColumnCount(2);
+    m_TabStyle = new TabStyle_HorizontalText();
+    ui->tabWidget->tabBar()->setStyle(m_TabStyle);
 
     headerColumns << "Orders"
                   << "Priority";
@@ -79,6 +81,9 @@ void MainWindow::on_sendOrderPageData(nlohmann::json eReply) {
 
 MainWindow::~MainWindow() {
     delete ui;
+    delete m_RedisClient;
+    delete m_TabStyle;
+    if (prioritybox != nullptr) delete prioritybox;
 }
 
 // ui->label_Reply->setText(eReply);
@@ -107,6 +112,10 @@ void MainWindow::on_GetReply_clicked() {
 
 // select the row and column of the tableWidget to get the respective element
 void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column) {
+#pragma message "TODO: reconsider this design choice. Does it need to be a pop up message box,"
+#pragma message "or should it just be a \"Set\" button right next to the text field,"
+#pragma message "or should it be a slot of on_textfield_valueChanged or something similar?"
+    if (prioritybox != nullptr) delete prioritybox;
     prioritybox = new QMessageBox();
     prioritybox->setIcon(QMessageBox::Warning);
     prioritybox->setText("Alter current Orderstatus");

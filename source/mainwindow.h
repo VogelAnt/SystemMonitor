@@ -4,6 +4,7 @@
 #include "dynamiccustomtab.h"
 #include "ordertable.h"
 #include "redisclient.h"
+#include "tabstyle_horizontaltext.h"
 
 #include <QHBoxLayout>
 #include <QMainWindow>
@@ -39,10 +40,11 @@ private slots:
     void on_tableWidget_cellDoubleClicked(int row, int column);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui = nullptr;
     QStringList headerColumns;
     RedisClient *m_RedisClient = nullptr;
-    QMessageBox *prioritybox;
+    QMessageBox *prioritybox = nullptr;
+    TabStyle_HorizontalText *m_TabStyle = nullptr;
 };
 
 #endif // MAINWINDOW_H
