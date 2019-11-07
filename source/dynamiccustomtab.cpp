@@ -5,16 +5,15 @@
 DynamicCustomTab::DynamicCustomTab(QWidget *parent) : QWidget(parent), ui(new Ui::DynamicCustomTab) {
     ui->setupUi(this);
     QHBoxLayout *TabLayout = new QHBoxLayout();
+    QTabWidget *testWidget = new QTabWidget();
 
     for (int i = 1; i <= 5; ++i) {
-        // auto *
-        SkillButton = new QPushButton("Skill" + QString::number(i));
-        connect(SkillButton, SIGNAL(clicked()), SLOT(SkillButton_clicked()));
-        TabLayout->addWidget(SkillButton);
+        QTabWidget *contentWidget = new QTabWidget();
+        TabLayout->addWidget(testWidget);
+        QString content = "Skill#" + QString::number(i);
+        testWidget->addTab(contentWidget, content);
+        setLayout(TabLayout);
     }
-
-    // connect(SkillButton, SIGNAL(clicked()), SLOT(SkillButton_clicked()));
-    setLayout(TabLayout);
 }
 
 DynamicCustomTab::~DynamicCustomTab() {

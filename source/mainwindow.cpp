@@ -1,82 +1,126 @@
 #include "mainwindow.h"
+#include "OpcuaClient.h"
 #include "dynamiccustomtab.h"
+#include "orderinformation.h"
 #include "redisclient.h"
 #include "ui_mainwindow.h"
 
+using Redistorium::Redis;
+using Redistorium::Reply::ReplyElement;
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
-    m_RedisClient = new RedisClient(this);
-
-    connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand); // superfluous ?
-    connect(this, &MainWindow::on_sendMES_data, m_RedisClient, &RedisClient::sendMESdata);
-    connect(m_RedisClient, &RedisClient::sendMESdata, this, &MainWindow::on_sendMES_data);
-    connect(m_RedisClient, &RedisClient::sendOrderPageData, this, &MainWindow::on_sendOrderPageData);
-
     ui->setupUi(this);
     ui->tabWidget->clear();
-    // TODO: This should be set to length of OrderList JSON data
-    ui->tableWidget->setRowCount(OrderList.size());
-    ui->tableWidget->setColumnCount(2);
+    m_RedisClient = new RedisClient(this);
+
+    // Tab Widget
+    ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
+                                 "QTabBar::tab:selected { background: red; } "
+                                 "QTabWidget::pane { border: 0; } "
+                                 "QWidget { background: lightgray; } ");
+
     m_TabStyle = new TabStyle_HorizontalText();
     ui->tabWidget->tabBar()->setStyle(m_TabStyle);
 
-    headerColumns << "Orders"
-                  << "Priority";
+    // ui->tabWidget->tabBar()->setStyle(new TabStyle_HorizontalText);
+    QWidget *tab1 = new QWidget();
+    SkillWidget *skill1 = new SkillWidget(tab1);
+    ui->tabWidget->addTab(tab1, "Tab1");
+    ui->tabWidget->addTab(new QWidget, "Tab2");
+    QTimer *style_timer = new QTimer();
+    connect(style_timer, &QTimer::timeout, this, &MainWindow::on_ChangeColour);
+    connect(style_timer, &QTimer::timeout, this, &MainWindow::on_DisplaySkillWidget);
+    m_OpcuaClient = new OpcuaClient;
+    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadModuleState);
+
+    // Table Widget
+    ui->tableWidget->setColumnCount(4);
+    headerColumns << "OrderID"
+                  << "Priority"
+                  << "FirstName"
+                  << "LastName";
     ui->tableWidget->setHorizontalHeaderLabels(headerColumns);
     ui->tableWidget->verticalHeader()->setVisible(false);
+    QTimer *t_order_page = new QTimer();
 
-    nlohmann::json MES_data = m_RedisClient->MES_json();
-    nlohmann::json OrderPage_data = m_RedisClient->OrderPage_json();
+    connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
+    connect(m_RedisClient, &RedisClient::ReceivedJSONString, m_RedisClient, &RedisClient::on_ReadFromJsonString);
+    connect(m_RedisClient, &RedisClient::SubscriptionMessage, this, &MainWindow::on_SubscriptionMessage);
+    connect(m_RedisClient, &RedisClient::ParsedJson, this, &MainWindow::on_MakeOrderTable);
+    connect(m_RedisClient, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
+        std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
+    });
+    connect(t_order_page, &QTimer::timeout, [&]() { MainWindow::test(); }); // only for testing purposes
+    connect(this, &MainWindow::ReceivedNewSubscription, m_RedisClient, &RedisClient::on_ReadFromJsonString);
 
-    QString MES_data_stringified = m_RedisClient->stringify_json(MES_data);
+    t_order_page->start(800);
+    style_timer->start(1000);
+
+    m_RedisClient->m_Redis->SUBSCRIBE("OrderPage");
+
+    ReplyElement orderPage_data_received = m_RedisClient->m_Redis->GET("DataOrderPage");
+    if (orderPage_data_received.GetBulkString().has_value()) {
+        qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
+        emit m_RedisClient->ReceivedJSONString(orderPage_data_received.GetBulkString());
+    }
+}
+
+void MainWindow::on_DisplaySkillWidget() {
+    // SkillWidget *skill_widget = new SkillWidget();
+}
+
+void MainWindow::on_ChangeColour() {
+    std::random_device rd; // Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+    std::uniform_int_distribution<> dis(1, 3);
+
+    switch (dis(gen)) {
+    case 1:
+        ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
+                                     "QTabBar::tab:selected { background: green; } "
+                                     "QTabWidget::pane { border: 0; } "
+                                     "QWidget { background: lightgray; } ");
+        break;
+    case 2:
+        ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
+                                     "QTabBar::tab:selected { background: yellow; } "
+                                     "QTabWidget::pane { border: 0; } "
+                                     "QWidget { background: lightgray; } ");
+        break;
+    case 3:
+        ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
+                                     "QTabBar::tab:selected { background: red; } "
+                                     "QTabWidget::pane { border: 0; } "
+                                     "QWidget { background: lightgray; } ");
+        break;
+    default:
+        ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
+                                     "QTabBar::tab:selected { background: red; } "
+                                     "QTabWidget::pane { border: 0; } "
+                                     "QWidget { background: lightgray; } ");
+    }
+}
+
+void MainWindow::test() {
+    nlohmann::json OrderPage_data = m_RedisClient->make_json_orderpage();
     QString OrderPage_data_stringified = m_RedisClient->stringify_json(OrderPage_data);
-
-    m_RedisClient->m_Redis->Set("MES_data", MES_data_stringified);
-    m_RedisClient->m_Redis->Set("OrderPage_data", OrderPage_data_stringified);
-    std::optional<QString> mes_data_received = m_RedisClient->m_Redis->Get("MES_data");
-    std::optional<QString> orderPage_data_received = m_RedisClient->m_Redis->Get("OrderPage_data");
-
-    if (mes_data_received.has_value()) {
-
-        QString temp = mes_data_received.value();
-        qDebug() << "HMMMMM" << temp;
-        temp.replace("\\\"", "\"");
-        nlohmann::json parsed = nlohmann::json::parse(temp.toStdString());
-        if (parsed["MES_data"] != nullptr) { emit m_RedisClient->sendMESdata(parsed); }
-    }
-    if (orderPage_data_received.has_value()) {
-
-        QString temp = orderPage_data_received.value();
-        qDebug() << "HMMMMM" << temp;
-        temp.replace("\\\"", "\"");
-        nlohmann::json parsed = nlohmann::json::parse(temp.toStdString());
-        if (parsed["OrderPage_data"] != nullptr) { emit m_RedisClient->sendOrderPageData(parsed); }
-    }
+    m_RedisClient->m_Redis->SET("DataOrderPage", OrderPage_data_stringified);
+    m_RedisClient->m_Redis->PUBLISH("OrderPage", OrderPage_data_stringified);
 }
 
-// Read out the JSON file and put information in table from here
-void MainWindow::on_sendMES_data(nlohmann::json eReply) {
-    int i = 0;
-    for (nlohmann::json::iterator it = eReply["MES_data"].begin(); it != eReply["MES_data"].end(); ++it) {
-        DynamicCustomTab *newTab = new DynamicCustomTab();
-        connect(this, &MainWindow::SendMES_Data, newTab, &DynamicCustomTab::on_SendMESData);
-        std::string dummystring = eReply["MES_data"][i]["ModuleName"];
-        QString qdummystring = QString::fromStdString(dummystring);
-        qDebug() << qdummystring;
-        ui->tabWidget->addTab(newTab, qdummystring);
-        ++i;
-    }
-}
-
-void MainWindow::on_sendOrderPageData(nlohmann::json eReply) {
-    static int ordernumber = 0;
-    ui->tableWidget->setRowCount(eReply["OrderPage_data"].size() + ordernumber);
-    for (nlohmann::json::iterator it = eReply.begin(); it != eReply.end(); ++it) {
-        //        std::string dummystring = eReply["OrderPage_data"][ordernumber][]
-        ui->tableWidget->setItem(ordernumber, 0, new QTableWidgetItem("Order#" + QString::number(ordernumber)));
-        //        ui->tableWidget->setItem(ordernumber)
-        ++ordernumber;
-    }
-    // row count = length of std vector
+void MainWindow::on_MakeOrderTable(nlohmann::json eParsed) {
+    order = new OrderInformation(
+        QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["orderID"])),
+        QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["priority"])),
+        QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["firstName"])),
+        QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["lastName"])));
+    //    order->SendOrderToRedis();
+    ui->tableWidget->setRowCount(eParsed["DataOrderPage"].size() + m_OrderNumber);
+    ui->tableWidget->setItem(m_OrderNumber, 0, new QTableWidgetItem(order->GetOrderID()));
+    ui->tableWidget->setItem(m_OrderNumber, 1, new QTableWidgetItem(order->GetOrderPriority()));
+    ui->tableWidget->setItem(m_OrderNumber, 2, new QTableWidgetItem(order->GetCustomerFirstName()));
+    ui->tableWidget->setItem(m_OrderNumber, 3, new QTableWidgetItem(order->GetCustomerLastName()));
+    ++m_OrderNumber;
 }
 
 MainWindow::~MainWindow() {
@@ -84,30 +128,6 @@ MainWindow::~MainWindow() {
     delete m_RedisClient;
     delete m_TabStyle;
     if (prioritybox != nullptr) delete prioritybox;
-}
-
-// ui->label_Reply->setText(eReply);
-
-// Push button to SET MES / OrderPage values (JSON)
-// Push button to GET values (parse JSON)
-
-void MainWindow::on_SendCommand_clicked() {
-    // redo this
-    std::cout << "send message";
-
-    std::string MES_message = R"delimeter(ModuleName {
-                          "Skill1" : "error/warnings/ok",
-                          "Skill2" : "error/warnings/ok",
-                          "Skill3" : "error/warnings/ok",
-                          "Skill4" : "error/warnings/ok",
-                          "Skill5" : "error/warnings/ok"
-                                                      })delimeter";
-    std::cout << "send message";
-    emit SendCommand(QString::fromStdString(MES_message));
-}
-
-void MainWindow::on_GetReply_clicked() {
-    emit GetReply();
 }
 
 // select the row and column of the tableWidget to get the respective element
@@ -123,4 +143,10 @@ void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column) {
     prioritybox->setStandardButtons(QMessageBox::Apply | QMessageBox::Cancel);
     std::cout << "Row:" << row << " Column: " << column << std::endl;
     prioritybox->show();
+}
+
+void MainWindow::on_SubscriptionMessage(QString eChannel, QString eMessage) {
+    qDebug() << "Received Message from subscribed channel " << eChannel << ": \n" << eMessage;
+    std::optional<QString> systemMonitor_received = eMessage;
+    emit ReceivedNewSubscription(systemMonitor_received);
 }
