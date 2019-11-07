@@ -10,31 +10,36 @@ using Redistorium::Reply::ReplyElement;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    ui->tabWidget->clear();
     m_RedisClient = new RedisClient(this);
 
-    // Tab Widget
-    ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
-                                 "QTabBar::tab:selected { background: red; } "
-                                 "QTabWidget::pane { border: 0; } "
-                                 "QWidget { background: lightgray; } ");
-
+    // set up TabWidget Assembly, Labeling, SuperTrak move all this to a function outside ?
+    ui->tabWidget->clear();
     m_TabStyle = new TabStyle_HorizontalText();
     ui->tabWidget->tabBar()->setStyle(m_TabStyle);
 
-    // ui->tabWidget->tabBar()->setStyle(new TabStyle_HorizontalText);
-    QWidget *tab1 = new QWidget();
-    SkillWidget *skill1 = new SkillWidget(tab1);
-    ui->tabWidget->addTab(tab1, "Tab1");
-    ui->tabWidget->addTab(new QWidget, "Tab2");
+    DynamicCustomTab *AssemblyTab = new DynamicCustomTab();
+    DynamicCustomTab *LabelingTab = new DynamicCustomTab();
+    DynamicCustomTab *SuperTrakTab = new DynamicCustomTab();
+
+    // set default display in Tab before anything starts !
+    connect(m_OpcuaClient, &OpcuaClient::sendModuleState ,AssemblyTab, &DynamicCustomTab::on_sendModuleState);
+    connect(m_OpcuaClient, &OpcuaClient::sendModuleState ,LabelingTab, &DynamicCustomTab::on_sendModuleState);
+    connect(m_OpcuaClient, &OpcuaClient::sendModuleState ,SuperTrakTab, &DynamicCustomTab::on_sendModuleState);
+
+    ui->tabWidget->addTab(AssemblyTab, "AssemblyModule");
+    ui->tabWidget->addTab(LabelingTab, "LabelingModule");
+    ui->tabWidget->addTab(SuperTrakTab, "SuperTrakTab");
+    for (int i = 0 ;i<3;++i) {
+        ui->tabWidget->tabBar()->setTabTextColor(i, QColor(Qt::yellow));
+    }
+
     QTimer *style_timer = new QTimer();
-    connect(style_timer, &QTimer::timeout, this, &MainWindow::on_ChangeColour);
-    connect(style_timer, &QTimer::timeout, this, &MainWindow::on_DisplaySkillWidget);
     m_OpcuaClient = new OpcuaClient;
     connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadModuleState);
 
-    // Table Widget
+    // set up Table Widget move this to an outside function ?
     ui->tableWidget->setColumnCount(4);
+    ui->tableWidget->setSortingEnabled(false);
     headerColumns << "OrderID"
                   << "Priority"
                   << "FirstName"
@@ -48,13 +53,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(m_RedisClient, &RedisClient::SubscriptionMessage, this, &MainWindow::on_SubscriptionMessage);
     connect(m_RedisClient, &RedisClient::ParsedJson, this, &MainWindow::on_MakeOrderTable);
     connect(m_RedisClient, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
-        std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
+        // std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
     });
-    connect(t_order_page, &QTimer::timeout, [&]() { MainWindow::test(); }); // only for testing purposes
+    connect(t_order_page, &QTimer::timeout, [&]() { MainWindow::MockOrderPage(); }); // only for testing purposes
     connect(this, &MainWindow::ReceivedNewSubscription, m_RedisClient, &RedisClient::on_ReadFromJsonString);
-
-    t_order_page->start(800);
-    style_timer->start(1000);
+    connect(m_OpcuaClient, &OpcuaClient::sendModuleState, this, &MainWindow::on_sendModuleState);
+    t_order_page->start(3000);
+    style_timer->start(3000);
 
     m_RedisClient->m_Redis->SUBSCRIBE("OrderPage");
 
@@ -65,50 +70,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
 }
 
-void MainWindow::on_DisplaySkillWidget() {
-    // SkillWidget *skill_widget = new SkillWidget();
-}
-
-void MainWindow::on_ChangeColour() {
-    std::random_device rd; // Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
-    std::uniform_int_distribution<> dis(1, 3);
-
-    switch (dis(gen)) {
-    case 1:
-        ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
-                                     "QTabBar::tab:selected { background: green; } "
-                                     "QTabWidget::pane { border: 0; } "
-                                     "QWidget { background: lightgray; } ");
-        break;
-    case 2:
-        ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
-                                     "QTabBar::tab:selected { background: yellow; } "
-                                     "QTabWidget::pane { border: 0; } "
-                                     "QWidget { background: lightgray; } ");
-        break;
-    case 3:
-        ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
-                                     "QTabBar::tab:selected { background: red; } "
-                                     "QTabWidget::pane { border: 0; } "
-                                     "QWidget { background: lightgray; } ");
-        break;
-    default:
-        ui->tabWidget->setStyleSheet("QTabBar::tab { background: gray; color: white; padding: 10px; } "
-                                     "QTabBar::tab:selected { background: red; } "
-                                     "QTabWidget::pane { border: 0; } "
-                                     "QWidget { background: lightgray; } ");
+void MainWindow::on_sendModuleState(std::map<std::string, std::string> ModuleSkillMap){
+    int tab_index = 0;
+    std::string default_node_value = "17";
+    for (std::map<std::string, std::string>::iterator it = ModuleSkillMap.begin(); it != ModuleSkillMap.end(); ++it){
+        for (int i = 0; i < default_node_value.length(); ++i){
+            if((it->second[i] - '0') != (default_node_value[i] - '0')){
+                std::cout << "setting red" << std::endl;
+                ui->tabWidget->tabBar()->setTabTextColor(tab_index, QColor(Qt::red));
+            }
+            else {
+            std::cout << "setting green " <<std:: endl;
+            ui->tabWidget->tabBar()->setTabTextColor(tab_index, QColor(Qt::green));
+            }
+        }
+    ++tab_index;
     }
 }
 
-void MainWindow::test() {
-    nlohmann::json OrderPage_data = m_RedisClient->make_json_orderpage();
-    QString OrderPage_data_stringified = m_RedisClient->stringify_json(OrderPage_data);
-    m_RedisClient->m_Redis->SET("DataOrderPage", OrderPage_data_stringified);
-    m_RedisClient->m_Redis->PUBLISH("OrderPage", OrderPage_data_stringified);
-}
-
 void MainWindow::on_MakeOrderTable(nlohmann::json eParsed) {
+    ui->tableWidget->setSortingEnabled(false);
     order = new OrderInformation(
         QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["orderID"])),
         QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["priority"])),
@@ -121,32 +102,67 @@ void MainWindow::on_MakeOrderTable(nlohmann::json eParsed) {
     ui->tableWidget->setItem(m_OrderNumber, 2, new QTableWidgetItem(order->GetCustomerFirstName()));
     ui->tableWidget->setItem(m_OrderNumber, 3, new QTableWidgetItem(order->GetCustomerLastName()));
     ++m_OrderNumber;
+    // You can't sort while still setting...
+    ui->tableWidget->horizontalHeader()->setSortIndicatorShown(true);
+    ui->tableWidget->horizontalHeader()->setSortIndicator(0, Qt::DescendingOrder);
+    ui->tableWidget->setSortingEnabled(true);
+
 }
 
 MainWindow::~MainWindow() {
     delete ui;
     delete m_RedisClient;
     delete m_TabStyle;
+    delete m_OpcuaClient;
     if (prioritybox != nullptr) delete prioritybox;
 }
 
-// select the row and column of the tableWidget to get the respective element
-void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column) {
-#pragma message "TODO: reconsider this design choice. Does it need to be a pop up message box,"
-#pragma message "or should it just be a \"Set\" button right next to the text field,"
-#pragma message "or should it be a slot of on_textfield_valueChanged or something similar?"
-    if (prioritybox != nullptr) delete prioritybox;
-    prioritybox = new QMessageBox();
-    prioritybox->setIcon(QMessageBox::Warning);
-    prioritybox->setText("Alter current Orderstatus");
-    prioritybox->setInformativeText("Enter the desired priority status below");
-    prioritybox->setStandardButtons(QMessageBox::Apply | QMessageBox::Cancel);
-    std::cout << "Row:" << row << " Column: " << column << std::endl;
-    prioritybox->show();
-}
 
 void MainWindow::on_SubscriptionMessage(QString eChannel, QString eMessage) {
-    qDebug() << "Received Message from subscribed channel " << eChannel << ": \n" << eMessage;
+    // qDebug() << "Received Message from subscribed channel " << eChannel << ": \n" << eMessage;
     std::optional<QString> systemMonitor_received = eMessage;
     emit ReceivedNewSubscription(systemMonitor_received);
+}
+void MainWindow::MockOrderPage() {
+    nlohmann::json OrderPage_data = m_RedisClient->make_json_orderpage();
+    QString OrderPage_data_stringified = m_RedisClient->stringify_json(OrderPage_data);
+    // why are these two different Keys ?
+    m_RedisClient->m_Redis->SET("DataOrderPage", OrderPage_data_stringified);
+    m_RedisClient->m_Redis->PUBLISH("OrderPage", OrderPage_data_stringified);
+}
+
+void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column)
+{
+    if (column != 1) {
+        ui->tableWidget->item(row, column)->setFlags(ui->tableWidget->item(row,column)->flags() & ~Qt::ItemIsEditable);
+    }
+    else {
+        dialog = new QInputDialog();
+        std:: cout << " Clicked Row: " << row << "Column: " << column << std::endl;
+        int n = QInputDialog::getInt(this, "Alter OrderPriority", "Confirm by entering a different value");
+        ui->tableWidget->setItem(row, column, new QTableWidgetItem(QString::number(n)));
+        // make the json
+        nlohmann::json ChangedOrder_json;
+        auto order_arr = nlohmann::json::array();
+        nlohmann::json order_json{{"orderID", ui->tableWidget->item(row, 0)->text().toStdString()},
+                                  {"priority", std::to_string(n)},
+                                  {"firstName", ui->tableWidget->item(row, 2)->text().toStdString()},
+                                  {"lastName", ui->tableWidget->item(row, 3)->text().toStdString()}};
+        order_arr.push_back(order_json);
+        ChangedOrder_json["DataOrderPage"] = order_arr;
+        // stringify it
+        std::string tempstdstr = ChangedOrder_json.dump();
+        QString tempqstring = tempstdstr.c_str();
+        tempqstring.replace("\"", "\\\"");
+        tempqstring = QString("\"" + tempqstring + "\"");
+        m_RedisClient->m_Redis->SET("AlteredDataOrderPage", tempqstring);
+        m_RedisClient->m_Redis->PUBLISH("AltOrderPage", tempqstring);
+    }
+}
+
+void MainWindow::on_tableWidget_cellClicked(int row, int column)
+{
+    if (column != 1) {
+        ui->tableWidget->item(row, column)->setFlags(ui->tableWidget->item(row,column)->flags() & ~Qt::ItemIsEditable);
+    }
 }

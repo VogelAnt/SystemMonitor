@@ -2,10 +2,6 @@
 #include <mockserver/Module.h>
 #include <mockserver/Skill.h>
 
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
 
 OpcuaClient::OpcuaClient() {
     using smart4i::Module;
@@ -46,6 +42,8 @@ OpcuaClient::OpcuaClient() {
 }
 
 void OpcuaClient::ReadModuleState() {
+    std::map<std::string, std::string> ModuleValuePair;
+
     // use system setup to get the names of the nodes easily
     std::string supertrakOperationalState = SuperTrak->StateMachine.FullName + ".operationalState";
     std::cout << supertrakOperationalState << std::endl;
@@ -61,25 +59,40 @@ void OpcuaClient::ReadModuleState() {
     /* NodeId of the variable holding the current time */
     nodeId = UA_NODEID_STRING(6, temp.get());
     retval = UA_Client_readValueAttribute(client, nodeId, &value);
-    std::cout << "test node reading " << ((UA_String *)value.data)->data << std::endl;
+    std::cout << "SuperTRAK node reading " << ((UA_String *)value.data)->data << std::endl;
+    unsigned char * st_node = ((UA_String *)value.data)->data;
+    std::string st( reinterpret_cast< char const* >(st_node));
+    std::cout << st << std::endl;
+    ModuleValuePair.insert(std::make_pair("SuperTRAK", st));
 
     std::string assemblyOperationalState = Assembly->StateMachine.FullName + ".operationalState";
     std::cout << assemblyOperationalState << std::endl;
-
     temp.reset(new char[1000]);
     strncpy(temp.get(), assemblyOperationalState.c_str(), assemblyOperationalState.size() + 1);
     /* NodeId of the variable holding the current time */
     nodeId = UA_NODEID_STRING(6, temp.get());
     retval = UA_Client_readValueAttribute(client, nodeId, &value);
-    std::cout << "test node reading " << ((UA_String *)value.data)->data << std::endl;
+    std::cout << "Assembly node reading " << ((UA_String *)value.data)->data << std::endl;
+    unsigned char * ass_node = ((UA_String *)value.data)->data;
+    std::string ass( reinterpret_cast< char const* >(ass_node) );
+    std::cout << ass << std::endl;
+    ModuleValuePair.insert(std::make_pair("Assembly Module", ass));
+
 
     std::string labelingOperationalState = Labeling->StateMachine.FullName + ".operationalState";
     std::cout << labelingOperationalState << std::endl;
-
     temp.reset(new char[1000]);
     strncpy(temp.get(), labelingOperationalState.c_str(), labelingOperationalState.size() + 1);
     /* NodeId of the variable holding the current time */
     nodeId = UA_NODEID_STRING(2, temp.get());
     retval = UA_Client_readValueAttribute(client, nodeId, &value);
-    std::cout << "test node reading " << ((UA_String *)value.data)->data << std::endl;
+    std::cout << "Labeling node reading " << ((UA_String *)value.data)->data << std::endl;
+    unsigned char * lab_node = ((UA_String *)value.data)->data;
+    std::string lab( reinterpret_cast< char const* >(lab_node) ) ;
+    std::cout << lab << std::endl;
+    ModuleValuePair.insert(std::make_pair("Labeling Module", lab));
+
+    // trigger
+    sendModuleState(ModuleValuePair);
 }
+

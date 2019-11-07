@@ -1,5 +1,6 @@
 #ifndef REDISCLIENT_H
 #define REDISCLIENT_H
+
 #include "orderinformation.h"
 #include <QObject>
 #include <QTimer>
@@ -8,8 +9,8 @@
 
 #include <iostream>
 
+// Needed for MES Mock
 static std::vector<std::string> ModuleList{"SeedModule", "BufferModule", "SealingModule", "OutputModule", "TransportModule", "TransferModule"};
-
 static std::vector<std::string> SkillList{"Skill1", "Skill2", "Skill3", "Skill4", "Skill5"};
 
 typedef struct {

@@ -15,8 +15,12 @@
 #include <QString>
 #include <QStringList>
 #include <QTimer>
+#include <QInputDialog>
 
 #include <random>
+#include <iostream>
+#include <map>
+#include <string>
 
 namespace Ui {
 class MainWindow;
@@ -27,24 +31,27 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void test();
+
+    void MockOrderPage();
 
 signals:
     void SendCommand(QString);
     void SendMES_Data(nlohmann::json);
     void GetReply();
     void ReceivedNewSubscription(std::optional<QString> eParsed);
+    void OrderPriorityChanged(int);
 
 public slots:
     void on_MakeOrderTable(nlohmann::json);
+    void on_sendModuleState(std::map<std::string, std::string>);
 
 private slots:
     void on_tableWidget_cellDoubleClicked(int row, int column);
+    void on_tableWidget_cellClicked(int row, int column);
     void on_SubscriptionMessage(QString eChannel, QString eMessage);
-    void on_ChangeColour();
-    void on_DisplaySkillWidget();
 
 private:
+    int TabWidgetUpdates = 0;
     Ui::MainWindow *ui = nullptr;
     QStringList headerColumns;
     RedisClient *m_RedisClient = nullptr;
@@ -52,6 +59,7 @@ private:
     TabStyle_HorizontalText *m_TabStyle = nullptr;
     OrderInformation *order = nullptr;
     OpcuaClient *m_OpcuaClient = nullptr;
+    QInputDialog *dialog = nullptr;
     int m_OrderNumber = 0;
 };
 

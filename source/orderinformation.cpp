@@ -1,6 +1,7 @@
 #include "orderinformation.h"
 
-OrderInformation::OrderInformation()
-{
 
-}
+//void OrderInformation::SendOrderToRedis()
+//{
+//    nlohmann::json orderlist;
+//}

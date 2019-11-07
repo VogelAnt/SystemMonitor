@@ -5,7 +5,6 @@ RedisClient::RedisClient(QObject *parent) : QObject(parent) {
     m_Redis->Connect("localhost", 6379);
     connect(m_Redis, &Redistorium::Redis::SubscriptionMessage, this, &RedisClient::SubscriptionMessage);
     connect(m_Redis, &Redistorium::Redis::Connected, []() { qDebug() << "Connected"; });
-
     connect(m_Redis, &Redistorium::Redis::Disconnected, []() { qDebug() << "Disconnected"; });
 }
 
@@ -34,10 +33,12 @@ nlohmann::json RedisClient::make_json_orderpage() {
     nlohmann::json OrderPage_json;
     auto order_arr = nlohmann::json::array();
     int r = rand();
-    // problem is here
     // create a random number,
     std::string rand = std::to_string(r);
-    nlohmann::json order_json{{"orderID", rand}, {"priority", "0"}, {"firstName", "John"}, {"lastName", "Kimble"}};
+    nlohmann::json order_json{{"orderID", rand},
+                              {"priority", "0"},
+                              {"firstName", "John"},
+                              {"lastName", "Kimble"}};
     order_arr.push_back(order_json);
     OrderPage_json["DataOrderPage"] = order_arr;
     return OrderPage_json;
@@ -90,7 +91,7 @@ QString RedisClient::on_ReadFromJsonString(std::optional<QString> eJsonString) {
         QString temp = eJsonString.value();
         temp = temp.replace("\\\"", "\"");
         nlohmann::json parsed = nlohmann::json::parse(temp.toStdString());
-        qDebug() << "parsed[DataOrderPage]" << QString(std::string(parsed["DataOrderPage"][0].dump()).c_str());
+        // qDebug() << "parsed[DataOrderPage]" << QString(std::string(parsed["DataOrderPage"][0].dump()).c_str());
         if (parsed["DataOrderPage"] != nullptr) {
             // emit send parsed to BuildOrderOverviewTable, initialize instance of OrderList there
             emit ParsedJson(parsed);

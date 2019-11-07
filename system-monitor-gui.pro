@@ -11,7 +11,9 @@ TEMPLATE = app
 
 INCLUDEPATH += \
 $$PWD/external/redistorium/include \
-$$PWD/external/json/include
+$$PWD/external/json/include \
+$$PWD/external/open62541 \
+$$PWD/external/opc-ua-server-c/include
 
 LIBS += \
 -L$$PWD/external/redistorium/build/redistorium.lib/ -lredistorium \
@@ -20,11 +22,12 @@ LIBS += \
 CONFIG += c++1z
 
 SOURCES += \
+$$PWD/external/open62541/open62541.c \
+$$files($$PWD/external/opc-ua-server-c/source/*.cpp) \
 $$files(source/*.cpp)
 
 HEADERS += \
 $$files(source/*.h)
-
 FORMS += \
 $$files(source/*.ui)
 
