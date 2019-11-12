@@ -1,10 +1,9 @@
 #ifndef OPCUACLIENT_H
 #define OPCUACLIENT_H
-#include <mockserver/Module.h>
-#include <mockserver/System.h>
 #include <open62541.h>
 
 #include <QObject>
+
 #include <iostream>
 #include <memory>
 #include <string>
@@ -16,24 +15,25 @@ class OpcuaClient : public QObject {
     Q_OBJECT
 
 public:
+
     OpcuaClient();
     void ReadModuleState();
-
 signals:
     /**
      * @brief sendModuleState
      *
      * @param nodevalues
-     * State value as (Name, Value) pair
+     * Send (Name, State) pair of respective Module
      */
-    void sendModuleState(std::map<std::string, std::string> nodevalues);
+    void SendModuleState(std::map<std::string, std::string> nodevalues);
+
+    /**
+     * @brief sendSkillStateAssembly
+     * Send (Name, State) pair of respective Skills
+     * @param nodevalues
+     */
 
 public:
-    smart4i::System *smart4iSystem;
-    UA_Client *client;
-    smart4i::Module *SuperTrak;
-    smart4i::Module *Assembly;
-    smart4i::Module *Labeling;
 };
 
 #endif // OPCUACLIENT_H

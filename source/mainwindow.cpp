@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "OpcuaClient.h"
-#include "dynamiccustomtab.h"
+#include "SkillListWidget.h"
 #include "orderinformation.h"
 #include "redisclient.h"
 #include "ui_mainwindow.h"
@@ -10,67 +10,79 @@ using Redistorium::Reply::ReplyElement;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    m_RedisClient = new RedisClient(this);
+//    m_RedisClient = new RedisClient(this);
+//    QTimer *style_timer = new QTimer();
+//    m_OpcuaClient = new OpcuaClient;
+    std::map<char*, char*> DisplayName_NodeId;
+    DisplayName_NodeId["Label"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
 
-    // set up TabWidget Assembly, Labeling, SuperTrak move all this to a function outside ?
-    ui->tabWidget->clear();
+    for (auto &pair: DisplayName_NodeId){
+        QPushButton *skillButton = new QPushButton(pair.first,this);
+    }
+    UA_Client* uaClient = UA_Client_new(UA_ClientConfig_default);
+    UA_Client_connect(uaClient, "opc.tcp://192.168.100.25:4840");
+
+    SkillListWidget *AssemblyTab = new SkillListWidget(uaClient, DisplayName_NodeId, 6);
+    ui->tabWidget->addTab(AssemblyTab,"Assembly");
+//    SkillListWidget *LabelingTab = new SkillListWidget(LabelingSkillList);
+//    SkillListWidget *SuperTrakTab = new SkillListWidget(SuperTrakSkillList);
+
     m_TabStyle = new TabStyle_HorizontalText();
     ui->tabWidget->tabBar()->setStyle(m_TabStyle);
 
-    DynamicCustomTab *AssemblyTab = new DynamicCustomTab();
-    DynamicCustomTab *LabelingTab = new DynamicCustomTab();
-    DynamicCustomTab *SuperTrakTab = new DynamicCustomTab();
+//    connect(m_OpcuaClient, &OpcuaClient::SendAssemblySkillState ,AssemblyTab, &SkillListWidget::on_SendAssemblySkillState);
+//    connect(m_OpcuaClient, &OpcuaClient::SendLabelingSkillState ,LabelingTab, &SkillListWidget::on_SendLabelingSkillState);
+//    connect(m_OpcuaClient, &OpcuaClient::SendSuperTrakSkillState ,SuperTrakTab, &SkillListWidget::on_SendSuperTrakSkillState);
 
-    // set default display in Tab before anything starts !
-    connect(m_OpcuaClient, &OpcuaClient::sendModuleState ,AssemblyTab, &DynamicCustomTab::on_sendModuleState);
-    connect(m_OpcuaClient, &OpcuaClient::sendModuleState ,LabelingTab, &DynamicCustomTab::on_sendModuleState);
-    connect(m_OpcuaClient, &OpcuaClient::sendModuleState ,SuperTrakTab, &DynamicCustomTab::on_sendModuleState);
+//    ui->tabWidget->addTab(LabelingTab, "LabelingModule");
+//    ui->tabWidget->addTab(SuperTrakTab, "SuperTrakTab");
+//    for (int i = 0 ;i<3;++i) {
+//        ui->tabWidget->tabBar()->setTabTextColor(i, QColor(Qt::yellow));
+//    }
 
-    ui->tabWidget->addTab(AssemblyTab, "AssemblyModule");
-    ui->tabWidget->addTab(LabelingTab, "LabelingModule");
-    ui->tabWidget->addTab(SuperTrakTab, "SuperTrakTab");
-    for (int i = 0 ;i<3;++i) {
-        ui->tabWidget->tabBar()->setTabTextColor(i, QColor(Qt::yellow));
-    }
+    // this we need to get the module states every n seconds
+//    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadModuleState);
 
-    QTimer *style_timer = new QTimer();
-    m_OpcuaClient = new OpcuaClient;
-    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadModuleState);
+    // this is necessary to poll the SkillState stuff, we'll move it all into one function when we're done !
+//    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadSkillStateAssembly);
+//    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadSkillStateSuperTrak);
+//    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadSkillStateLabeling);
 
     // set up Table Widget move this to an outside function ?
-    ui->tableWidget->setColumnCount(4);
-    ui->tableWidget->setSortingEnabled(false);
-    headerColumns << "OrderID"
-                  << "Priority"
-                  << "FirstName"
-                  << "LastName";
-    ui->tableWidget->setHorizontalHeaderLabels(headerColumns);
-    ui->tableWidget->verticalHeader()->setVisible(false);
-    QTimer *t_order_page = new QTimer();
+//    ui->tableWidget->setColumnCount(4);
+//    ui->tableWidget->setSortingEnabled(false);
+//    headerColumns << "OrderID"
+//                  << "Priority"
+//                  << "FirstName"
+//                  << "LastName";
+//    ui->tableWidget->setHorizontalHeaderLabels(headerColumns);
+//    ui->tableWidget->verticalHeader()->setVisible(false);
+//    QTimer *t_order_page = new QTimer();
 
-    connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
-    connect(m_RedisClient, &RedisClient::ReceivedJSONString, m_RedisClient, &RedisClient::on_ReadFromJsonString);
-    connect(m_RedisClient, &RedisClient::SubscriptionMessage, this, &MainWindow::on_SubscriptionMessage);
-    connect(m_RedisClient, &RedisClient::ParsedJson, this, &MainWindow::on_MakeOrderTable);
-    connect(m_RedisClient, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
-        // std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
-    });
-    connect(t_order_page, &QTimer::timeout, [&]() { MainWindow::MockOrderPage(); }); // only for testing purposes
-    connect(this, &MainWindow::ReceivedNewSubscription, m_RedisClient, &RedisClient::on_ReadFromJsonString);
-    connect(m_OpcuaClient, &OpcuaClient::sendModuleState, this, &MainWindow::on_sendModuleState);
-    t_order_page->start(3000);
-    style_timer->start(3000);
+//    connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
+//    connect(m_RedisClient, &RedisClient::ReceivedJSONString, m_RedisClient, &RedisClient::on_ReadFromJsonString);
+//    connect(m_RedisClient, &RedisClient::SubscriptionMessage, this, &MainWindow::on_SubscriptionMessage);
+//    connect(m_RedisClient, &RedisClient::ParsedJson, this, &MainWindow::on_MakeOrderTable);
+//    connect(m_RedisClient, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
+//        // std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
+//    });
+//    connect(t_order_page, &QTimer::timeout, [&]() { MainWindow::MockOrderPage(); }); // only for testing purposes
+//    connect(this, &MainWindow::ReceivedNewSubscription, m_RedisClient, &RedisClient::on_ReadFromJsonString);
+//    // this is where on:send Moduel state is actually connected !!
+//    connect(m_OpcuaClient, &OpcuaClient::SendModuleState, this, &MainWindow::on_SendModuleState);
+//    t_order_page->start(3000);
+////    style_timer->start(3000);
 
-    m_RedisClient->m_Redis->SUBSCRIBE("OrderPage");
+//    m_RedisClient->m_Redis->SUBSCRIBE("OrderPage");
 
-    ReplyElement orderPage_data_received = m_RedisClient->m_Redis->GET("DataOrderPage");
-    if (orderPage_data_received.GetBulkString().has_value()) {
-        qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
-        emit m_RedisClient->ReceivedJSONString(orderPage_data_received.GetBulkString());
-    }
+//    ReplyElement orderPage_data_received = m_RedisClient->m_Redis->GET("DataOrderPage");
+//    if (orderPage_data_received.GetBulkString().has_value()) {
+//        qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
+//        emit m_RedisClient->ReceivedJSONString(orderPage_data_received.GetBulkString());
+//    }
 }
 
-void MainWindow::on_sendModuleState(std::map<std::string, std::string> ModuleSkillMap){
+void MainWindow::on_SendModuleState(std::map<std::string, std::string> ModuleSkillMap){
     int tab_index = 0;
     std::string default_node_value = "17";
     for (std::map<std::string, std::string>::iterator it = ModuleSkillMap.begin(); it != ModuleSkillMap.end(); ++it){
@@ -106,7 +118,6 @@ void MainWindow::on_MakeOrderTable(nlohmann::json eParsed) {
     ui->tableWidget->horizontalHeader()->setSortIndicatorShown(true);
     ui->tableWidget->horizontalHeader()->setSortIndicator(0, Qt::DescendingOrder);
     ui->tableWidget->setSortingEnabled(true);
-
 }
 
 MainWindow::~MainWindow() {
@@ -117,12 +128,12 @@ MainWindow::~MainWindow() {
     if (prioritybox != nullptr) delete prioritybox;
 }
 
-
 void MainWindow::on_SubscriptionMessage(QString eChannel, QString eMessage) {
     // qDebug() << "Received Message from subscribed channel " << eChannel << ": \n" << eMessage;
     std::optional<QString> systemMonitor_received = eMessage;
     emit ReceivedNewSubscription(systemMonitor_received);
 }
+
 void MainWindow::MockOrderPage() {
     nlohmann::json OrderPage_data = m_RedisClient->make_json_orderpage();
     QString OrderPage_data_stringified = m_RedisClient->stringify_json(OrderPage_data);
@@ -131,8 +142,7 @@ void MainWindow::MockOrderPage() {
     m_RedisClient->m_Redis->PUBLISH("OrderPage", OrderPage_data_stringified);
 }
 
-void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column)
-{
+void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column){
     if (column != 1) {
         ui->tableWidget->item(row, column)->setFlags(ui->tableWidget->item(row,column)->flags() & ~Qt::ItemIsEditable);
     }
@@ -155,13 +165,14 @@ void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column)
         QString tempqstring = tempstdstr.c_str();
         tempqstring.replace("\"", "\\\"");
         tempqstring = QString("\"" + tempqstring + "\"");
+        // make a QStringList
+//        m_RedisClient->m_Redis->LPUSH()
         m_RedisClient->m_Redis->SET("AlteredDataOrderPage", tempqstring);
         m_RedisClient->m_Redis->PUBLISH("AltOrderPage", tempqstring);
     }
 }
 
-void MainWindow::on_tableWidget_cellClicked(int row, int column)
-{
+void MainWindow::on_tableWidget_cellClicked(int row, int column){
     if (column != 1) {
         ui->tableWidget->item(row, column)->setFlags(ui->tableWidget->item(row,column)->flags() & ~Qt::ItemIsEditable);
     }
