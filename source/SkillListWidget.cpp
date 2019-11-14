@@ -3,13 +3,10 @@
 #include "ui_SkillListWidget.h"
 #include <iostream>
 
-// Perhaps add a signal slot thing that fills the Skill List up ?
-// std::map < std::string, std::string > DisplayName, NodeId
 SkillListWidget::SkillListWidget(UA_Client* client,
                                  std::map< char*,  char*> eMap_DisplayName_NodeId,
                                  uint8_t index,
                                  QWidget *parent) : QWidget(parent), ui(new Ui::SkillListWidget) {
-
 
     ui->setupUi(this);
     m_UaClient = client;
@@ -17,7 +14,8 @@ SkillListWidget::SkillListWidget(UA_Client* client,
     ModuleNameSpace = index;
 
     for (auto &pair: SkillMap_Id){
-        QPushButton *skillButton = new QPushButton(pair.first,this);        SkillMap_Button[pair.first] = skillButton;
+        QPushButton *skillButton = new QPushButton(pair.first,this);
+        SkillMap_Button[pair.first] = skillButton;
     }
 
     timer = new QTimer();
@@ -28,12 +26,13 @@ SkillListWidget::SkillListWidget(UA_Client* client,
             UA_Variant_init(&value);
             UA_Client_readValueAttribute(m_UaClient, nodeId, &value);
 
-            std::string c(reinterpret_cast<char const*>(((UA_String*) value.data)->data));
+            std::string c = ((char const*)(((UA_String*) value.data)->data));
             SkillMap_Button[pair.first]->setText(c.c_str());
         }
     });
     timer->start(1000);
 }
+
 void SkillListWidget::on_SendAssemblySkillState(std::map<std::string, std::string>SkillStateMap ){
     std::cout << "NOW IN ON_SEND _ASSEMBLY_ SKILLSTATE" << std::endl;
     int Buttonindex = 0;

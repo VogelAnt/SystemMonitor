@@ -10,17 +10,20 @@ using Redistorium::Reply::ReplyElement;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    ui->tabWidget->clear();
 //    m_RedisClient = new RedisClient(this);
 //    QTimer *style_timer = new QTimer();
 //    m_OpcuaClient = new OpcuaClient;
     std::map<char*, char*> DisplayName_NodeId;
-    DisplayName_NodeId["Label"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
+    // this actually sets the SkillButtons
+    DisplayName_NodeId["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
 
     for (auto &pair: DisplayName_NodeId){
         QPushButton *skillButton = new QPushButton(pair.first,this);
     }
+
     UA_Client* uaClient = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClient, "opc.tcp://192.168.100.25:4840");
+    UA_Client_connect(uaClient, "opc.tcp://localhost:4840");
 
     SkillListWidget *AssemblyTab = new SkillListWidget(uaClient, DisplayName_NodeId, 6);
     ui->tabWidget->addTab(AssemblyTab,"Assembly");

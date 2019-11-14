@@ -46,6 +46,10 @@ public slots:
     void on_SendSuperTrakSkillState(std::map<std::string, std::string> nodevalues);
     void on_SendLabelingSkillState(std::map<std::string, std::string> nodevalues);
 
+    void ChangeColour(std::string nodeName){
+
+    }
+
     //functions for testing
     void SkillButton_clicked();
     void on_SendMESData();
