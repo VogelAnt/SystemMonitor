@@ -24,12 +24,15 @@ CONFIG += c++1z
 SOURCES += \
 $$PWD/external/open62541/open62541.c \
 $$files($$PWD/external/opc-ua-server-c/source/*.cpp) \
-$$files(source/*.cpp)
+$$files(source/*.cpp) \
+    source/modulestatetabwidget.cpp
 
 HEADERS += \
-$$files(source/*.h)
+$$files(source/*.h) \
+    source/modulestatetabwidget.h
 FORMS += \
-$$files(source/*.ui)
+$$files(source/*.ui) \
+    source/modulestatetabwidget.ui
 
 DESTDIR = $$PWD/build
 MOC_DIR = $$DESTDIR/moc

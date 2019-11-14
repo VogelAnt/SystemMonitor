@@ -14,19 +14,37 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    m_RedisClient = new RedisClient(this);
 //    QTimer *style_timer = new QTimer();
 //    m_OpcuaClient = new OpcuaClient;
-    std::map<char*, char*> DisplayName_NodeId;
-    // this actually sets the SkillButtons
-    DisplayName_NodeId["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
-
-    for (auto &pair: DisplayName_NodeId){
-        QPushButton *skillButton = new QPushButton(pair.first,this);
+    std::map<char*, char*> DisplayName_NodeIdAssembly;
+    // this is only the
+    //    DisplayName_NodeId["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
+    DisplayName_NodeIdAssembly["Provide Cup"]  = "::AsGlobalPV:gAssemblyModule.skill.provideCup.state.stateMachine.operationalState";
+    DisplayName_NodeIdAssembly["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.skill.providePellet.state.stateMachine.operationalState";
+    // is this part necessary ?
+    for (auto &pair: DisplayName_NodeIdAssembly){
+        // this creates the button in the mainwindow...
+        QPushButton *skillButton = new QPushButton(pair.first, this);
     }
 
-    UA_Client* uaClient = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClient, "opc.tcp://localhost:4840");
+    UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
+    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
 
-    SkillListWidget *AssemblyTab = new SkillListWidget(uaClient, DisplayName_NodeId, 6);
+    // SuperTrak
+    std::map<char*, char*> DisplayName_NodeIdST;
+    DisplayName_NodeIdST["checkParking"]  = "::AsGlobalPV:gAssemblyModule.skill.provideCup.state.stateMachine.operationalState";
+    DisplayName_NodeIdST["moveShuttle1"]  = "::AsGlobalPV:gAssemblyModule.skill.providePellet.state.stateMachine.operationalState";
+    // is this part necessary ?
+    for (auto &pair: DisplayName_NodeIdST){
+        // this creates the button in the mainwindow...
+        QPushButton *skillButton = new QPushButton(pair.first, this);
+    }
+    UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
+    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
+
+
+    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeIdAssembly, 6);
+    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeIdAssembly, 6);
     ui->tabWidget->addTab(AssemblyTab,"Assembly");
+    ui->tabWidget->addTab(STTab,"SuperTrak");
 //    SkillListWidget *LabelingTab = new SkillListWidget(LabelingSkillList);
 //    SkillListWidget *SuperTrakTab = new SkillListWidget(SuperTrakSkillList);
 
