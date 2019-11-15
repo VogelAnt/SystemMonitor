@@ -5,7 +5,6 @@
 #include "SkillListWidget.h"
 #include "orderinformation.h"
 #include "redisclient.h"
-#include "skillwidget.h"
 #include "tabstyle_horizontaltext.h"
 
 #include <QHBoxLayout>
@@ -57,6 +56,7 @@ private:
     RedisClient *m_RedisClient = nullptr;
     QMessageBox *prioritybox = nullptr;
     TabStyle_HorizontalText *m_TabStyle = nullptr;
+    QHBoxLayout *m_layout = nullptr;
     OrderInformation *order = nullptr;
     OpcuaClient *m_OpcuaClient = nullptr;
     QInputDialog *dialog = nullptr;

@@ -15,20 +15,18 @@
 #include <QTabWidget>
 #include <QButtonGroup>
 
-static QStringList AssemblySkillList{"Provide Cup", "Provide Pellet"};
-static QStringList SuperTrakSkillList{"Check Parking", "Move Shuttle 1",
-                                     "Move Shuttle 2",
-                                     "Move Shuttle 3",
-                                     "Move Shuttle 4",
-                                     "Move Shuttle 5",
-                                     "Move Shuttle 6"};
-static QStringList LabelingSkillList{"Label"};
+#include <iostream>
+
+enum class NodeIdentifierType{
+    UAString,
+    UAInt
+};
 
 namespace Ui {
 class SkillListWidget;
 }
 
-class SkillListWidget : public QWidget {
+class SkillListWidget : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -36,6 +34,7 @@ public:
     explicit SkillListWidget(UA_Client * eUaClient,
                              std::map< char*,  char*> eMap_DisplayName_NodeId, // the display name and node id of each skill
                              uint8_t index,
+                             NodeIdentifierType nodeidentifiertype,
                              QWidget *parent = nullptr);
     virtual ~SkillListWidget();
     QButtonGroup *SkillButtonGroup = nullptr;
@@ -45,10 +44,6 @@ public slots:
     void on_SendAssemblySkillState(std::map<std::string, std::string> nodevalues);
     void on_SendSuperTrakSkillState(std::map<std::string, std::string> nodevalues);
     void on_SendLabelingSkillState(std::map<std::string, std::string> nodevalues);
-
-    void ChangeColour(std::string nodeName){
-
-    }
 
     //functions for testing
     void SkillButton_clicked();

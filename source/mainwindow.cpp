@@ -7,49 +7,148 @@
 
 using Redistorium::Redis;
 using Redistorium::Reply::ReplyElement;
+// TODO: SeedSupply hat UA_String* als node identifier Typ
+// TODO: SuperTrak und Assembly haben UA_int32 als Identifier
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->tabWidget->clear();
-//    m_RedisClient = new RedisClient(this);
-//    QTimer *style_timer = new QTimer();
-//    m_OpcuaClient = new OpcuaClient;
-    std::map<char*, char*> DisplayName_NodeIdAssembly;
-    // this is only the
-    //    DisplayName_NodeId["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
-    DisplayName_NodeIdAssembly["Provide Cup"]  = "::AsGlobalPV:gAssemblyModule.skill.provideCup.state.stateMachine.operationalState";
-    DisplayName_NodeIdAssembly["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.skill.providePellet.state.stateMachine.operationalState";
-    // is this part necessary ?
-    for (auto &pair: DisplayName_NodeIdAssembly){
-        // this creates the button in the mainwindow...
-        QPushButton *skillButton = new QPushButton(pair.first, this);
-    }
-
+    /** OPCUA CLIENTS FOR EACH MODULE
+      */
+    // TODO: pop up window, that asks you to enter the IP address for all the clients
+    // save function (load file for addresses) so you don't have to enter all manually again
     UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
-
-    // SuperTrak
-    std::map<char*, char*> DisplayName_NodeIdST;
-    DisplayName_NodeIdST["checkParking"]  = "::AsGlobalPV:gAssemblyModule.skill.provideCup.state.stateMachine.operationalState";
-    DisplayName_NodeIdST["moveShuttle1"]  = "::AsGlobalPV:gAssemblyModule.skill.providePellet.state.stateMachine.operationalState";
-    // is this part necessary ?
-    for (auto &pair: DisplayName_NodeIdST){
-        // this creates the button in the mainwindow...
-        QPushButton *skillButton = new QPushButton(pair.first, this);
-    }
+    UA_Client_connect(uaClientAssembly, "opc.tcp://192.168.0.5:4840");
     UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
+    UA_Client_connect(uaClientST, "opc.tcp://192.168.0.5:4840");
+//    UA_Client* uaClientLabeling = UA_Client_new(UA_ClientConfig_default);
+//    UA_Client_connect(uaClientLabeling, "opc.tcp://localhost:4840");
+//    UA_Client* uaClientHumanAssembly = UA_Client_new(UA_ClientConfig_default);
+//    UA_Client_connect(uaClientHumanAssembly, "opc.tcp://192.168.0.5:4840");
+//    UA_Client* uaClientImageRecognition = UA_Client_new(UA_ClientConfig_default);
+//    UA_Client_connect(uaClientImageRecognition, "opc.tcp://localhost:4840");
+//    UA_Client* uaClientOutfeed = UA_Client_new(UA_ClientConfig_default);
+//    UA_Client_connect(uaClientOutfeed, "opc.tcp://localhost:4840");
+//    UA_Client* uaClientSealing = UA_Client_new(UA_ClientConfig_default);
+//    UA_Client_connect(uaClientSealing, "opc.tcp://localhost:4840");
+//    UA_Client* uaClientSeedSupply = UA_Client_new(UA_ClientConfig_default);
+//    UA_Client_connect(uaClientSeedSupply, "opc.tcp://192.168.0.180:4840");
 
+    /** Module STL maps */
+    // you give the modulewidget the ModuleMap as well as the Skill Map, create the SkillListWidget within the Module itself
+    std::map<char*, char*> DisplayName_NodeId_Assembly;
+    DisplayName_NodeId_Assembly["Assembly"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
+    std::map<char*, char*> DisplayName_NodeId_AssemblySkills;
+    DisplayName_NodeId_AssemblySkills["Provide Cup"]  = "::AsGlobalPV:gAssemblyModule.skill.provideCup.state.stateMachine.operationalState";
+    DisplayName_NodeId_AssemblySkills["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.skill.providePellet.state.stateMachine.operationalState";
 
-    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeIdAssembly, 6);
-    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeIdAssembly, 6);
+    std::map<char*, char*> DisplayName_NodeId_ST;
+    DisplayName_NodeId_ST["SuperTrak"]  = "::AsGlobalPV:gSuperTrak.state.stateMachine.operationalState";
+    std::map<char*, char*> DisplayName_NodeId_STSkills;
+    DisplayName_NodeId_STSkills["checkParking"]  = "::AsGlobalPV:gSuperTrak.skill.checkParking.state.stateMachine.operationalState";
+//    DisplayName_NodeId_STSkills["unreserveShuttle"]  = "::AsGlobalPV:gSuperTrak.skill.unreserveShuttle.state.stateMachine.operationalState";
+    DisplayName_NodeId_STSkills["moveShuttle1"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[1].state.stateMachine.operationalState";
+    DisplayName_NodeId_STSkills["moveShuttle2"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[2].state.stateMachine.operationalState";
+    DisplayName_NodeId_STSkills["moveShuttle3"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[3].state.stateMachine.operationalState";
+    DisplayName_NodeId_STSkills["moveShuttle4"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[4].state.stateMachine.operationalState";
+    DisplayName_NodeId_STSkills["moveShuttle5"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[5].state.stateMachine.operationalState";
+    DisplayName_NodeId_STSkills["moveShuttle6"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[6].state.stateMachine.operationalState";
+
+//    std::map<char*, char*> DisplayName_NodeId_Labeling;
+//    DisplayName_NodeId_ST["Labeling"]  = "gLabelingModule.state.stateMachine.operationalState";
+//    std::map<char*, char*> DisplayName_NodeId_LabelingSkills;
+//    DisplayName_NodeId_LabelingSkills["Label"]  = "gLabelingModule.skill.label.state.stateMachine.operationalState";
+
+//    // Human Assembly
+//    std::map<char*, char*> DisplayName_NodeId_HumanAssembly;
+//    DisplayName_NodeId_ST["Human Assembly"]  = "mi5.Human-Assembly.state.stateMachine.operationalState";
+//    std::map<char*, char*> DisplayName_NodeId_HumanAssemblySkills;
+//    DisplayName_NodeId_HumanAssemblySkills["assemble"]  = "mi5.Human-Assembly.skill.assemble.state.stateMachine.operationalState";
+
+//    // image recognition
+//    std::map<char*, char*> DisplayName_NodeId_ImageRecognition;
+//    DisplayName_NodeId_ST["ImageRecognition"]  = "ImageRecognitionModule.state.stateMachine.operationalState";
+//    std::map<char*, char*> DisplayName_NodeId_ImageRecognitionSkills;
+//    DisplayName_NodeId_ImageRecognitionSkills["recognize"]  = "ImageRecognitionModule.skill.recognize.state.stateMachine.operationalState";
+//    DisplayName_NodeId_ImageRecognitionSkills["findSeed"]  = "ImageRecognitionModule.skill.findSeed.state.stateMachine.operationalState";
+
+//    // Outfeed
+//    std::map<char*, char*> DisplayName_NodeId_Outfeed;
+//    DisplayName_NodeId_ST["Outfeed"]  = "NODE_ID_UNKNOWN.state.stateMachine.operationalState";
+//    std::map<char*, char*> DisplayName_NodeId_OutfeedSkills;
+//    DisplayName_NodeId_OutfeedSkills["takeout"]  = "NODE_ID_UNKNOWN.skill.takeout.state.stateMachine.operationalState";
+
+//    // Sealing
+//    std::map<char*, char*> DisplayName_NodeId_Sealing;
+//    DisplayName_NodeId_ST["Sealing"]  = "StOpcCom:opcComSealingModule.state.stateMachine.operationalState";
+//    std::map<char*, char*> DisplayName_NodeId_SealingSkills;
+//    DisplayName_NodeId_SealingSkills["sealing"]  = "StOpcCom:opcComSealingModule.skill.sealing.state.stateMachine.operationalState";
+
+    // Seed supply
+    std::map<char*, char*> DisplayName_NodeId_SeedSupply;
+    DisplayName_NodeId_ST["Labeling"]  = "AsGlobalPV:opcComMitsubishi.state.stateMachine.operationalState";
+    std::map<char*, char*> DisplayName_NodeId_SeedSupplySkills;
+    DisplayName_NodeId_SeedSupplySkills["moveToSTHomePosition"]  = "AsGlobalPV:opcComMitsubishi.skill.moveToSTHomePosition.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["provideItemFromSTToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemFromSTToWelding.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["provideItemFromWeldingToST"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemFromWeldingToST.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["provideItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToST.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
+
+    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_AssemblySkills, 6, NodeIdentifierType::UAInt, ui->tabWidget);
+    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_STSkills, 6, NodeIdentifierType::UAInt ,ui->tabWidget);
+//    SkillListWidget *LabelingTab = new SkillListWidget(uaClientLabeling, DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
+//    SkillListWidget *HumanAssemblyTab = new SkillListWidget(uaClientHumanAssembly, DisplayName_NodeId_HumanAssemblySkills, 6, ui->tabWidget);
+//    SkillListWidget *ImageRecognitionTab = new SkillListWidget(uaClientImageRecognition, DisplayName_NodeId_ImageRecognitionSkills, 6, ui->tabWidget);
+//    SkillListWidget *OutfeedTab = new SkillListWidget(uaClientOutfeed, DisplayName_NodeId_OutfeedSkills, 6, ui->tabWidget);
+//    SkillListWidget *SealingTab = new SkillListWidget(uaClientSealing, DisplayName_NodeId_SealingSkills, 6, ui->tabWidget);
+//    SkillListWidget *SeedSupplyTab = new SkillListWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, NodeIdentifierType::UAString, ui->tabWidget);
+
     ui->tabWidget->addTab(AssemblyTab,"Assembly");
     ui->tabWidget->addTab(STTab,"SuperTrak");
-//    SkillListWidget *LabelingTab = new SkillListWidget(LabelingSkillList);
-//    SkillListWidget *SuperTrakTab = new SkillListWidget(SuperTrakSkillList);
+//    ui->tabWidget->addTab(LabelingTab, "Labeling");
+//    ui->tabWidget->addTab(HumanAssemblyTab, "HumanAssembly");
+//    ui->tabWidget->addTab(ImageRecognitionTab, "ImageRecognition");
+//    ui->tabWidget->addTab(OutfeedTab, "Outfeed");
+//    ui->tabWidget->addTab(SealingTab, "Sealing");
+//    ui->tabWidget->addTab(SeedSupplyTab, "Seed Supply");
 
     m_TabStyle = new TabStyle_HorizontalText();
     ui->tabWidget->tabBar()->setStyle(m_TabStyle);
+
+//    ModuleStateTabWidget *ModuleStateTab = new ModuleStateTabWidget();
+
+//    m_layout = new QHBoxLayout();
+//    m_layout->addWidget(ui->tableWidget);
+//    m_layout->addWidget(ModuleStateTab);
+//    setLayout(m_layout);
+//    ui->tabWidget->clear();
+
+//    m_RedisClient = new RedisClient(this);
+//    QTimer *style_timer = new QTimer();
+//    m_OpcuaClient = new OpcuaClient;
+    // this should go into the SkillListWidget
+
+    // this will be hardcoded here !
+//    std::map<char*, char*> DisplayName_NodeId_Assembly;
+//    DisplayName_NodeId_Assembly["Provide Cup"]  = "::AsGlobalPV:gAssemblyModule.skill.provideCup.state.stateMachine.operationalState";
+//    DisplayName_NodeId_Assembly["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.skill.providePellet.state.stateMachine.operationalState";
+//    // is this part necessary ?
+//    for (auto &pair: DisplayName_NodeId_Assembly){
+//        // this creates the button in the mainwindow...
+//        QPushButton *skillButton = new QPushButton(pair.first, this);
+//    }
+
+
+//    // SuperTrak
+//    std::map<char*, char*> DisplayName_NodeId_ST;
+//    // is this part necessary ?
+//    for (auto &pair: DisplayName_NodeId_STSkills){
+//        // this creates the button in the mainwindow...
+//        QPushButton *skillButton = new QPushButton(pair.first, this);
+//    }
+
+
 
 //    connect(m_OpcuaClient, &OpcuaClient::SendAssemblySkillState ,AssemblyTab, &SkillListWidget::on_SendAssemblySkillState);
 //    connect(m_OpcuaClient, &OpcuaClient::SendLabelingSkillState ,LabelingTab, &SkillListWidget::on_SendLabelingSkillState);
@@ -92,7 +191,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    // this is where on:send Moduel state is actually connected !!
 //    connect(m_OpcuaClient, &OpcuaClient::SendModuleState, this, &MainWindow::on_SendModuleState);
 //    t_order_page->start(3000);
-////    style_timer->start(3000);
+//    style_timer->start(3000);
 
 //    m_RedisClient->m_Redis->SUBSCRIBE("OrderPage");
 
