@@ -80,28 +80,28 @@ SkillListWidget::SkillListWidget(UA_Client* client,
                 QString temp_buttoncolour = "background-color : " + tmp;
                 SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
             }
-//            else if(value.type->typeName == UA_TYPES[UA_TYPES_STRING].typeName){
+            else if(value.type->typeName == UA_TYPES[UA_TYPES_STRING].typeName){
 
-//                                // read the node value
-//                std::string temp = ((char const*)(((UA_String*) value.data)->data));
+                                // read the node value
+                std::string temp = ((char const*)(((UA_String*) value.data)->data));
 
-////                std::cout << "whatever" << *((UA_String *)value.data)->data << std::endl;
-////                std::string temp = std::to_string(*((UA_Int32*) value.data));
-////                unsigned char * node = ((UA_String *)value.data)->data;
-////                std::string node_reading(reinterpret_cast< char const* >(node));
-////                std::cout << node_reading << std::endl;
+//                std::cout << "whatever" << *((UA_String *)value.data)->data << std::endl;
+//                std::string temp = std::to_string(*((UA_Int32*) value.data));
+//                unsigned char * node = ((UA_String *)value.data)->data;
+//                std::string node_reading(reinterpret_cast< char const* >(node));
+//                std::cout << node_reading << std::endl;
 
-//                // convert to
-//                int n = std::stoi(temp);
-//                QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
-////                qDebug() << "node value " << node_value;
-////                qDebug() << QString::number(n);
-//    //            node_value = sMap_String_OPCUAState[n];
-////                qDebug() << sMap_String_OPCUAState.find(n)->second;
-//                SkillMap_Button[pair.first]->setText(pair.first + node_value);
-//                SkillMap_Button[pair.first]->setStyleSheet("background-color : yellow");
-////                qDebug() << "Skill : " << pair.first;
-//            }
+                // convert to
+                int n = std::stoi(temp);
+                QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
+//                qDebug() << "node value " << node_value;
+//                qDebug() << QString::number(n);
+    //            node_value = sMap_String_OPCUAState[n];
+//                qDebug() << sMap_String_OPCUAState.find(n)->second;
+                SkillMap_Button[pair.first]->setText(pair.first + node_value);
+                SkillMap_Button[pair.first]->setStyleSheet("background-color : yellow");
+//                qDebug() << "Skill : " << pair.first;
+            }
         }
     });
     timer->start(3000);
