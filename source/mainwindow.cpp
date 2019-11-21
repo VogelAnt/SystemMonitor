@@ -31,8 +31,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    UA_Client_connect(uaClientOutfeed, "opc.tcp://localhost:4840");
 //    UA_Client* uaClientSealing = UA_Client_new(UA_ClientConfig_default);
 //    UA_Client_connect(uaClientSealing, "opc.tcp://localhost:4840");
-//    UA_Client* uaClientSeedSupply = UA_Client_new(UA_ClientConfig_default);
-//    UA_Client_connect(uaClientSeedSupply, "opc.tcp://192.168.0.180:4840");
+    UA_Client* uaClientSeedSupply = UA_Client_new(UA_ClientConfig_default);
+    UA_Client_connect(uaClientSeedSupply, "opc.tcp://192.168.0.180:4840");
 
     /** Module STL maps */
     // you give the modulewidget the ModuleMap as well as the Skill Map, create the SkillListWidget within the Module itself
@@ -95,14 +95,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
     DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
 
-    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_AssemblySkills, 6, NodeIdentifierType::UAInt, ui->tabWidget);
-    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_STSkills, 6, NodeIdentifierType::UAInt ,ui->tabWidget);
+    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
+    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_STSkills, 6, ui->tabWidget);
 //    SkillListWidget *LabelingTab = new SkillListWidget(uaClientLabeling, DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
 //    SkillListWidget *HumanAssemblyTab = new SkillListWidget(uaClientHumanAssembly, DisplayName_NodeId_HumanAssemblySkills, 6, ui->tabWidget);
 //    SkillListWidget *ImageRecognitionTab = new SkillListWidget(uaClientImageRecognition, DisplayName_NodeId_ImageRecognitionSkills, 6, ui->tabWidget);
 //    SkillListWidget *OutfeedTab = new SkillListWidget(uaClientOutfeed, DisplayName_NodeId_OutfeedSkills, 6, ui->tabWidget);
 //    SkillListWidget *SealingTab = new SkillListWidget(uaClientSealing, DisplayName_NodeId_SealingSkills, 6, ui->tabWidget);
-//    SkillListWidget *SeedSupplyTab = new SkillListWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, NodeIdentifierType::UAString, ui->tabWidget);
+//    SkillListWidget *SeedSupplyTab = new SkillListWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, ui->tabWidget);
 
     ui->tabWidget->addTab(AssemblyTab,"Assembly");
     ui->tabWidget->addTab(STTab,"SuperTrak");
@@ -124,7 +124,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    setLayout(m_layout);
 //    ui->tabWidget->clear();
 
-//    m_RedisClient = new RedisClient(this);
+    m_RedisClient = new RedisClient(this);
 //    QTimer *style_timer = new QTimer();
 //    m_OpcuaClient = new OpcuaClient;
     // this should go into the SkillListWidget
@@ -168,38 +168,37 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadSkillStateSuperTrak);
 //    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadSkillStateLabeling);
 
-    // set up Table Widget move this to an outside function ?
-//    ui->tableWidget->setColumnCount(4);
-//    ui->tableWidget->setSortingEnabled(false);
-//    headerColumns << "OrderID"
-//                  << "Priority"
-//                  << "FirstName"
-//                  << "LastName";
-//    ui->tableWidget->setHorizontalHeaderLabels(headerColumns);
-//    ui->tableWidget->verticalHeader()->setVisible(false);
-//    QTimer *t_order_page = new QTimer();
+//     set up Table Widget move this to an outside function ?
+    ui->tableWidget->setColumnCount(4);
+    ui->tableWidget->setSortingEnabled(false);
+    headerColumns << "OrderID"
+                  << "Priority"
+                  << "FirstName"
+                  << "LastName";
+    ui->tableWidget->setHorizontalHeaderLabels(headerColumns);
+    ui->tableWidget->verticalHeader()->setVisible(false);
+    QTimer *t_order_page = new QTimer();
 
-//    connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
-//    connect(m_RedisClient, &RedisClient::ReceivedJSONString, m_RedisClient, &RedisClient::on_ReadFromJsonString);
-//    connect(m_RedisClient, &RedisClient::SubscriptionMessage, this, &MainWindow::on_SubscriptionMessage);
-//    connect(m_RedisClient, &RedisClient::ParsedJson, this, &MainWindow::on_MakeOrderTable);
-//    connect(m_RedisClient, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
-//        // std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
-//    });
-//    connect(t_order_page, &QTimer::timeout, [&]() { MainWindow::MockOrderPage(); }); // only for testing purposes
-//    connect(this, &MainWindow::ReceivedNewSubscription, m_RedisClient, &RedisClient::on_ReadFromJsonString);
-//    // this is where on:send Moduel state is actually connected !!
-//    connect(m_OpcuaClient, &OpcuaClient::SendModuleState, this, &MainWindow::on_SendModuleState);
-//    t_order_page->start(3000);
-//    style_timer->start(3000);
+    connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
+    connect(m_RedisClient, &RedisClient::ReceivedJSONString, m_RedisClient, &RedisClient::on_ReadFromJsonString);
+    connect(m_RedisClient, &RedisClient::SubscriptionMessage, this, &MainWindow::on_SubscriptionMessage);
+    connect(m_RedisClient, &RedisClient::ParsedJson, this, &MainWindow::on_MakeOrderTable);
+    connect(m_RedisClient, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
+        // std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
+    });
+    connect(t_order_page, &QTimer::timeout, [&]() { MainWindow::MockOrderPage(); }); // only for testing purposes
+    connect(this, &MainWindow::ReceivedNewSubscription, m_RedisClient, &RedisClient::on_ReadFromJsonString);
+    // this is where on:send Moduel state is actually connected !!
+    connect(m_OpcuaClient, &OpcuaClient::SendModuleState, this, &MainWindow::on_SendModuleState);
+    t_order_page->start(3000);
 
-//    m_RedisClient->m_Redis->SUBSCRIBE("OrderPage");
+    m_RedisClient->m_Redis->SUBSCRIBE("OrderPage");
 
-//    ReplyElement orderPage_data_received = m_RedisClient->m_Redis->GET("DataOrderPage");
-//    if (orderPage_data_received.GetBulkString().has_value()) {
-//        qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
-//        emit m_RedisClient->ReceivedJSONString(orderPage_data_received.GetBulkString());
-//    }
+    ReplyElement orderPage_data_received = m_RedisClient->m_Redis->GET("DataOrderPage");
+    if (orderPage_data_received.GetBulkString().has_value()) {
+        qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
+        emit m_RedisClient->ReceivedJSONString(orderPage_data_received.GetBulkString());
+    }
 }
 
 void MainWindow::on_SendModuleState(std::map<std::string, std::string> ModuleSkillMap){

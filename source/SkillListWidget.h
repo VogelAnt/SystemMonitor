@@ -34,7 +34,6 @@ public:
     explicit SkillListWidget(UA_Client * eUaClient,
                              std::map< char*,  char*> eMap_DisplayName_NodeId, // the display name and node id of each skill
                              uint8_t index,
-                             NodeIdentifierType nodeidentifiertype,
                              QWidget *parent = nullptr);
     virtual ~SkillListWidget();
     QButtonGroup *SkillButtonGroup = nullptr;
