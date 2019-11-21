@@ -2,42 +2,7 @@
 #include "redisclient.h"
 #include "ui_SkillListWidget.h"
 
-// TODO: Meaning of the states
-// TODO: change state of Modules
-// TODO: Popup window for IP addresses
 // TODO: What if you can't connect ? What if a module or Skill doesn't exist ? You'll crash right now, this is not acceptable !
-
-
-enum class OPCUAState{
-    Idle,
-    Running,
-    Complete,
-    Aborted,
-    Stopped,
-    Starting,
-    Completing,
-    Clearing,
-    Resetting,
-    Stopping,
-    Aborting
-};
-
-/*
- * // used in mes legacy
-Idle = 0
-Running = 2
-Complete = 12
-Aborted = 17
-Stopped = 15
-// additional states
-Starting = 1
-Completing = 11
-Clearing = 18
-Resetting = 13
-Stopping = 14
-Aborting = 16
-*/
-// search function first, else just use map
 static std::map<int, QString> sMap_String_OPCUAState{
     {0, "Idle"},
     {2, "Running"},
@@ -95,31 +60,25 @@ SkillListWidget::SkillListWidget(UA_Client* client,
             UA_Variant_init(&value);
             UA_Client_readValueAttribute(m_UaClient, nodeId, &value);
 
-            // TODO: Compare value.type
-//            std::string node_value = ((char const*)(((UA_String*) value.data)->data));
-//            SkillMap_Button[pair.first]->setText(node_value.c_str());
-            // if else mit enum type
-
-            std::cout<< "Value Type : " << value.type<<std::endl;
+            std::cout<< "Value Type : " << value.type->typeName<<std::endl;
             std::cout<< "UATYPES[UA_TYPES_INT32]" << UA_TYPES[UA_TYPES_INT32].typeName << std::endl;
             if(value.type->typeName == UA_TYPES[UA_TYPES_INT32].typeName){
-//            std::cout << "whatever" << *(((UA_Int32*) value.data)) << std::endl;
-            std::string temp = std::to_string(*((UA_Int32*) value.data));
-            // convert node value to int
-            int n = std::stoi(temp);
-            QString n_value = sMap_String_OPCUAState.find(n)->second;
-            QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
-            qDebug() << "node value " << node_value;
-            qDebug() << QString::number(n);
-            qDebug() << sMap_String_OPCUAState.find(n)->second;
-            SkillMap_Button[pair.first]->setText(pair.first + node_value);
+                qDebug() << "WE ARE NOW IN UAINT COMPARISON";
+                std::string temp = std::to_string(*((UA_Int32*) value.data));
+                // convert node value to int
+                int n = std::stoi(temp);
+                QString n_value = sMap_String_OPCUAState.find(n)->second;
+                QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
+                qDebug() << "node value " << node_value;
+                qDebug() << QString::number(n);
+                qDebug() << sMap_String_OPCUAState.find(n)->second;
+                SkillMap_Button[pair.first]->setText(pair.first + node_value);
 
-            // "background-color : red"
-            qDebug() << "Skill : " << pair.first;
-            qDebug() << "sMapStateColour Second find" << sMap_State_Colour.find(n_value)->second;
-            QString tmp = sMap_State_Colour.find(n_value)->second;
-            QString temp_buttoncolour = "background-color : " + tmp;
-            SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
+                qDebug() << "Skill : " << pair.first;
+                qDebug() << "sMapStateColour Second find" << sMap_State_Colour.find(n_value)->second;
+                QString tmp = sMap_State_Colour.find(n_value)->second;
+                QString temp_buttoncolour = "background-color : " + tmp;
+                SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
             }
 //            else if(value.type->typeName == UA_TYPES[UA_TYPES_STRING].typeName){
 
@@ -145,7 +104,7 @@ SkillListWidget::SkillListWidget(UA_Client* client,
 //            }
         }
     });
-    timer->start(100);
+    timer->start(3000);
 }
 
 void SkillListWidget::on_SendAssemblySkillState(std::map<std::string, std::string>SkillStateMap ){
