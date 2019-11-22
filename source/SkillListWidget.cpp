@@ -36,6 +36,7 @@ SkillListWidget::SkillListWidget(UA_Client* client,
                                  uint8_t index,
                                  QWidget *parent) : QMainWindow(parent), ui(new Ui::SkillListWidget) {
     ui->setupUi(this);
+    // TODO: pass ModuleWidget in here
     auto central = new QWidget(this);
     QVBoxLayout *ButtonLayout = new QVBoxLayout(this);
 
@@ -47,60 +48,40 @@ SkillListWidget::SkillListWidget(UA_Client* client,
         QPushButton *skillButton = new QPushButton(pair.first,this);
         SkillMap_Button[pair.first] = skillButton;
         ButtonLayout->addWidget(skillButton);
+        SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
     }
 
     central->setLayout(ButtonLayout);
     setCentralWidget(central);
     timer = new QTimer();
     connect(timer, &QTimer::timeout, [&](){
-        // from this timer poll to ModuleState
+        // TODO: what if we made pair an iterator Could pass as a function argument and cut down size
         for (auto &pair: SkillMap_Id) {
             UA_NodeId nodeId = UA_NODEID_STRING(ModuleNameSpace, pair.second);
             UA_Variant value;
             UA_Variant_init(&value);
             UA_Client_readValueAttribute(m_UaClient, nodeId, &value);
 
-            std::cout<< "Value Type : " << value.type->typeName<<std::endl;
-            std::cout<< "UATYPES[UA_TYPES_INT32]" << UA_TYPES[UA_TYPES_INT32].typeName << std::endl;
             if(value.type->typeName == UA_TYPES[UA_TYPES_INT32].typeName){
-                qDebug() << "WE ARE NOW IN UAINT COMPARISON";
                 std::string temp = std::to_string(*((UA_Int32*) value.data));
-                // convert node value to int
+                // this part can be a function
                 int n = std::stoi(temp);
                 QString n_value = sMap_String_OPCUAState.find(n)->second;
                 QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
-                qDebug() << "node value " << node_value;
-                qDebug() << QString::number(n);
-                qDebug() << sMap_String_OPCUAState.find(n)->second;
                 SkillMap_Button[pair.first]->setText(pair.first + node_value);
-
-                qDebug() << "Skill : " << pair.first;
-                qDebug() << "sMapStateColour Second find" << sMap_State_Colour.find(n_value)->second;
                 QString tmp = sMap_State_Colour.find(n_value)->second;
-                QString temp_buttoncolour = "background-color : " + tmp;
+                QString temp_buttoncolour = "background-color : " + tmp + "; font-size: 24px";
                 SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
             }
             else if(value.type->typeName == UA_TYPES[UA_TYPES_STRING].typeName){
-
-                                // read the node value
                 std::string temp = ((char const*)(((UA_String*) value.data)->data));
-
-//                std::cout << "whatever" << *((UA_String *)value.data)->data << std::endl;
-//                std::string temp = std::to_string(*((UA_Int32*) value.data));
-//                unsigned char * node = ((UA_String *)value.data)->data;
-//                std::string node_reading(reinterpret_cast< char const* >(node));
-//                std::cout << node_reading << std::endl;
-
-                // convert to
                 int n = std::stoi(temp);
+                QString n_value = sMap_String_OPCUAState.find(n)->second;
                 QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
-//                qDebug() << "node value " << node_value;
-//                qDebug() << QString::number(n);
-    //            node_value = sMap_String_OPCUAState[n];
-//                qDebug() << sMap_String_OPCUAState.find(n)->second;
                 SkillMap_Button[pair.first]->setText(pair.first + node_value);
-                SkillMap_Button[pair.first]->setStyleSheet("background-color : yellow");
-//                qDebug() << "Skill : " << pair.first;
+                QString tmp = sMap_State_Colour.find(n_value)->second;
+                QString temp_buttoncolour = "background-color : " + tmp + "; font-size: 20px";
+                SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
             }
         }
     });
@@ -145,6 +126,7 @@ void SkillListWidget::on_SendSuperTrakSkillState(std::map<std::string, std::stri
     }
 
 }
+
 void SkillListWidget::on_SendLabelingSkillState(std::map<std::string, std::string>SkillStateMap ){
     std::cout << "NOW IN ON_SENDSKILL _LABELING_STATE" << std::endl;
     int Buttonindex = 0;

@@ -13,9 +13,9 @@ using Redistorium::Reply::ReplyElement;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->tabWidget->clear();
+    QTimer *t_order_page = new QTimer();
     /** OPCUA CLIENTS FOR EACH MODULE
       */
-    // TODO: pop up window, that asks you to enter the IP address for all the clients
     // save function (load file for addresses) so you don't have to enter all manually again
     // AssemblyIP 192.168.0.5:4840
     UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
@@ -98,6 +98,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
     DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
 
+    // TODO: create a new ModuleWidgetClass, this ModuleWidgetClass communicating via OPCUA directly
+    // TODO: Inside the ModuleWidget create a SkillListWidget containing from which we pass on the skills
     SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
     SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_STSkills, 6, ui->tabWidget);
     SkillListWidget *LabelingTab = new SkillListWidget(uaClientLabeling, DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
@@ -110,6 +112,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->tabWidget->addTab(AssemblyTab,"Assembly");
     ui->tabWidget->addTab(STTab,"SuperTrak");
     ui->tabWidget->addTab(LabelingTab, "Labeling");
+
 //    ui->tabWidget->addTab(HumanAssemblyTab, "HumanAssembly");
 //    ui->tabWidget->addTab(ImageRecognitionTab, "ImageRecognition");
 //    ui->tabWidget->addTab(OutfeedTab, "Outfeed");
@@ -128,30 +131,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    ui->tabWidget->clear();
 
     m_RedisClient = new RedisClient(this);
-//    QTimer *style_timer = new QTimer();
-//    m_OpcuaClient = new OpcuaClient;
-    // this should go into the SkillListWidget
-
-    // this will be hardcoded here !
-//    std::map<char*, char*> DisplayName_NodeId_Assembly;
-//    DisplayName_NodeId_Assembly["Provide Cup"]  = "::AsGlobalPV:gAssemblyModule.skill.provideCup.state.stateMachine.operationalState";
-//    DisplayName_NodeId_Assembly["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.skill.providePellet.state.stateMachine.operationalState";
-//    // is this part necessary ?
-//    for (auto &pair: DisplayName_NodeId_Assembly){
-//        // this creates the button in the mainwindow...
-//        QPushButton *skillButton = new QPushButton(pair.first, this);
-//    }
-
-
-//    // SuperTrak
-//    std::map<char*, char*> DisplayName_NodeId_ST;
-//    // is this part necessary ?
-//    for (auto &pair: DisplayName_NodeId_STSkills){
-//        // this creates the button in the mainwindow...
-//        QPushButton *skillButton = new QPushButton(pair.first, this);
-//    }
-
-
 
 //    connect(m_OpcuaClient, &OpcuaClient::SendAssemblySkillState ,AssemblyTab, &SkillListWidget::on_SendAssemblySkillState);
 //    connect(m_OpcuaClient, &OpcuaClient::SendLabelingSkillState ,LabelingTab, &SkillListWidget::on_SendLabelingSkillState);
@@ -163,13 +142,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //        ui->tabWidget->tabBar()->setTabTextColor(i, QColor(Qt::yellow));
 //    }
 
-    // this we need to get the module states every n seconds
-//    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadModuleState);
-
-    // this is necessary to poll the SkillState stuff, we'll move it all into one function when we're done !
-//    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadSkillStateAssembly);
-//    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadSkillStateSuperTrak);
-//    connect(style_timer, &QTimer::timeout, m_OpcuaClient, &OpcuaClient::ReadSkillStateLabeling);
 
 //     set up Table Widget move this to an outside function ?
     ui->tableWidget->setColumnCount(4);
@@ -180,7 +152,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                   << "LastName";
     ui->tableWidget->setHorizontalHeaderLabels(headerColumns);
     ui->tableWidget->verticalHeader()->setVisible(false);
-    QTimer *t_order_page = new QTimer();
 
     connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
     connect(m_RedisClient, &RedisClient::ReceivedJSONString, m_RedisClient, &RedisClient::on_ReadFromJsonString);
