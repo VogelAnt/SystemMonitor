@@ -19,14 +19,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // save function (load file for addresses) so you don't have to enter all manually again
     // AssemblyIP 192.168.0.5:4840
     UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
+    UA_Client_connect(uaClientAssembly, "opc.tcp://192.168.0.5:4840");
 
     // SuperTrakIP 192.168.0.5:4840
     UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
+    UA_Client_connect(uaClientST, "opc.tcp://192.168.0.5:4840");
 
+    // LabelingIP 192.168.0.100:4840
     UA_Client* uaClientLabeling = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientLabeling, "opc.tcp://localhost:4840");
+    UA_Client_connect(uaClientLabeling, "opc.tcp://192.168.0.100:4840");
 
 //    UA_Client* uaClientImageRecognition = UA_Client_new(UA_ClientConfig_default);
 //    UA_Client_connect(uaClientImageRecognition, "opc.tcp://localhost:4840");
@@ -49,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     DisplayName_NodeId_ST["SuperTrak"]  = "::AsGlobalPV:gSuperTrak.state.stateMachine.operationalState";
     std::map<char*, char*> DisplayName_NodeId_STSkills;
     DisplayName_NodeId_STSkills["checkParking"]  = "::AsGlobalPV:gSuperTrak.skill.checkParking.state.stateMachine.operationalState";
-//    DisplayName_NodeId_STSkills["unreserveShuttle"]  = "::AsGlobalPV:gSuperTrak.skill.unreserveShuttle.state.stateMachine.operationalState";
     DisplayName_NodeId_STSkills["moveShuttle1"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[1].state.stateMachine.operationalState";
     DisplayName_NodeId_STSkills["moveShuttle2"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[2].state.stateMachine.operationalState";
     DisplayName_NodeId_STSkills["moveShuttle3"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[3].state.stateMachine.operationalState";

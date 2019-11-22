@@ -62,6 +62,9 @@ SkillListWidget::SkillListWidget(UA_Client* client,
             UA_Variant_init(&value);
             UA_Client_readValueAttribute(m_UaClient, nodeId, &value);
 
+            // check value types
+            std::cout<< "Value Type : " << value.type->typeName<<std::endl;
+
             if(value.type->typeName == UA_TYPES[UA_TYPES_INT32].typeName){
                 std::string temp = std::to_string(*((UA_Int32*) value.data));
                 // this part can be a function
