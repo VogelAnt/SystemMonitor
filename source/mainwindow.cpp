@@ -19,15 +19,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // save function (load file for addresses) so you don't have to enter all manually again
     // AssemblyIP 192.168.0.5:4840
     UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientAssembly, "opc.tcp://192.168.0.5:4840");
+    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
 
     // SuperTrakIP 192.168.0.5:4840
     UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientST, "opc.tcp://192.168.0.5:4840");
+    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
 
     // LabelingIP 192.168.0.100:4840
     UA_Client* uaClientLabeling = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientLabeling, "opc.tcp://192.168.0.100:4840");
+    UA_Client_connect(uaClientLabeling, "opc.tcp://localhost:4840");
 
 //    UA_Client* uaClientImageRecognition = UA_Client_new(UA_ClientConfig_default);
 //    UA_Client_connect(uaClientImageRecognition, "opc.tcp://localhost:4840");

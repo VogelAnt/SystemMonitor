@@ -1,6 +1,6 @@
 #include "modulewidget.h"
 
-ModuleWidget::ModuleWidget()
+DeviceWidget::DeviceWidget()
 {
 
 }

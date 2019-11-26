@@ -3,10 +3,10 @@
 
 #include <QWidget>
 
-class ModuleWidget
+class DeviceWidget
 {
 public:
-    ModuleWidget();
+    DeviceWidget();
 };
 
 #endif // MODULEWIDGET_H

@@ -28,7 +28,6 @@ class SkillListWidget;
 
 class SkillListWidget : public QMainWindow {
     Q_OBJECT
-
 public:
     //
     explicit SkillListWidget(UA_Client * eUaClient,
@@ -36,6 +35,8 @@ public:
                              uint8_t index,
                              QWidget *parent = nullptr);
     virtual ~SkillListWidget();
+
+    void CreateButton(std::string, std::pair<char*, char*>);
     QButtonGroup *SkillButtonGroup = nullptr;
 
 public slots:
@@ -47,6 +48,11 @@ public slots:
     //functions for testing
     void SkillButton_clicked();
     void on_SendMESData();
+
+    // signals: timeout --> RequestUpdate;
+signals:
+    void SkillStateUpdate();
+    // slot: on_SkillUpdateReceived do sth with the buttons
     /**
      * @brief on_sendModuleState
      * receives ModuleState information
@@ -58,8 +64,6 @@ private:
     QTimer *timer;
     std::map< char*,  char*> SkillMap_Id;
     std::map< char*,  QPushButton*> SkillMap_Button;
-    uint8_t ModuleNameSpace;
+    uint8_t DeviceNameSpace;
 };
-
-
 #endif // DYNAMICCUSTOMTAB_H

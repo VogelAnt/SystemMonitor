@@ -24,12 +24,10 @@ CONFIG += c++1z
 SOURCES += \
 $$PWD/external/open62541/open62541.c \
 $$files($$PWD/external/opc-ua-server-c/source/*.cpp) \
-$$files(source/*.cpp) \ \
-    source/modulewidget.cpp
+$$files(source/*.cpp)
 
 HEADERS += \
-$$files(source/*.h) \ \
-    source/modulewidget.h
+$$files(source/*.h)
 
 FORMS += \
 $$files(source/*.ui)

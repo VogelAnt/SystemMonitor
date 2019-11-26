@@ -15,7 +15,6 @@ class OpcuaClient : public QObject {
     Q_OBJECT
 
 public:
-
     OpcuaClient();
     void ReadModuleState();
 signals:
