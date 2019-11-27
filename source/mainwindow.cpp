@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "OpcuaClient.h"
 #include "SkillListWidget.h"
 #include "orderinformation.h"
 #include "redisclient.h"
@@ -100,9 +99,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // TODO: create a new ModuleWidgetClass, this ModuleWidgetClass communicating via OPCUA directly
     // TODO: Inside the ModuleWidget create a SkillListWidget containing from which we pass on the skills
-    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
-    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_STSkills, 6, ui->tabWidget);
-    SkillListWidget *LabelingTab = new SkillListWidget(uaClientLabeling, DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
+    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
+    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, ui->tabWidget);
+    SkillListWidget *LabelingTab = new SkillListWidget(uaClientLabeling, DisplayName_NodeId_Labeling,DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
 //    SkillListWidget *HumanAssemblyTab = new SkillListWidget(uaClientHumanAssembly, DisplayName_NodeId_HumanAssemblySkills, 6, ui->tabWidget);
 //    SkillListWidget *ImageRecognitionTab = new SkillListWidget(uaClientImageRecognition, DisplayName_NodeId_ImageRecognitionSkills, 6, ui->tabWidget);
 //    SkillListWidget *OutfeedTab = new SkillListWidget(uaClientOutfeed, DisplayName_NodeId_OutfeedSkills, 6, ui->tabWidget);
@@ -121,7 +120,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     m_TabStyle = new TabStyle_HorizontalText();
     ui->tabWidget->tabBar()->setStyle(m_TabStyle);
-
+//    ui->tabWidget->tabBar()->setPalette();
 //    ModuleStateTabWidget *ModuleStateTab = new ModuleStateTabWidget();
 
 //    m_layout = new QHBoxLayout();
@@ -163,7 +162,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(t_order_page, &QTimer::timeout, [&]() { MainWindow::MockOrderPage(); }); // only for testing purposes
     connect(this, &MainWindow::ReceivedNewSubscription, m_RedisClient, &RedisClient::on_ReadFromJsonString);
     // this is where on:send Moduel state is actually connected !!
-    connect(m_OpcuaClient, &OpcuaClient::SendModuleState, this, &MainWindow::on_SendModuleState);
     t_order_page->start(3000);
 
     m_RedisClient->m_Redis->SUBSCRIBE("OrderPage");
@@ -175,23 +173,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
 }
 
-void MainWindow::on_SendModuleState(std::map<std::string, std::string> ModuleSkillMap){
-    int tab_index = 0;
-    std::string default_node_value = "17";
-    for (std::map<std::string, std::string>::iterator it = ModuleSkillMap.begin(); it != ModuleSkillMap.end(); ++it){
-        for (int i = 0; i < default_node_value.length(); ++i){
-            if((it->second[i] - '0') != (default_node_value[i] - '0')){
-                std::cout << "setting red" << std::endl;
-                ui->tabWidget->tabBar()->setTabTextColor(tab_index, QColor(Qt::red));
-            }
-            else {
-            std::cout << "setting green " <<std:: endl;
-            ui->tabWidget->tabBar()->setTabTextColor(tab_index, QColor(Qt::green));
-            }
-        }
-    ++tab_index;
-    }
-}
 
 void MainWindow::on_MakeOrderTable(nlohmann::json eParsed) {
     ui->tableWidget->setSortingEnabled(false);
@@ -217,7 +198,6 @@ MainWindow::~MainWindow() {
     delete ui;
     delete m_RedisClient;
     delete m_TabStyle;
-    delete m_OpcuaClient;
     if (prioritybox != nullptr) delete prioritybox;
 }
 

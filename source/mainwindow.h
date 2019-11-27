@@ -58,7 +58,6 @@ private:
     TabStyle_HorizontalText *m_TabStyle = nullptr;
     QHBoxLayout *m_layout = nullptr;
     OrderInformation *order = nullptr;
-    OpcuaClient *m_OpcuaClient = nullptr;
     QInputDialog *dialog = nullptr;
     int m_OrderNumber = 0;
 };

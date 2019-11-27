@@ -1,36 +1,50 @@
 #ifndef MODULEWIDGET_H
 #define MODULEWIDGET_H
-
 #include "open62541.h"
 
+#include "DeviceInformation.h"
+
 #include <QWidget>
+#include <QMainWindow>
+#include <QTimer>
+
+#include <map>
 
 namespace Ui {
 class DeviceWidget;
 }
 
-// TODO: shouldn't this class be called DeviceManager ? or Deviceinformation ?
-class DeviceWidget : public QWidget{
+/**
+ * @brief The DeviceWidget class
+ * UI displaying Device information
+ */
+class DeviceWidget : public QMainWindow{
     Q_OBJECT
-
 public:
-    DeviceWidget(UA_Client * eUaClient,
-                 std::map< char*,  char*> eMap_Device_DisplayName_NodeId, // the display name and node id of each skill
-                 std::map< char*,  char*> eMap_Skill_DisplayName_NodeId, // the display name and node id of each skill
-                 uint8_t index);
+    DeviceWidget(UA_Client *client,
+                 std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
+                 std::map< char*,  char*> eMap_Skill_DisplayName_NodeId,
+                 uint8_t index,
+                 QWidget *parent = nullptr);
     ~DeviceWidget();
-
 //signals:
 // trigger ui (specifically tabWidget)
+signals:
+    /**
+     * @brief UpdateDeviceInformation
+     * signal communicating newly updated Device info to DeviceWidget
+     */
+    void UpdateDeviceInformation();
 
-//public slots: Request Update, put the branch thing i there, freom there trigger signals to make the UI in SkillWidget
 public slots:
-    void on_SkillStateUpdate();
+    void on_UpdateDeviceWidget();
+
 private:
-    UA_Client *m_UaClient;
-    std::map< char*, char*> SkillMap_Id;
-    std::map< char*, char*> DeviceMap_Id;
-    uint8_t DeviceNameSpace;
+    QTimer *m_updatetimer;
+    UA_Client *m_client;
+    std::map< char*, char*> m_SkillMap_Id;
+    std::map< char*, char*> m_DeviceMap_Id;
+    uint8_t m_DeviceNameSpace;
 };
 
 #endif // MODULEWIDGET_H
