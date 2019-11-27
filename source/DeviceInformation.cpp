@@ -8,12 +8,11 @@ DeviceInformation::DeviceInformation(UA_Client *client,
     SkillMap_Id = eMap_Skill_DisplayName_NodeId;
     DeviceMap_Id = eMap_Device_DisplayName_NodeId;
     DeviceNameSpace = index;
-    // DeviceNameSpace
-
 }
 
-void DeviceInformation::on_UpdateDeviceInformation(UA_Client *client, std::map<char*, char*>DeviceMap_Id, std::map<char*, char*> SkillMap_Id){
-    // read Device state
+// TODO: hold your horses we#re not even passing the DeviceNamespace....
+void DeviceInformation::on_UpdateDeviceInformation(){
+    // read Device state from Server
     for(auto &pair : DeviceMap_Id){
         UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
         UA_Variant value;
@@ -29,7 +28,7 @@ void DeviceInformation::on_UpdateDeviceInformation(UA_Client *client, std::map<c
             UpdateUiDeviceState(temp, pair);
         }
     }
-    // read skill states
+    // read skill states from server
     for(auto &pair : SkillMap_Id){
         UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
         UA_Variant value;

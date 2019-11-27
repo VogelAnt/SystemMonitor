@@ -30,9 +30,7 @@ public:
     virtual ~SkillListWidget();
 
 signals:
-    //signals:
-    // trigger ui (specifically tabWidget)
-
+    void ChangeTabColour();
 
 public slots:
     void on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *>pair);
@@ -48,11 +46,6 @@ private:
     std::map< char*, char*> DeviceMap_Id;
     std::map< char*,  QPushButton*> SkillMap_Button;
     uint8_t DeviceNameSpace;
-};
-
-class Testinfo : public SkillListWidget{
-    explicit Testinfo();
-    ~Testinfo();
 };
 
 #endif // DYNAMICCUSTOMTAB_H

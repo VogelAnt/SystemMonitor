@@ -24,16 +24,28 @@ public slots:
      * @brief on_UpdateDeviceInformation
      * Request info about Device state and Skill states
      */
-    void on_UpdateDeviceInformation(UA_Client *client, std::map<char*, char*>DeviceMap_Id, std::map<char*, char*> SkillMap_Id);
+    void on_UpdateDeviceInformation();
 
 signals:
+    /**
+     * @brief UpdateUiDeviceState
+     * Update the TabWidget in MainWindow
+     * @param nodevalue
+     * @param pair
+     */
     void UpdateUiDeviceState(std::string nodevalue, std::pair<char*, char*>pair);
+    /**
+     * @brief UpdateUiSkillState
+     * Update Widget inside of TabWidget
+     * @param nodevalue
+     * @param pair
+     */
     void UpdateUiSkillState(std::string nodevalue, std::pair<char *, char *>pair);
 
 
 private:
     UA_Client *m_UaClient;
-    std::map< char*, char*> SkillMap_Id;
+    std::map< char*, char*> m_SkillMap_Id;
     std::map< char*, char*> DeviceMap_Id;
     uint8_t DeviceNameSpace;
 };
