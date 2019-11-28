@@ -43,15 +43,18 @@ DeviceWidget::DeviceWidget(UA_Client* client,
 
     DeviceInformation *DeviceInfo = new DeviceInformation(client, eMap_Device_DisplayName_NodeId, eMap_Skill_DisplayName_NodeId, index);
     connect(timer, &QTimer::timeout, DeviceInfo, &DeviceInformation::on_UpdateDeviceInformation);
-//    connect(DeviceInfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
-//    connect(DeviceInfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
-
+    connect(DeviceInfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
+    connect(DeviceInfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
 
     for (auto &pair: SkillMap_Id){
-        QPushButton *skillButton = new QPushButton(pair.first,this);
-        SkillMap_Button[pair.first] = skillButton;
-        ButtonLayout->addWidget(skillButton);
+        SkillButton = new QPushButton(pair.first, this);
+        SkillMap_Button[pair.first] = SkillButton;
+        ButtonLayout->addWidget(SkillButton);
         SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
+//        QPushButton *skillButton = new QPushButton(pair.first,this);
+//        SkillMap_Button[pair.first] = skillButton;
+//        ButtonLayout->addWidget(skillButton);
+//        SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
     }
     central->setLayout(ButtonLayout);
     setCentralWidget(central);
@@ -68,7 +71,6 @@ void DeviceWidget::on_UpdateSkillsUI(std::string nodevalue, std::pair<char *, ch
     SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
 }
 
-//
 void DeviceWidget::on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *>pair){
     std::cout << "IN UPDATEDEVICEUI" << std::endl;
 }

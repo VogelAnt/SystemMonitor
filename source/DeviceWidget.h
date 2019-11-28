@@ -17,7 +17,6 @@
 namespace Ui {
 class DeviceWidget;
 }
-class DeviceInformation;
 
 class DeviceWidget : public QMainWindow {
     Q_OBJECT
