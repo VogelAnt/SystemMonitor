@@ -38,26 +38,26 @@ DeviceWidget::DeviceWidget(UA_Client* client,
                                  QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
     ui->setupUi(this);
     timer = new QTimer();
+    DeviceInformation *DeviceInfo = new DeviceInformation(client, eMap_Device_DisplayName_NodeId, eMap_Skill_DisplayName_NodeId, index);
     QVBoxLayout *ButtonLayout = new QVBoxLayout(this);
     auto central = new QWidget(this);
-
-    DeviceInformation *DeviceInfo = new DeviceInformation(client, eMap_Device_DisplayName_NodeId, eMap_Skill_DisplayName_NodeId, index);
-    connect(timer, &QTimer::timeout, DeviceInfo, &DeviceInformation::on_UpdateDeviceInformation);
-    connect(DeviceInfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
-    connect(DeviceInfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
-
+    m_UaClient = client;
+    DeviceMap_Id = eMap_Device_DisplayName_NodeId;
+    SkillMap_Id = eMap_Skill_DisplayName_NodeId;
+    DeviceNameSpace = index;
     for (auto &pair: SkillMap_Id){
         SkillButton = new QPushButton(pair.first, this);
         SkillMap_Button[pair.first] = SkillButton;
         ButtonLayout->addWidget(SkillButton);
         SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
-//        QPushButton *skillButton = new QPushButton(pair.first,this);
-//        SkillMap_Button[pair.first] = skillButton;
-//        ButtonLayout->addWidget(skillButton);
-//        SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
     }
     central->setLayout(ButtonLayout);
     setCentralWidget(central);
+
+    connect(timer, &QTimer::timeout, DeviceInfo, &DeviceInformation::on_UpdateDeviceInformation);
+    connect(DeviceInfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
+    connect(DeviceInfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
+
     timer->start(1000);
 }
 

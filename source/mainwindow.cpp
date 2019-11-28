@@ -17,12 +17,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
       */
     // save function (load file for addresses) so you don't have to enter all manually again
     // AssemblyIP 192.168.0.5:4840
-//    UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
-//    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
+    UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
+    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
 
     // SuperTrakIP 192.168.0.5:4840
-//    UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
-//    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
+    UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
+    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
 
     // LabelingIP 192.168.0.100:4840
     UA_Client* uaClientLabeling = UA_Client_new(UA_ClientConfig_default);
@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    UA_Client_connect(uaClientSeedSupply, "opc.tcp://192.168.0.180:4840");
 
     /** Module STL maps */
-    // you give the modulewidget the ModuleMap as well as the Skill Map, create the SkillListWidget within the Module itself
+    // you give the modulewidget the ModuleMap as well as the Skill Map, create the DeviceWidget within the Module itself
     std::map<char*, char*> DisplayName_NodeId_Assembly;
     DisplayName_NodeId_Assembly["Assembly"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
     std::map<char*, char*> DisplayName_NodeId_AssemblySkills;
@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     DisplayName_NodeId_STSkills["moveShuttle6"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[6].state.stateMachine.operationalState";
 
     std::map<char*, char*> DisplayName_NodeId_Labeling;
-    DisplayName_NodeId_ST["Labeling"]  = "gLabelingModule.state.stateMachine.operationalState";
+    DisplayName_NodeId_Labeling["Labeling"]  = "gLabelingModule.state.stateMachine.operationalState";
     std::map<char*, char*> DisplayName_NodeId_LabelingSkills;
     DisplayName_NodeId_LabelingSkills["Label"]  = "gLabelingModule.skill.label.state.stateMachine.operationalState";
 
@@ -87,31 +87,30 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    DisplayName_NodeId_SealingSkills["sealing"]  = "StOpcCom:opcComSealingModule.skill.sealing.state.stateMachine.operationalState";
 
     // Seed supply
-    std::map<char*, char*> DisplayName_NodeId_SeedSupply;
-    DisplayName_NodeId_ST["Labeling"]  = "AsGlobalPV:opcComMitsubishi.state.stateMachine.operationalState";
-    std::map<char*, char*> DisplayName_NodeId_SeedSupplySkills;
-    DisplayName_NodeId_SeedSupplySkills["moveToSTHomePosition"]  = "AsGlobalPV:opcComMitsubishi.skill.moveToSTHomePosition.state.stateMachine.operationalState";
-    DisplayName_NodeId_SeedSupplySkills["provideItemFromSTToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemFromSTToWelding.state.stateMachine.operationalState";
-    DisplayName_NodeId_SeedSupplySkills["provideItemFromWeldingToST"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemFromWeldingToST.state.stateMachine.operationalState";
-    DisplayName_NodeId_SeedSupplySkills["provideItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToST.state.stateMachine.operationalState";
-    DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
-    DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
+//    std::map<char*, char*> DisplayName_NodeId_SeedSupply;
+//    DisplayName_NodeId_SeedSupply["SeedSupply"]  = "AsGlobalPV:opcComMitsubishi.state.stateMachine.operationalState";
+//    std::map<char*, char*> DisplayName_NodeId_SeedSupplySkills;
+//    DisplayName_NodeId_SeedSupplySkills["moveToSTHomePosition"]  = "AsGlobalPV:opcComMitsubishi.skill.moveToSTHomePosition.state.stateMachine.operationalState";
+//    DisplayName_NodeId_SeedSupplySkills["provideItemFromSTToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemFromSTToWelding.state.stateMachine.operationalState";
+//    DisplayName_NodeId_SeedSupplySkills["provideItemFromWeldingToST"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemFromWeldingToST.state.stateMachine.operationalState";
+//    DisplayName_NodeId_SeedSupplySkills["provideItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToST.state.stateMachine.operationalState";
+//    DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
+//    DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
 
     // TODO: create a new ModuleWidgetClass, this ModuleWidgetClass communicating via OPCUA directly
-    // TODO: Inside the ModuleWidget create a SkillListWidget containing from which we pass on the skills
-//    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
-//    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, ui->tabWidget);
+    // TODO: Inside the ModuleWidget create a DeviceWidget containing from which we pass on the skills
+    DeviceWidget *AssemblyTab = new DeviceWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
+    DeviceWidget *STTab = new DeviceWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, ui->tabWidget);
     DeviceWidget *LabelingTab = new DeviceWidget(uaClientLabeling, DisplayName_NodeId_Labeling,DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
-//    SkillListWidget *HumanAssemblyTab = new SkillListWidget(uaClientHumanAssembly, DisplayName_NodeId_HumanAssemblySkills, 6, ui->tabWidget);
-//    SkillListWidget *ImageRecognitionTab = new SkillListWidget(uaClientImageRecognition, DisplayName_NodeId_ImageRecognitionSkills, 6, ui->tabWidget);
-//    SkillListWidget *OutfeedTab = new SkillListWidget(uaClientOutfeed, DisplayName_NodeId_OutfeedSkills, 6, ui->tabWidget);
-//    SkillListWidget *SealingTab = new SkillListWidget(uaClientSealing, DisplayName_NodeId_SealingSkills, 6, ui->tabWidget);
-//    SkillListWidget *SeedSupplyTab = new SkillListWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, ui->tabWidget);
+//    DeviceWidget *HumanAssemblyTab = new DeviceWidget(uaClientHumanAssembly, DisplayName_NodeId_HumanAssemblySkills, 6, ui->tabWidget);
+//    DeviceWidget *ImageRecognitionTab = new DeviceWidget(uaClientImageRecognition, DisplayName_NodeId_ImageRecognitionSkills, 6, ui->tabWidget);
+//    DeviceWidget *OutfeedTab = new DeviceWidget(uaClientOutfeed, DisplayName_NodeId_OutfeedSkills, 6, ui->tabWidget);
+//    DeviceWidget *SealingTab = new DeviceWidget(uaClientSealing, DisplayName_NodeId_SealingSkills, 6, ui->tabWidget);
+//    DeviceWidget *SeedSupplyTab = new DeviceWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, ui->tabWidget);
 
-//    ui->tabWidget->addTab(AssemblyTab,"Assembly");
-//    ui->tabWidget->addTab(STTab,"SuperTrak");
+    ui->tabWidget->addTab(AssemblyTab,"Assembly");
+    ui->tabWidget->addTab(STTab,"SuperTrak");
     ui->tabWidget->addTab(LabelingTab, "Labeling");
-
 //    ui->tabWidget->addTab(HumanAssemblyTab, "HumanAssembly");
 //    ui->tabWidget->addTab(ImageRecognitionTab, "ImageRecognition");
 //    ui->tabWidget->addTab(OutfeedTab, "Outfeed");
@@ -131,17 +130,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     m_RedisClient = new RedisClient(this);
 
-//    connect(m_OpcuaClient, &OpcuaClient::SendAssemblySkillState ,AssemblyTab, &SkillListWidget::on_SendAssemblySkillState);
-//    connect(m_OpcuaClient, &OpcuaClient::SendLabelingSkillState ,LabelingTab, &SkillListWidget::on_SendLabelingSkillState);
-//    connect(m_OpcuaClient, &OpcuaClient::SendSuperTrakSkillState ,SuperTrakTab, &SkillListWidget::on_SendSuperTrakSkillState);
+//    connect(m_OpcuaClient, &OpcuaClient::SendAssemblySkillState ,AssemblyTab, &DeviceWidget::on_SendAssemblySkillState);
+//    connect(m_OpcuaClient, &OpcuaClient::SendLabelingSkillState ,LabelingTab, &DeviceWidget::on_SendLabelingSkillState);
+//    connect(m_OpcuaClient, &OpcuaClient::SendSuperTrakSkillState ,SuperTrakTab, &DeviceWidget::on_SendSuperTrakSkillState);
 
 //    ui->tabWidget->addTab(LabelingTab, "LabelingModule");
 //    ui->tabWidget->addTab(SuperTrakTab, "SuperTrakTab");
 //    for (int i = 0 ;i<3;++i) {
 //        ui->tabWidget->tabBar()->setTabTextColor(i, QColor(Qt::yellow));
 //    }
-
-
 //     set up Table Widget move this to an outside function ?
     ui->tableWidget->setColumnCount(4);
     ui->tableWidget->setSortingEnabled(false);

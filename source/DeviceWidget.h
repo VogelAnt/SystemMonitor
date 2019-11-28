@@ -11,6 +11,7 @@
 #include <QStyleOptionTab>
 #include <QStylePainter>
 #include <QButtonGroup>
+#include <QDebug>
 
 #include <iostream>
 
