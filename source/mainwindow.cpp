@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "SkillListWidget.h"
+#include "DeviceWidget.h"
 #include "orderinformation.h"
 #include "redisclient.h"
 #include "ui_mainwindow.h"
@@ -17,12 +17,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
       */
     // save function (load file for addresses) so you don't have to enter all manually again
     // AssemblyIP 192.168.0.5:4840
-    UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
+//    UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
+//    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
 
     // SuperTrakIP 192.168.0.5:4840
-    UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
+//    UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
+//    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
 
     // LabelingIP 192.168.0.100:4840
     UA_Client* uaClientLabeling = UA_Client_new(UA_ClientConfig_default);
@@ -99,17 +99,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // TODO: create a new ModuleWidgetClass, this ModuleWidgetClass communicating via OPCUA directly
     // TODO: Inside the ModuleWidget create a SkillListWidget containing from which we pass on the skills
-    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
-    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, ui->tabWidget);
-    SkillListWidget *LabelingTab = new SkillListWidget(uaClientLabeling, DisplayName_NodeId_Labeling,DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
+//    SkillListWidget *AssemblyTab = new SkillListWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
+//    SkillListWidget *STTab = new SkillListWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, ui->tabWidget);
+    DeviceWidget *LabelingTab = new DeviceWidget(uaClientLabeling, DisplayName_NodeId_Labeling,DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
 //    SkillListWidget *HumanAssemblyTab = new SkillListWidget(uaClientHumanAssembly, DisplayName_NodeId_HumanAssemblySkills, 6, ui->tabWidget);
 //    SkillListWidget *ImageRecognitionTab = new SkillListWidget(uaClientImageRecognition, DisplayName_NodeId_ImageRecognitionSkills, 6, ui->tabWidget);
 //    SkillListWidget *OutfeedTab = new SkillListWidget(uaClientOutfeed, DisplayName_NodeId_OutfeedSkills, 6, ui->tabWidget);
 //    SkillListWidget *SealingTab = new SkillListWidget(uaClientSealing, DisplayName_NodeId_SealingSkills, 6, ui->tabWidget);
 //    SkillListWidget *SeedSupplyTab = new SkillListWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, ui->tabWidget);
 
-    ui->tabWidget->addTab(AssemblyTab,"Assembly");
-    ui->tabWidget->addTab(STTab,"SuperTrak");
+//    ui->tabWidget->addTab(AssemblyTab,"Assembly");
+//    ui->tabWidget->addTab(STTab,"SuperTrak");
     ui->tabWidget->addTab(LabelingTab, "Labeling");
 
 //    ui->tabWidget->addTab(HumanAssemblyTab, "HumanAssembly");

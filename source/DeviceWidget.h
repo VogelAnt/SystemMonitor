@@ -1,50 +1,52 @@
-#ifndef MODULEWIDGET_H
-#define MODULEWIDGET_H
+#ifndef DYNAMICCUSTOMTAB_H
+#define DYNAMICCUSTOMTAB_H
 #include "open62541.h"
-
 #include "DeviceInformation.h"
 
-#include <QWidget>
+#include <QVBoxLayout>
 #include <QMainWindow>
-#include <QTimer>
+#include <QPushButton>
+#include <QString>
+#include <QWidget>
+#include <QStyleOptionTab>
+#include <QStylePainter>
+#include <QButtonGroup>
 
-#include <map>
+#include <iostream>
 
 namespace Ui {
 class DeviceWidget;
 }
+class DeviceInformation;
 
-/**
- * @brief The DeviceWidget class
- * UI displaying Device information
- */
-class DeviceWidget : public QMainWindow{
+class DeviceWidget : public QMainWindow {
     Q_OBJECT
 public:
-    DeviceWidget(UA_Client *client,
-                 std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
-                 std::map< char*,  char*> eMap_Skill_DisplayName_NodeId,
-                 uint8_t index,
-                 QWidget *parent = nullptr);
-    ~DeviceWidget();
-//signals:
-// trigger ui (specifically tabWidget)
+    //
+    explicit DeviceWidget(UA_Client * eUaClient,
+                             std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
+                             std::map< char*,  char*> eMap_DisplayName_NodeId, // the display name and node id of each skill
+                             uint8_t index,
+                             QWidget *parent = nullptr);
+    virtual ~DeviceWidget();
+
 signals:
-    /**
-     * @brief UpdateDeviceInformation
-     * signal communicating newly updated Device info to DeviceWidget
-     */
-    void UpdateDeviceInformation();
+    void ChangeTabColour();
 
 public slots:
-    void on_UpdateDeviceWidget();
+    void on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *>pair);
+    void on_UpdateSkillsUI(std::string nodevalue, std::pair<char *, char *>pair);
 
 private:
-    QTimer *m_updatetimer;
-    UA_Client *m_client;
-    std::map< char*, char*> m_SkillMap_Id;
-    std::map< char*, char*> m_DeviceMap_Id;
-    uint8_t m_DeviceNameSpace;
+    Ui::DeviceWidget *ui;
+    // TODO:  implement this in cpp
+    QPushButton *SkillButton;
+    UA_Client *m_UaClient;
+    QTimer *timer;
+    std::map< char*,  char*> SkillMap_Id;
+    std::map< char*, char*> DeviceMap_Id;
+    std::map< char*,  QPushButton*> SkillMap_Button;
+    uint8_t DeviceNameSpace;
 };
 
-#endif // MODULEWIDGET_H
+#endif // DYNAMICCUSTOMTAB_H

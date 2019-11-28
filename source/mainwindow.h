@@ -1,8 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "OpcuaClient.h"
-#include "SkillListWidget.h"
+#include "DeviceWidget.h"
 #include "orderinformation.h"
 #include "redisclient.h"
 #include "tabstyle_horizontaltext.h"
@@ -42,7 +41,6 @@ signals:
 
 public slots:
     void on_MakeOrderTable(nlohmann::json);
-    void on_SendModuleState(std::map<std::string, std::string>);
 
 private slots:
     void on_tableWidget_cellDoubleClicked(int row, int column);

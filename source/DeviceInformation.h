@@ -6,19 +6,21 @@
 
 #include <map>
 #include <string>
+#include <QObject>
 
 /**
  * @brief The DeviceInfo class
  * Polls the OPCUA server of the respective device for information on Device and Skill states.
  * Sends Device and Skill information to DeviceWidget
  */
-class DeviceInformation{
+class DeviceInformation : public QObject{
+    Q_OBJECT
 public:
-    DeviceInformation(UA_Client *eUaClient,
+    explicit DeviceInformation(UA_Client *eUaClient,
                std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
                std::map< char*,  char*> eMap_Skill_DisplayName_NodeId,
                uint8_t index);
-
+    virtual ~DeviceInformation();
 public slots:
     /**
      * @brief on_UpdateDeviceInformation
@@ -45,7 +47,7 @@ signals:
 
 private:
     UA_Client *m_UaClient;
-    std::map< char*, char*> m_SkillMap_Id;
+    std::map< char*, char*> SkillMap_Id;
     std::map< char*, char*> DeviceMap_Id;
     uint8_t DeviceNameSpace;
 };

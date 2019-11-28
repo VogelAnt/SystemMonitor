@@ -1,25 +1,77 @@
 #include "DeviceWidget.h"
+#include "ui_SkillListWidget.h"
 
-#include <QWidget>
+//    DeviceInformation *DeviceInfo = new DeviceInformation(m_UaClient, DeviceMap_Id, SkillMap_Id, DeviceNameSpace);
+// TODO: What if you can't connect ? What if a module or Skill doesn't exist ? You'll crash right now, this is not acceptable !
+static std::map<int, QString> sMap_String_OPCUAState{
+    {0, "Idle"},
+    {2, "Running"},
+    {12, "Complete"},
+    {17, "Aborted"},
+    {15, "Stopped"},
+    {1, "Starting"},
+    {11, "Completing"},
+    {18, "Clearing"},
+    {13, "Resetting"},
+    {14, "Stopping"},
+    {16, "Aborting"}
+};
 
-DeviceWidget::DeviceWidget(UA_Client *client,
-                           std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
-                           std::map< char*,  char*> eMap_Skill_DisplayName_NodeId,
-                           uint8_t index,
-                           QWidget *parent) :QMainWindow(parent) {
-    DeviceInformation *DeviceInfo = new DeviceInformation(client, m_DeviceMap_Id, m_SkillMap_Id, m_DeviceNameSpace);
-    m_updatetimer = new QTimer();
-    m_client = client;
-    m_DeviceMap_Id = eMap_Device_DisplayName_NodeId;
-    m_SkillMap_Id = eMap_Skill_DisplayName_NodeId;
-    m_DeviceNameSpace = index;
-    connect(m_updatetimer, &QTimer::timeout, DeviceInfo, &DeviceInformation::on_UpdateDeviceInformation);
+static std::map<QString, QString> sMap_State_Colour{
+    {"Idle", "lightgreen"},
+    {"Running", "green"},
+    {"Complete", "lightblue"},
+    {"Aborted", "red"},
+    {"Stopped", "grey"},
+    {"Starting", "grey"},
+    {"Completing", "grey"},
+    {"Clearing", "grey"},
+    {"Resetting", "grey"},
+    {"Stopping", "grey"},
+    {"Aborting", "lightred"}
+};
+
+DeviceWidget::DeviceWidget(UA_Client* client,
+                                 std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
+                                 std::map< char*,  char*> eMap_Skill_DisplayName_NodeId,
+                                 uint8_t index,
+                                 QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
+    ui->setupUi(this);
+    timer = new QTimer();
+    QVBoxLayout *ButtonLayout = new QVBoxLayout(this);
+    auto central = new QWidget(this);
+
+    DeviceInformation *DeviceInfo = new DeviceInformation(client, eMap_Device_DisplayName_NodeId, eMap_Skill_DisplayName_NodeId, index);
+    connect(timer, &QTimer::timeout, DeviceInfo, &DeviceInformation::on_UpdateDeviceInformation);
+//    connect(DeviceInfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
+//    connect(DeviceInfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
 
 
-    // make a slot here that reacts to the widgets being updated
-    // poll for the Module state here
+    for (auto &pair: SkillMap_Id){
+        QPushButton *skillButton = new QPushButton(pair.first,this);
+        SkillMap_Button[pair.first] = skillButton;
+        ButtonLayout->addWidget(skillButton);
+        SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
+    }
+    central->setLayout(ButtonLayout);
+    setCentralWidget(central);
+    timer->start(1000);
 }
 
+void DeviceWidget::on_UpdateSkillsUI(std::string nodevalue, std::pair<char *, char *>pair){
+    int n = std::stoi(nodevalue);
+    QString n_value = sMap_String_OPCUAState.find(n)->second;
+    QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
+    SkillMap_Button[pair.first]->setText(pair.first + node_value);
+    QString tmp = sMap_State_Colour.find(n_value)->second;
+    QString temp_buttoncolour = "background-color : " + tmp + "; font-size: 24px";
+    SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
+}
+
+//
+void DeviceWidget::on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *>pair){
+    std::cout << "IN UPDATEDEVICEUI" << std::endl;
+}
 
 DeviceWidget::~DeviceWidget(){
 
