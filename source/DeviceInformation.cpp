@@ -10,9 +10,7 @@ DeviceInformation::DeviceInformation(UA_Client *client,
     DeviceNameSpace = index;
 }
 
-// TODO: hold your horses we#re not even passing the DeviceNamespace....
 void DeviceInformation::on_UpdateDeviceInformation(){
-    // read Device state from Server
     for(auto &pair : DeviceMap_Id){
         UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
         UA_Variant value;

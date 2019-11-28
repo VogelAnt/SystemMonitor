@@ -170,7 +170,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
 }
 
-
 void MainWindow::on_MakeOrderTable(nlohmann::json eParsed) {
     ui->tableWidget->setSortingEnabled(false);
     order = new OrderInformation(
