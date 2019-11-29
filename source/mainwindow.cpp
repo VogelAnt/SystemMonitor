@@ -32,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    UA_Client_connect(uaClientOutfeed, "opc.tcp://localhost:4840");
 //    UA_Client* uaClientSealing = UA_Client_new(UA_ClientConfig_default);
 //    UA_Client_connect(uaClientSealing, "opc.tcp://localhost:4840");
-//    UA_Client* uaClientSeedSupply = UA_Client_new(UA_ClientConfig_default);
-//    UA_Client_connect(uaClientSeedSupply, "opc.tcp://192.168.0.180:4840");
+    UA_Client* uaClientSeedSupply = UA_Client_new(UA_ClientConfig_default);
+    UA_Client_connect(uaClientSeedSupply, "opc.tcp://192.168.0.180:4840");
 
     /** Module STL maps */
     // you give the modulewidget the ModuleMap as well as the Skill Map, create the DeviceWidget within the Module itself
@@ -87,15 +87,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    DisplayName_NodeId_SealingSkills["sealing"]  = "StOpcCom:opcComSealingModule.skill.sealing.state.stateMachine.operationalState";
 
     // Seed supply
-//    std::map<char*, char*> DisplayName_NodeId_SeedSupply;
-//    DisplayName_NodeId_SeedSupply["SeedSupply"]  = "AsGlobalPV:opcComMitsubishi.state.stateMachine.operationalState";
-//    std::map<char*, char*> DisplayName_NodeId_SeedSupplySkills;
-//    DisplayName_NodeId_SeedSupplySkills["moveToSTHomePosition"]  = "AsGlobalPV:opcComMitsubishi.skill.moveToSTHomePosition.state.stateMachine.operationalState";
-//    DisplayName_NodeId_SeedSupplySkills["provideItemFromSTToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemFromSTToWelding.state.stateMachine.operationalState";
-//    DisplayName_NodeId_SeedSupplySkills["provideItemFromWeldingToST"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemFromWeldingToST.state.stateMachine.operationalState";
-//    DisplayName_NodeId_SeedSupplySkills["provideItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToST.state.stateMachine.operationalState";
-//    DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
-//    DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
+    std::map<char*, char*> DisplayName_NodeId_SeedSupply;
+    DisplayName_NodeId_SeedSupply["SeedSupply"]  = "::AsGlobalPV:opcComMitsubishi.state.stateMachine.operationalState";
+    std::map<char*, char*> DisplayName_NodeId_SeedSupplySkills;
+    DisplayName_NodeId_SeedSupplySkills["moveToSTHomePosition"]  = "::AsGlobalPV:opcComMitsubishi.skill.moveToSTHomePosition.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["provideItemFromSTToWelding"]  = "::AsGlobalPV:opcComMitsubishi.skill.provideItemFromSTToWelding.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["provideItemFromWeldingToST"]  = "::AsGlobalPV:opcComMitsubishi.skill.provideItemFromWeldingToST.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["provideItemToST"]  = "::AsGlobalPV:opcComMitsubishi.skill.provideItemToST.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "::AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
+    DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "::AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
 
     DeviceWidget *AssemblyTab = new DeviceWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, 0 , ui->tabWidget);
     DeviceWidget *STTab = new DeviceWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, 1, ui->tabWidget);
@@ -104,15 +104,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    DeviceWidget *ImageRecognitionTab = new DeviceWidget(uaClientImageRecognition, DisplayName_NodeId_ImageRecognitionSkills, 6, ui->tabWidget);
 //    DeviceWidget *OutfeedTab = new DeviceWidget(uaClientOutfeed, DisplayName_NodeId_OutfeedSkills, 6, ui->tabWidget);
 //    DeviceWidget *SealingTab = new DeviceWidget(uaClientSealing, DisplayName_NodeId_SealingSkills, 6, ui->tabWidget);
-//    DeviceWidget *SeedSupplyTab = new DeviceWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, ui->tabWidget);
+    DeviceWidget *SeedSupplyTab = new DeviceWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, 3, ui->tabWidget);
 
     connect(AssemblyTab, &DeviceWidget::ChangeDeviceStatus, this, &MainWindow::on_ChangeDeviceStatus);
     connect(STTab, &DeviceWidget::ChangeDeviceStatus, this, &MainWindow::on_ChangeDeviceStatus);
     connect(LabelingTab, &DeviceWidget::ChangeDeviceStatus, this, &MainWindow::on_ChangeDeviceStatus);
+    connect(SeedSupplyTab, &DeviceWidget::ChangeDeviceStatus, this, &MainWindow::on_ChangeDeviceStatus);
 
     ui->tabWidget->addTab(AssemblyTab,"Assembly");
     ui->tabWidget->addTab(STTab,"SuperTrak");
     ui->tabWidget->addTab(LabelingTab, "Labeling");
+    ui->tabWidget->addTab(SeedSupplyTab, "SeedSupply");
 //    ui->tabWidget->addTab(HumanAssemblyTab, "HumanAssembly");
 //    ui->tabWidget->addTab(ImageRecognitionTab, "ImageRecognition");
 //    ui->tabWidget->addTab(OutfeedTab, "Outfeed");
@@ -123,9 +125,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->tabWidget->tabBar()->setStyle(m_TabStyle);
 
     m_RedisClient = new RedisClient(this);
-
-//    ui->tabWidget->addTab(LabelingTab, "LabelingModule");
-//    ui->tabWidget->addTab(SuperTrakTab, "SuperTrakTab");
 //    for (int i = 0 ;i<3;++i) {
 //        ui->tabWidget->tabBar()->setTabTextColor(i, QColor(Qt::yellow));
 //    }

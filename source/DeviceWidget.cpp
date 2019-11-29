@@ -12,7 +12,8 @@ static std::map<int, QString> sMap_String_OPCUAState{
     {18, "Clearing"},
     {13, "Resetting"},
     {14, "Stopping"},
-    {16, "Aborting"}
+    {16, "Aborting"},
+    {19, "Blocked"}
 };
 
 static std::map<QString, QString> sMap_State_Colour{
@@ -26,7 +27,8 @@ static std::map<QString, QString> sMap_State_Colour{
     {"Clearing", "grey"},
     {"Resetting", "grey"},
     {"Stopping", "grey"},
-    {"Aborting", "lightred"}
+    {"Aborting", "lightred"},
+    {"Blocked", "cyan"}
 };
 
 DeviceWidget::DeviceWidget(UA_Client* client,
