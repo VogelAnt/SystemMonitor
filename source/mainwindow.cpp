@@ -16,15 +16,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // save function (load file for addresses) so you don't have to enter all manually again
     // AssemblyIP 192.168.0.5:4840
     UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
+    UA_Client_connect(uaClientAssembly, "opc.tcp://192.168.0.5:4840");
 
     // SuperTrakIP 192.168.0.5:4840
     UA_Client* uaClientST = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
+    UA_Client_connect(uaClientST, "opc.tcp://192.168.0.5:4840");
 
-    // LabelingIP 192.168.0.100:4840
+    // LabelingIP 192.168.0.102:4840
     UA_Client* uaClientLabeling = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientLabeling, "opc.tcp://localhost:4840");
+    UA_Client_connect(uaClientLabeling, "opc.tcp://192.168.0.102:4840");
 
 //    UA_Client* uaClientImageRecognition = UA_Client_new(UA_ClientConfig_default);
 //    UA_Client_connect(uaClientImageRecognition, "opc.tcp://localhost:4840");
@@ -40,12 +40,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     std::map<char*, char*> DisplayName_NodeId_Assembly;
     DisplayName_NodeId_Assembly["Assembly"]  = "::AsGlobalPV:gAssemblyModule.state.stateMachine.operationalState";
     std::map<char*, char*> DisplayName_NodeId_AssemblySkills;
+    DisplayName_NodeId_AssemblySkills["Go Home"]  = "::AsGlobalPV:gAssemblyModule.skill.goHome.state.stateMachine.operationalState";
     DisplayName_NodeId_AssemblySkills["Provide Cup"]  = "::AsGlobalPV:gAssemblyModule.skill.provideCup.state.stateMachine.operationalState";
     DisplayName_NodeId_AssemblySkills["Provide Pellet"]  = "::AsGlobalPV:gAssemblyModule.skill.providePellet.state.stateMachine.operationalState";
 
     std::map<char*, char*> DisplayName_NodeId_ST;
     DisplayName_NodeId_ST["SuperTrak"]  = "::AsGlobalPV:gSuperTrak.state.stateMachine.operationalState";
     std::map<char*, char*> DisplayName_NodeId_STSkills;
+    DisplayName_NodeId_STSkills["Outfeed"]  = "::AsGlobalPV:gSuperTrak.skill.Outfeed.state.stateMachine.operationalState";
     DisplayName_NodeId_STSkills["checkParking"]  = "::AsGlobalPV:gSuperTrak.skill.checkParking.state.stateMachine.operationalState";
     DisplayName_NodeId_STSkills["moveShuttle1"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[1].state.stateMachine.operationalState";
     DisplayName_NodeId_STSkills["moveShuttle2"]  = "::AsGlobalPV:gSuperTrak.skill.moveShuttle[2].state.stateMachine.operationalState";
