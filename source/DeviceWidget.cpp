@@ -1,8 +1,6 @@
 #include "DeviceWidget.h"
 #include "ui_SkillListWidget.h"
 
-//    DeviceInformation *DeviceInfo = new DeviceInformation(m_UaClient, DeviceMap_Id, SkillMap_Id, DeviceNameSpace);
-// TODO: What if you can't connect ? What if a module or Skill doesn't exist ? You'll crash right now, this is not acceptable !
 static std::map<int, QString> sMap_String_OPCUAState{
     {0, "Idle"},
     {2, "Running"},
@@ -34,7 +32,7 @@ static std::map<QString, QString> sMap_State_Colour{
 DeviceWidget::DeviceWidget(UA_Client* client,
                                  std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
                                  std::map< char*,  char*> eMap_Skill_DisplayName_NodeId,
-                                 uint8_t index,
+                                 uint8_t index, int tabWIndex,
                                  QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
     ui->setupUi(this);
     timer = new QTimer();
@@ -42,6 +40,7 @@ DeviceWidget::DeviceWidget(UA_Client* client,
     QVBoxLayout *ButtonLayout = new QVBoxLayout(this);
     auto central = new QWidget(this);
     m_UaClient = client;
+    tabIndex = tabWIndex;
     DeviceMap_Id = eMap_Device_DisplayName_NodeId;
     SkillMap_Id = eMap_Skill_DisplayName_NodeId;
     DeviceNameSpace = index;
@@ -66,13 +65,18 @@ void DeviceWidget::on_UpdateSkillsUI(std::string nodevalue, std::pair<char *, ch
     QString n_value = sMap_String_OPCUAState.find(n)->second;
     QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
     SkillMap_Button[pair.first]->setText(pair.first + node_value);
-    QString tmp = sMap_State_Colour.find(n_value)->second;
-    QString temp_buttoncolour = "background-color : " + tmp + "; font-size: 24px";
+    QString backgroundColor = sMap_State_Colour.find(n_value)->second;
+    QString temp_buttoncolour = "background-color : " + backgroundColor + "; font-size: 24px";
     SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
 }
 
 void DeviceWidget::on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *>pair){
-    std::cout << "IN UPDATEDEVICEUI" << std::endl;
+    int n = std::stoi(nodevalue);
+    QString n_value = sMap_String_OPCUAState.find(n)->second;
+    QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
+    QString tmp = sMap_State_Colour.find(n_value)->second;
+    QString tabText = pair.first + node_value;
+    ChangeDeviceStatus(tabIndex, tmp, tabText);
 }
 
 DeviceWidget::~DeviceWidget(){

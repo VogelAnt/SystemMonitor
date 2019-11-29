@@ -25,13 +25,14 @@ public:
     //
     explicit DeviceWidget(UA_Client * eUaClient,
                              std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
-                             std::map< char*,  char*> eMap_DisplayName_NodeId, // the display name and node id of each skill
+                             std::map< char*,  char*> eMap_DisplayName_NodeId,
                              uint8_t index,
+                             int tabIndex,
                              QWidget *parent = nullptr);
     virtual ~DeviceWidget();
 
 signals:
-    void ChangeTabColour();
+    void ChangeDeviceStatus(int index, QString textColour, QString tabText);
 
 public slots:
     void on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *>pair);
@@ -47,6 +48,7 @@ private:
     std::map< char*, char*> DeviceMap_Id;
     std::map< char*,  QPushButton*> SkillMap_Button;
     uint8_t DeviceNameSpace;
+    int tabIndex;
 };
 
 #endif // DYNAMICCUSTOMTAB_H

@@ -13,8 +13,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     ui->tabWidget->clear();
     QTimer *t_order_page = new QTimer();
-    /** OPCUA CLIENTS FOR EACH MODULE
-      */
     // save function (load file for addresses) so you don't have to enter all manually again
     // AssemblyIP 192.168.0.5:4840
     UA_Client* uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
@@ -97,16 +95,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 //    DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
 //    DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
 
-    // TODO: create a new ModuleWidgetClass, this ModuleWidgetClass communicating via OPCUA directly
-    // TODO: Inside the ModuleWidget create a DeviceWidget containing from which we pass on the skills
-    DeviceWidget *AssemblyTab = new DeviceWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, ui->tabWidget);
-    DeviceWidget *STTab = new DeviceWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, ui->tabWidget);
-    DeviceWidget *LabelingTab = new DeviceWidget(uaClientLabeling, DisplayName_NodeId_Labeling,DisplayName_NodeId_LabelingSkills, 2, ui->tabWidget);
+    DeviceWidget *AssemblyTab = new DeviceWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, 0 , ui->tabWidget);
+    DeviceWidget *STTab = new DeviceWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, 1, ui->tabWidget);
+    DeviceWidget *LabelingTab = new DeviceWidget(uaClientLabeling, DisplayName_NodeId_Labeling,DisplayName_NodeId_LabelingSkills, 2,2, ui->tabWidget);
 //    DeviceWidget *HumanAssemblyTab = new DeviceWidget(uaClientHumanAssembly, DisplayName_NodeId_HumanAssemblySkills, 6, ui->tabWidget);
 //    DeviceWidget *ImageRecognitionTab = new DeviceWidget(uaClientImageRecognition, DisplayName_NodeId_ImageRecognitionSkills, 6, ui->tabWidget);
 //    DeviceWidget *OutfeedTab = new DeviceWidget(uaClientOutfeed, DisplayName_NodeId_OutfeedSkills, 6, ui->tabWidget);
 //    DeviceWidget *SealingTab = new DeviceWidget(uaClientSealing, DisplayName_NodeId_SealingSkills, 6, ui->tabWidget);
 //    DeviceWidget *SeedSupplyTab = new DeviceWidget(uaClientSeedSupply, DisplayName_NodeId_SeedSupplySkills, 6, ui->tabWidget);
+
+    connect(AssemblyTab, &DeviceWidget::ChangeDeviceStatus, this, &MainWindow::on_ChangeDeviceStatus);
+    connect(STTab, &DeviceWidget::ChangeDeviceStatus, this, &MainWindow::on_ChangeDeviceStatus);
+    connect(LabelingTab, &DeviceWidget::ChangeDeviceStatus, this, &MainWindow::on_ChangeDeviceStatus);
 
     ui->tabWidget->addTab(AssemblyTab,"Assembly");
     ui->tabWidget->addTab(STTab,"SuperTrak");
@@ -119,27 +119,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     m_TabStyle = new TabStyle_HorizontalText();
     ui->tabWidget->tabBar()->setStyle(m_TabStyle);
-//    ui->tabWidget->tabBar()->setPalette();
-//    ModuleStateTabWidget *ModuleStateTab = new ModuleStateTabWidget();
-
-//    m_layout = new QHBoxLayout();
-//    m_layout->addWidget(ui->tableWidget);
-//    m_layout->addWidget(ModuleStateTab);
-//    setLayout(m_layout);
-//    ui->tabWidget->clear();
 
     m_RedisClient = new RedisClient(this);
-
-//    connect(m_OpcuaClient, &OpcuaClient::SendAssemblySkillState ,AssemblyTab, &DeviceWidget::on_SendAssemblySkillState);
-//    connect(m_OpcuaClient, &OpcuaClient::SendLabelingSkillState ,LabelingTab, &DeviceWidget::on_SendLabelingSkillState);
-//    connect(m_OpcuaClient, &OpcuaClient::SendSuperTrakSkillState ,SuperTrakTab, &DeviceWidget::on_SendSuperTrakSkillState);
 
 //    ui->tabWidget->addTab(LabelingTab, "LabelingModule");
 //    ui->tabWidget->addTab(SuperTrakTab, "SuperTrakTab");
 //    for (int i = 0 ;i<3;++i) {
 //        ui->tabWidget->tabBar()->setTabTextColor(i, QColor(Qt::yellow));
 //    }
-//     set up Table Widget move this to an outside function ?
+
+    // this part in OrderWidget
     ui->tableWidget->setColumnCount(4);
     ui->tableWidget->setSortingEnabled(false);
     headerColumns << "OrderID"
@@ -149,6 +138,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->tableWidget->setHorizontalHeaderLabels(headerColumns);
     ui->tableWidget->verticalHeader()->setVisible(false);
 
+    // this part in OrderWidget
     connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
     connect(m_RedisClient, &RedisClient::ReceivedJSONString, m_RedisClient, &RedisClient::on_ReadFromJsonString);
     connect(m_RedisClient, &RedisClient::SubscriptionMessage, this, &MainWindow::on_SubscriptionMessage);
@@ -168,6 +158,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
         emit m_RedisClient->ReceivedJSONString(orderPage_data_received.GetBulkString());
     }
+}
+
+void MainWindow::on_ChangeDeviceStatus(int index, QString textColour, QString tabText){
+    ui->tabWidget->tabBar()->setTabText(index, tabText);
+    ui->tabWidget->tabBar()->setTabTextColor(index, textColour);
 }
 
 void MainWindow::on_MakeOrderTable(nlohmann::json eParsed) {

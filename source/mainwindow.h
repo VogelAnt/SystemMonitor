@@ -41,6 +41,7 @@ signals:
 
 public slots:
     void on_MakeOrderTable(nlohmann::json);
+    void on_ChangeDeviceStatus(int index, QString textColour, QString tabText);
 
 private slots:
     void on_tableWidget_cellDoubleClicked(int row, int column);
