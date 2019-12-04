@@ -3,6 +3,7 @@
 
 #include "DeviceWidget.h"
 #include "orderinformation.h"
+#include "OrderWidget.h"
 #include "redisclient.h"
 #include "tabstyle_horizontaltext.h"
 

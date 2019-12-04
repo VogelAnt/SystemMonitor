@@ -8,6 +8,7 @@ static std::map<int, QString> sMap_String_OPCUAState{
     {17, "Aborted"},
     {15, "Stopped"},
     {1, "Starting"},
+    {4, "Paused"},
     {11, "Completing"},
     {18, "Clearing"},
     {13, "Resetting"},
@@ -28,6 +29,7 @@ static std::map<QString, QString> sMap_State_Colour{
     {"Resetting", "grey"},
     {"Stopping", "grey"},
     {"Aborting", "lightred"},
+    {"Paused", "pink"},
     {"Blocked", "cyan"}
 };
 
@@ -58,7 +60,6 @@ DeviceWidget::DeviceWidget(UA_Client* client,
     connect(timer, &QTimer::timeout, DeviceInfo, &DeviceInformation::on_UpdateDeviceInformation);
     connect(DeviceInfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
     connect(DeviceInfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
-
     timer->start(1000);
 }
 

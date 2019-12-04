@@ -58,6 +58,10 @@ public:
         m_Redis->PUBLISH(eChannel, eMessage);
     }
 
+    void LPOP(const QString s){
+        m_Redis->LPOP(s);
+    }
+
 signals:
     void sendMESdata(nlohmann::json);
     void ReceivedJSONString(std::optional<QString>);
