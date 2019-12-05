@@ -86,7 +86,21 @@ void DeviceWidget::on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, ch
 DeviceWidget::~DeviceWidget(){
     delete ui;
     delete SkillButton;
-//    delete m_UaClient;
     delete m_timer;
+    delete m_deviceinfo;
+    delete m_buttonLayout;
+    delete m_central;
+    for (auto &pair : SkillMap_Id) {
+        delete pair.first;
+        delete pair.second;
+    }
+    for (auto &pair : DeviceMap_Id) {
+        delete pair.first;
+        delete pair.second;
+    }
+    for (auto &pair : SkillMap_Button) {
+        delete pair.first;
+        delete pair.second;
+    }
 
 }

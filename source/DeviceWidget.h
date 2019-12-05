@@ -15,6 +15,7 @@
 #include <QDebug>
 
 #include <iostream>
+#include <memory>
 
 namespace Ui {
 class DeviceWidget;
@@ -44,7 +45,7 @@ private:
     QPushButton *SkillButton = nullptr;
     UA_Client *m_UaClient = nullptr;
     QTimer *m_timer = nullptr;
-    std::map< char*,  char*> SkillMap_Id;
+    std::map<char*,  char*> SkillMap_Id;
     std::map< char*, char*> DeviceMap_Id;
     std::map< char*,  QPushButton*> SkillMap_Button;
     uint8_t DeviceNameSpace;
