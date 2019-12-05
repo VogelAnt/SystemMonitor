@@ -29,6 +29,22 @@ nlohmann::json RedisClient::make_json_MES() {
     return MES_json;
 }
 
+
+nlohmann::json RedisClient::test_lists(){
+    nlohmann::json OrderPage_json;
+    auto order_arr = nlohmann::json::array();
+    int r = rand();
+    // create a random number,
+    std::string rand = std::to_string(r);
+    nlohmann::json order_json{{"orderID", rand},
+                              {"priority", "0"},
+                              {"firstName", "John"},
+                              {"lastName", "Kimble"}};
+    order_arr.push_back(order_json);
+    OrderPage_json = order_arr;
+    return OrderPage_json;
+}
+
 nlohmann::json RedisClient::make_json_orderpage() {
     nlohmann::json OrderPage_json;
     auto order_arr = nlohmann::json::array();

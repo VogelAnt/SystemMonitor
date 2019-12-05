@@ -32,22 +32,23 @@ public:
     ~MainWindow();
 
     void MockOrderPage();
+    void MockorderPageList();
 
 signals:
-    void SendCommand(QString);
-    void SendMES_Data(nlohmann::json);
-    void GetReply();
-    void ReceivedNewSubscription(std::optional<QString> eParsed);
-    void OrderPriorityChanged(int);
+//    void SendCommand(QString);
+//    void SendMES_Data(nlohmann::json);
+//    void GetReply();
+//    void ReceivedNewSubscription(std::optional<QString> eParsed);
+//    void OrderPriorityChanged(int);
 
 public slots:
-    void on_MakeOrderTable(nlohmann::json);
+//    void on_MakeOrderTable(nlohmann::json);
     void on_ChangeDeviceStatus(int index, QString textColour, QString tabText);
 
-private slots:
-    void on_tableWidget_cellDoubleClicked(int row, int column);
-    void on_tableWidget_cellClicked(int row, int column);
-    void on_SubscriptionMessage(QString eChannel, QString eMessage);
+//private slots:
+//    void on_tableWidget_cellDoubleClicked(int row, int column);
+//    void on_tableWidget_cellClicked(int row, int column);
+//    void on_SubscriptionMessage(QString eChannel, QString eMessage);
 
 private:
     int TabWidgetUpdates = 0;
@@ -59,6 +60,7 @@ private:
     QHBoxLayout *m_layout = nullptr;
     OrderInformation *order = nullptr;
     QInputDialog *dialog = nullptr;
+    MyCustomTab *deviceTab = nullptr;
     int m_OrderNumber = 0;
 };
 

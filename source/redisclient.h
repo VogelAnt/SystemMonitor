@@ -50,6 +50,8 @@ public:
      */
     nlohmann::json make_json_orderpage();
 
+    nlohmann::json test_lists();
+
     void Subscribe(QString eChannel) {
         m_Redis->SUBSCRIBE(eChannel);
     }
@@ -58,8 +60,12 @@ public:
         m_Redis->PUBLISH(eChannel, eMessage);
     }
 
-    void LPOP(const QString s){
-        m_Redis->LPOP(s);
+    void LPOP(const QString &list){
+        m_Redis->LPOP(list);
+    }
+
+    void LPUSH(const QString &list, const QStringList &listElement){
+        m_Redis->LPUSH(list, listElement);
     }
 
 signals:

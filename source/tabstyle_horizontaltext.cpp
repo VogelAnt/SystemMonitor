@@ -26,3 +26,11 @@ void TabStyle_HorizontalText::drawControl( //
     }
     QProxyStyle::drawControl(element, option, painter, widget);
 }
+
+MyCustomTab::MyCustomTab(QWidget *parent) : QTabWidget(parent){
+
+}
+
+MyCustomTab::~MyCustomTab(){
+
+}

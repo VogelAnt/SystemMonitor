@@ -4,6 +4,8 @@
 #include <QString>
 #include <nlohmann/json.hpp>
 
+// TODO: THIS CLASS SHOULD BE CALLED ORDER !!!
+
 class OrderInformation : public QObject {
     Q_OBJECT
 public:

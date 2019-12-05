@@ -2,6 +2,7 @@
 #define TABSTYLE_HORIZONTALTEXT_H
 #include <QProxyStyle>
 #include <QStyleOption>
+#include <QTabWidget>
 
 /**
  * @brief The TabStyle_HorizontalText class is used as a custom tab style for a tab widget
@@ -31,4 +32,12 @@ public:
      */
     void drawControl(ControlElement eElement, const QStyleOption *eOption, QPainter *ePainter, const QWidget *eWidget) const override;
 };
+
+class MyCustomTab : public QTabWidget{
+    Q_OBJECT
+    public:
+    MyCustomTab(QWidget *parent = nullptr);
+    virtual ~MyCustomTab();
+};
+
 #endif // TABSTYLE_HORIZONTALTEXT_H
