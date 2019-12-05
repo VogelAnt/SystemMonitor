@@ -4,9 +4,6 @@
 #include "redisclient.h"
 #include "ui_mainwindow.h"
 
-// TODO: Write OrderWidget in there
-// TODO: Write MyCustomTab in there, later on mebbe make a
-
 using Redistorium::Redis;
 using Redistorium::Reply::ReplyElement;
 
@@ -20,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_layout->addWidget(m_deviceTab);
     m_central->setLayout(m_layout);
     setCentralWidget(m_central);
-
 }
 
 MainWindow::~MainWindow() {
@@ -28,5 +24,6 @@ MainWindow::~MainWindow() {
     delete m_layout;
     delete m_deviceTab;
     delete m_central;
-    delete m_orderTable;
+    // Segmentation fault ?
+//    delete m_orderTable;
 }

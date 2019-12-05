@@ -29,7 +29,6 @@ nlohmann::json RedisClient::make_json_MES() {
     return MES_json;
 }
 
-
 nlohmann::json RedisClient::test_lists(){
     nlohmann::json OrderPage_json;
     auto order_arr = nlohmann::json::array();

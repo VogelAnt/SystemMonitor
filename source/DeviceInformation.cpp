@@ -45,9 +45,7 @@ void DeviceInformation::on_UpdateDeviceInformation(){
         }
     }
 }
-// slot for being polled by UI
-// if we poll from here then we need another
 
 DeviceInformation::~DeviceInformation(){
-
+    delete m_UaClient;
 }

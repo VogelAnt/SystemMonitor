@@ -9,18 +9,18 @@ OrderTableWidget::OrderTableWidget(QWidget *parent) :
       ui(new Ui::OrderWidget) {
 
     ui->setupUi(this);
-    setColumnCount(4);
-    setSortingEnabled(false);
+    m_orderInformation = new RedisClient(this);
+    m_orderPagetimer = new QTimer();
     m_headerColumns << "OrderID"
                   << "Priority"
                   << "FirstName"
                   << "LastName";
+    setColumnCount(4);
+    setSortingEnabled(false);
     setHorizontalHeaderLabels(m_headerColumns);
     verticalHeader()->setVisible(false);
-    m_orderInformation = new RedisClient(this);
-    m_orderPagetimer = new QTimer();
 
-    //    connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
+    // connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
     connect(m_orderInformation, &RedisClient::ReceivedJSONString, m_orderInformation, &RedisClient::on_ReadFromJsonString);
     connect(m_orderInformation, &RedisClient::SubscriptionMessage, this, &OrderTableWidget::on_SubscriptionMessage);
     connect(m_orderInformation, &RedisClient::ParsedJson, this, &OrderTableWidget::on_MakeOrderTable);
@@ -49,7 +49,6 @@ void OrderTableWidget::MockOrderPage() {
     m_orderInformation->m_Redis->PUBLISH("OrderPage", OrderPage_data_stringified);
 }
 
-
 void OrderTableWidget::on_SubscriptionMessage(QString eChannel, QString eMessage){
     // qDebug() << "Received Message from subscribed channel " << eChannel << ": \n" << eMessage;
     std::optional<QString> systemMonitor_received = eMessage;
@@ -58,18 +57,18 @@ void OrderTableWidget::on_SubscriptionMessage(QString eChannel, QString eMessage
 
 void OrderTableWidget::on_MakeOrderTable(nlohmann::json eParsed) {
     setSortingEnabled(false);
-    m_Order = new OrderInformation(
+    m_order = new OrderInformation(
         QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["orderID"])),
         QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["priority"])),
         QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["firstName"])),
         QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["lastName"])));
     //    order->SendOrderToRedis();
-    setRowCount(eParsed["DataOrderPage"].size() + m_OrderNumber);
-    setItem(m_OrderNumber, 0, new QTableWidgetItem(m_Order->GetOrderID()));
-    setItem(m_OrderNumber, 1, new QTableWidgetItem(m_Order->GetOrderPriority()));
-    setItem(m_OrderNumber, 2, new QTableWidgetItem(m_Order->GetCustomerFirstName()));
-    setItem(m_OrderNumber, 3, new QTableWidgetItem(m_Order->GetCustomerLastName()));
-    ++m_OrderNumber;
+    setRowCount(eParsed["DataOrderPage"].size() + m_orderNumber);
+    setItem(m_orderNumber, 0, new QTableWidgetItem(m_order->GetOrderID()));
+    setItem(m_orderNumber, 1, new QTableWidgetItem(m_order->GetOrderPriority()));
+    setItem(m_orderNumber, 2, new QTableWidgetItem(m_order->GetCustomerFirstName()));
+    setItem(m_orderNumber, 3, new QTableWidgetItem(m_order->GetCustomerLastName()));
+    ++m_orderNumber;
     // You can't sort while still setting...
     horizontalHeader()->setSortIndicatorShown(true);
     horizontalHeader()->setSortIndicator(0, Qt::DescendingOrder);
@@ -112,9 +111,11 @@ void OrderTableWidget::on_TableCellClicked(int row, int column){
     }
 }
 
-OrderTableWidget::~OrderTableWidget()
-{
+OrderTableWidget::~OrderTableWidget(){
     delete ui;
+    delete m_orderInformation;
+    delete m_orderPagetimer;
+    delete m_order;
 }
 
 

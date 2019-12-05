@@ -90,17 +90,4 @@ DeviceWidget::~DeviceWidget(){
     delete m_deviceinfo;
     delete m_buttonLayout;
     delete m_central;
-    for (auto &pair : SkillMap_Id) {
-        delete pair.first;
-        delete pair.second;
-    }
-    for (auto &pair : DeviceMap_Id) {
-        delete pair.first;
-        delete pair.second;
-    }
-    for (auto &pair : SkillMap_Button) {
-        delete pair.first;
-        delete pair.second;
-    }
-
 }

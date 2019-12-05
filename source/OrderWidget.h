@@ -40,8 +40,8 @@ private:
     Ui::OrderWidget *ui;
     RedisClient *m_orderInformation = nullptr;
     QStringList m_headerColumns;
-    OrderInformation *m_Order = nullptr;
-    int m_OrderNumber = 0;
+    OrderInformation *m_order = nullptr;
+    int m_orderNumber = 0;
     QInputDialog *m_dialog = nullptr;
     QTimer *m_orderPagetimer = nullptr;
 };
