@@ -4,6 +4,7 @@
 #include "DeviceInformation.h"
 
 #include <QVBoxLayout>
+#include <QWidget>
 #include <QMainWindow>
 #include <QPushButton>
 #include <QString>
@@ -40,15 +41,17 @@ public slots:
 
 private:
     Ui::DeviceWidget *ui;
-    // TODO:  implement this in cpp
-    QPushButton *SkillButton;
-    UA_Client *m_UaClient;
-    QTimer *timer;
+    QPushButton *SkillButton = nullptr;
+    UA_Client *m_UaClient = nullptr;
+    QTimer *m_timer = nullptr;
     std::map< char*,  char*> SkillMap_Id;
     std::map< char*, char*> DeviceMap_Id;
     std::map< char*,  QPushButton*> SkillMap_Button;
     uint8_t DeviceNameSpace;
     int tabIndex;
+    DeviceInformation *m_deviceinfo = nullptr;
+    QVBoxLayout *m_buttonLayout = nullptr;
+    QWidget *m_central = nullptr;
 };
 
 #endif // DYNAMICCUSTOMTAB_H

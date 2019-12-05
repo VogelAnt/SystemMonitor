@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QTimer>
 #include <QStringList>
 #include <QInputDialog>
 
@@ -14,12 +15,12 @@ namespace Ui {
 class OrderWidget;
 }
 
-class OrderWidget : public QTableWidget{
+class OrderTableWidget : public QTableWidget{
     Q_OBJECT
 
 public:
-    explicit OrderWidget(QWidget *parent = nullptr);
-    ~OrderWidget();
+    explicit OrderTableWidget(QWidget *parent = nullptr);
+    ~OrderTableWidget();
     void MockOrderPage();
 
 signals:
@@ -31,8 +32,6 @@ signals:
 
 public slots:
     void on_MakeOrderTable(nlohmann::json);
-
-private slots:
     void on_TableCellDoubleClicked(int row, int column);
     void on_TableCellClicked(int row, int column);
     void on_SubscriptionMessage(QString eChannel, QString eMessage);
@@ -44,6 +43,7 @@ private:
     OrderInformation *m_Order = nullptr;
     int m_OrderNumber = 0;
     QInputDialog *m_dialog = nullptr;
+    QTimer *m_orderPagetimer = nullptr;
 };
 
 #endif // ORDERWIDGET_H

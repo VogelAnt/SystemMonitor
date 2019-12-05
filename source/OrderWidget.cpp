@@ -4,14 +4,11 @@
 using Redistorium::Redis;
 using Redistorium::Reply::ReplyElement;
 
-OrderWidget::OrderWidget(QWidget *parent) :
+OrderTableWidget::OrderTableWidget(QWidget *parent) :
       QTableWidget(parent),
       ui(new Ui::OrderWidget) {
-    RedisClient *m_orderInformation = new RedisClient(this);
-    QTimer *t_order_page = new QTimer();
 
     ui->setupUi(this);
-    // Redis Client here
     setColumnCount(4);
     setSortingEnabled(false);
     m_headerColumns << "OrderID"
@@ -20,17 +17,20 @@ OrderWidget::OrderWidget(QWidget *parent) :
                   << "LastName";
     setHorizontalHeaderLabels(m_headerColumns);
     verticalHeader()->setVisible(false);
+    m_orderInformation = new RedisClient(this);
+    m_orderPagetimer = new QTimer();
 
+    //    connect(this, &MainWindow::SendCommand, m_RedisClient, &RedisClient::SendCommand);
     connect(m_orderInformation, &RedisClient::ReceivedJSONString, m_orderInformation, &RedisClient::on_ReadFromJsonString);
-    connect(m_orderInformation, &RedisClient::SubscriptionMessage, this, &OrderWidget::on_SubscriptionMessage);
-    connect(m_orderInformation, &RedisClient::ParsedJson, this, &OrderWidget::on_MakeOrderTable);
+    connect(m_orderInformation, &RedisClient::SubscriptionMessage, this, &OrderTableWidget::on_SubscriptionMessage);
+    connect(m_orderInformation, &RedisClient::ParsedJson, this, &OrderTableWidget::on_MakeOrderTable);
     connect(m_orderInformation, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
          std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;});
-    connect(t_order_page, &QTimer::timeout, [&]() { OrderWidget::MockOrderPage(); }); // only for testing purposes
-    connect(this, &OrderWidget::ReceivedNewSubscription, m_orderInformation, &RedisClient::on_ReadFromJsonString);
-    connect(this, &OrderWidget::cellDoubleClicked, this, &OrderWidget::on_TableCellDoubleClicked);
-    connect(this, &OrderWidget::cellClicked, this, &OrderWidget::on_TableCellClicked);
-    t_order_page->start(10000);
+    connect(m_orderPagetimer, &QTimer::timeout, [&]() { OrderTableWidget::MockOrderPage(); }); // only for testing purposes
+    connect(this, &OrderTableWidget::ReceivedNewSubscription, m_orderInformation, &RedisClient::on_ReadFromJsonString);
+    connect(this, &OrderTableWidget::cellDoubleClicked, this, &OrderTableWidget::on_TableCellDoubleClicked);
+    connect(this, &OrderTableWidget::cellClicked, this, &OrderTableWidget::on_TableCellClicked);
+    m_orderPagetimer->start(1000);
     m_orderInformation->m_Redis->SUBSCRIBE("OrderPage");
 
     // TODO: accessor for m_Redis ?
@@ -41,7 +41,7 @@ OrderWidget::OrderWidget(QWidget *parent) :
     }
 }
 
-void OrderWidget::MockOrderPage() {
+void OrderTableWidget::MockOrderPage() {
     nlohmann::json OrderPage_data = m_orderInformation->make_json_orderpage();
     QString OrderPage_data_stringified = m_orderInformation->stringify_json(OrderPage_data);
     // TODO: SEGMENTATION FAULT here
@@ -50,13 +50,13 @@ void OrderWidget::MockOrderPage() {
 }
 
 
-void OrderWidget::on_SubscriptionMessage(QString eChannel, QString eMessage){
+void OrderTableWidget::on_SubscriptionMessage(QString eChannel, QString eMessage){
     // qDebug() << "Received Message from subscribed channel " << eChannel << ": \n" << eMessage;
     std::optional<QString> systemMonitor_received = eMessage;
     emit ReceivedNewSubscription(systemMonitor_received);
 }
 
-void OrderWidget::on_MakeOrderTable(nlohmann::json eParsed) {
+void OrderTableWidget::on_MakeOrderTable(nlohmann::json eParsed) {
     setSortingEnabled(false);
     m_Order = new OrderInformation(
         QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["orderID"])),
@@ -76,13 +76,13 @@ void OrderWidget::on_MakeOrderTable(nlohmann::json eParsed) {
     setSortingEnabled(true);
 }
 
-void OrderWidget::on_TableCellDoubleClicked(int row, int column){
+void OrderTableWidget::on_TableCellDoubleClicked(int row, int column){
     if (column != 1) {
         this->item(row, column)->setFlags(this->item(row,column)->flags() & ~Qt::ItemIsEditable);
     }
     else {
         m_dialog = new QInputDialog();
-        std:: cout << " Clicked Row: " << row << "Column: " << column << std::endl;
+        std:: cout << " Clicked Row: " << row << " Column: " << column << std::endl;
         int n = QInputDialog::getInt(this, "Alter OrderPriority", "Confirm by entering a different value");
         setItem(row, column, new QTableWidgetItem(QString::number(n)));
         // make the json
@@ -106,14 +106,22 @@ void OrderWidget::on_TableCellDoubleClicked(int row, int column){
     }
 }
 
-void OrderWidget::on_TableCellClicked(int row, int column){
+void OrderTableWidget::on_TableCellClicked(int row, int column){
     if (column != 1) {
         this->item(row, column)->setFlags(this->item(row,column)->flags() & ~Qt::ItemIsEditable);
     }
 }
 
-OrderWidget::~OrderWidget()
+OrderTableWidget::~OrderTableWidget()
 {
     delete ui;
 }
 
+
+//void MainWindow::MockorderPageList(){
+//    nlohmann::json OrderPage_data = m_RedisClient->make_json_orderpage();
+//    QStringList OrderPage_data_stringified;
+//    OrderPage_data_stringified << m_RedisClient->stringify_json(OrderPage_data);
+//    m_RedisClient->m_Redis->LPUSH("ALIST", OrderPage_data_stringified);
+//    m_RedisClient->m_Redis->PUBLISH("LIST", OrderPage_data_stringified);
+//}

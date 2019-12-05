@@ -36,31 +36,32 @@ static std::map<QString, QString> sMap_State_Colour{
 DeviceWidget::DeviceWidget(UA_Client* client,
                                  std::map< char*,  char*> eMap_Device_DisplayName_NodeId,
                                  std::map< char*,  char*> eMap_Skill_DisplayName_NodeId,
-                                 uint8_t index, int tabWIndex,
+                                 uint8_t index, int tabWindex,
                                  QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
     ui->setupUi(this);
-    timer = new QTimer();
-    DeviceInformation *DeviceInfo = new DeviceInformation(client, eMap_Device_DisplayName_NodeId, eMap_Skill_DisplayName_NodeId, index);
-    QVBoxLayout *ButtonLayout = new QVBoxLayout(this);
-    auto central = new QWidget(this);
+    m_timer = new QTimer();
     m_UaClient = client;
-    tabIndex = tabWIndex;
+    tabIndex = tabWindex;
     DeviceMap_Id = eMap_Device_DisplayName_NodeId;
     SkillMap_Id = eMap_Skill_DisplayName_NodeId;
     DeviceNameSpace = index;
+    m_deviceinfo = new DeviceInformation(client, eMap_Device_DisplayName_NodeId, eMap_Skill_DisplayName_NodeId, index);
+    m_central = new QWidget(this);
+    m_buttonLayout = new QVBoxLayout(m_central);
+
     for (auto &pair: SkillMap_Id){
         SkillButton = new QPushButton(pair.first, this);
         SkillMap_Button[pair.first] = SkillButton;
-        ButtonLayout->addWidget(SkillButton);
+        m_buttonLayout->addWidget(SkillButton);
         SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
     }
-    central->setLayout(ButtonLayout);
-    setCentralWidget(central);
 
-    connect(timer, &QTimer::timeout, DeviceInfo, &DeviceInformation::on_UpdateDeviceInformation);
-    connect(DeviceInfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
-    connect(DeviceInfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
-    timer->start(1000);
+    m_central->setLayout(m_buttonLayout);
+    setCentralWidget(m_central);
+    connect(m_timer, &QTimer::timeout, m_deviceinfo, &DeviceInformation::on_UpdateDeviceInformation);
+    connect(m_deviceinfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
+    connect(m_deviceinfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
+    m_timer->start(1000);
 }
 
 void DeviceWidget::on_UpdateSkillsUI(std::string nodevalue, std::pair<char *, char *>pair){
@@ -83,5 +84,9 @@ void DeviceWidget::on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, ch
 }
 
 DeviceWidget::~DeviceWidget(){
+    delete ui;
+    delete SkillButton;
+//    delete m_UaClient;
+    delete m_timer;
 
 }

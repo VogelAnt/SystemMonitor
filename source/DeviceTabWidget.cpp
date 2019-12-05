@@ -87,7 +87,6 @@ DeviceTabWidget::DeviceTabWidget(QWidget *parent) : QTabWidget(parent){
 //        DisplayName_NodeId_SeedSupplySkills["provideItemToWelding"]  = "::AsGlobalPV:opcComMitsubishi.skill.provideItemToWelding.state.stateMachine.operationalState";
 //        DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  = "::AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
 
-
         DeviceWidget *AssemblyTab = new DeviceWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, 0 , this);
         DeviceWidget *STTab = new DeviceWidget(uaClientST, DisplayName_NodeId_ST,DisplayName_NodeId_STSkills, 6, 1, this);
         DeviceWidget *LabelingTab = new DeviceWidget(uaClientLabeling, DisplayName_NodeId_Labeling,DisplayName_NodeId_LabelingSkills, 2,2, this);

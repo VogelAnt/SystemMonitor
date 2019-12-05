@@ -24,25 +24,12 @@ public:
     void MockOrderPage();
     void MockorderPageList();
 
-signals:
-//    void SendCommand(QString);
-//    void SendMES_Data(nlohmann::json);
-//    void GetReply();
-//    void ReceivedNewSubscription(std::optional<QString> eParsed);
-//    void OrderPriorityChanged(int);
-
-public slots:
-//    void on_MakeOrderTable(nlohmann::json);
-
-//private slots:
-//    void on_SubscriptionMessage(QString eChannel, QString eMessage);
-
 private:
     Ui::MainWindow *m_ui = nullptr;
     QHBoxLayout *m_layout = nullptr;
     DeviceTabWidget *m_deviceTab = nullptr;
     QWidget *m_central = nullptr;
-    OrderWidget *m_orderTable = nullptr;
+    OrderTableWidget *m_orderTable = nullptr;
 };
 
 #endif // MAINWINDOW_H
