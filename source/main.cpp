@@ -4,9 +4,6 @@
 
 #include <QApplication>
 
-#include <algorithm>
-#include <random>
-
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     a.setStyle("fusion");

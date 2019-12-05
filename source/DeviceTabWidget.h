@@ -1,5 +1,9 @@
 #ifndef TABSTYLE_HORIZONTALTEXT_H
 #define TABSTYLE_HORIZONTALTEXT_H
+#include "open62541.h"
+
+#include "DeviceWidget.h"
+
 #include <QProxyStyle>
 #include <QStyleOption>
 #include <QTabWidget>
@@ -33,11 +37,20 @@ public:
     void drawControl(ControlElement eElement, const QStyleOption *eOption, QPainter *ePainter, const QWidget *eWidget) const override;
 };
 
-class MyCustomTab : public QTabWidget{
+
+class DeviceTabWidget : public QTabWidget{
     Q_OBJECT
-    public:
-    MyCustomTab(QWidget *parent = nullptr);
-    virtual ~MyCustomTab();
+public:
+    DeviceTabWidget(QWidget *parent = nullptr);
+    virtual ~DeviceTabWidget();
+
+public slots:
+    void on_ChangeDeviceStatus(int index, QString textColour, QString tabText);
+
+private:
+    TabStyle_HorizontalText *m_TabStyle = nullptr;
 };
+
+
 
 #endif // TABSTYLE_HORIZONTALTEXT_H

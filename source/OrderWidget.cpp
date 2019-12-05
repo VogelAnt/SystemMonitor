@@ -6,8 +6,7 @@ using Redistorium::Reply::ReplyElement;
 
 OrderWidget::OrderWidget(QWidget *parent) :
       QTableWidget(parent),
-      ui(new Ui::OrderWidget)
-{
+      ui(new Ui::OrderWidget) {
     RedisClient *m_orderInformation = new RedisClient(this);
     QTimer *t_order_page = new QTimer();
 
@@ -26,13 +25,15 @@ OrderWidget::OrderWidget(QWidget *parent) :
     connect(m_orderInformation, &RedisClient::SubscriptionMessage, this, &OrderWidget::on_SubscriptionMessage);
     connect(m_orderInformation, &RedisClient::ParsedJson, this, &OrderWidget::on_MakeOrderTable);
     connect(m_orderInformation, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
-        // std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
-    });
+         std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;});
     connect(t_order_page, &QTimer::timeout, [&]() { OrderWidget::MockOrderPage(); }); // only for testing purposes
     connect(this, &OrderWidget::ReceivedNewSubscription, m_orderInformation, &RedisClient::on_ReadFromJsonString);
-    t_order_page->start(3000);
+    connect(this, &OrderWidget::cellDoubleClicked, this, &OrderWidget::on_TableCellDoubleClicked);
+    connect(this, &OrderWidget::cellClicked, this, &OrderWidget::on_TableCellClicked);
+    t_order_page->start(10000);
     m_orderInformation->m_Redis->SUBSCRIBE("OrderPage");
 
+    // TODO: accessor for m_Redis ?
     ReplyElement orderPage_data_received = m_orderInformation->m_Redis->GET("DataOrderPage");
     if (orderPage_data_received.GetBulkString().has_value()) {
         qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
@@ -43,7 +44,7 @@ OrderWidget::OrderWidget(QWidget *parent) :
 void OrderWidget::MockOrderPage() {
     nlohmann::json OrderPage_data = m_orderInformation->make_json_orderpage();
     QString OrderPage_data_stringified = m_orderInformation->stringify_json(OrderPage_data);
-    // why are these two different Keys ?
+    // TODO: SEGMENTATION FAULT here
     m_orderInformation->m_Redis->SET("DataOrderPage", OrderPage_data_stringified);
     m_orderInformation->m_Redis->PUBLISH("OrderPage", OrderPage_data_stringified);
 }

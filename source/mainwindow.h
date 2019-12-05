@@ -1,24 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
-#include "DeviceWidget.h"
-#include "orderinformation.h"
 #include "OrderWidget.h"
-#include "redisclient.h"
-#include "tabstyle_horizontaltext.h"
+#include "DeviceTabWidget.h"
 
+#include <QWidget>
 #include <QHBoxLayout>
 #include <QMainWindow>
-#include <QMessageBox>
-#include <QPushButton>
 #include <QString>
-#include <QStringList>
-#include <QTimer>
-#include <QInputDialog>
 
-#include <random>
 #include <iostream>
-#include <map>
 #include <string>
 
 namespace Ui {
@@ -43,25 +33,16 @@ signals:
 
 public slots:
 //    void on_MakeOrderTable(nlohmann::json);
-    void on_ChangeDeviceStatus(int index, QString textColour, QString tabText);
 
 //private slots:
-//    void on_tableWidget_cellDoubleClicked(int row, int column);
-//    void on_tableWidget_cellClicked(int row, int column);
 //    void on_SubscriptionMessage(QString eChannel, QString eMessage);
 
 private:
-    int TabWidgetUpdates = 0;
-    Ui::MainWindow *ui = nullptr;
-    QStringList headerColumns;
-    RedisClient *m_RedisClient = nullptr;
-    QMessageBox *prioritybox = nullptr;
-    TabStyle_HorizontalText *m_TabStyle = nullptr;
+    Ui::MainWindow *m_ui = nullptr;
     QHBoxLayout *m_layout = nullptr;
-    OrderInformation *order = nullptr;
-    QInputDialog *dialog = nullptr;
-    MyCustomTab *deviceTab = nullptr;
-    int m_OrderNumber = 0;
+    DeviceTabWidget *m_deviceTab = nullptr;
+    QWidget *m_central = nullptr;
+    OrderWidget *m_orderTable = nullptr;
 };
 
 #endif // MAINWINDOW_H
