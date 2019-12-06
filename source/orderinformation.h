@@ -4,47 +4,35 @@
 #include <QString>
 #include <nlohmann/json.hpp>
 
-// TODO: THIS CLASS SHOULD BE CALLED ORDER !!!
-
 class OrderInformation : public QObject {
     Q_OBJECT
 public:
     OrderInformation();
-    OrderInformation(QString id, QString priority, QString firstname, QString lastname)
-        : m_order_id{id}, m_order_priority{priority}, m_customer_first_name{firstname}, m_customer_last_name{lastname} {}
+    OrderInformation(QString id, QString priority, QString customerName) : m_orderID{id}, m_orderPriority{priority}, m_customerName{customerName} {}
 
     void SetOrderID(QString order_id) {
-        m_order_id = order_id;
+        m_orderID = order_id;
     }
     void SetOrderPriority(QString order_priority) {
-        m_order_priority = order_priority;
+        m_orderPriority = order_priority;
     }
-    void SetCustomerFirstName(QString first_name) {
-        m_customer_first_name = first_name;
+    void SetCustomerName(QString first_name) {
+        m_customerName = first_name;
     }
-    void SetCustomerLastName(QString last_name) {
-        m_customer_last_name = last_name;
-    }
-
     QString GetOrderID() {
-        return m_order_id;
+        return m_orderID;
     }
     QString GetOrderPriority() {
-        return m_order_priority;
+        return m_orderPriority;
     }
-    QString GetCustomerFirstName() {
-        return m_customer_first_name;
+    QString GetCustomerName() {
+        return m_customerName;
     }
-    QString GetCustomerLastName() {
-        return m_customer_last_name;
-    }
-    void SendOrderToRedis();
 
 private:
-    QString m_order_id;
-    QString m_order_priority;
-    QString m_customer_first_name;
-    QString m_customer_last_name;
+    QString m_orderID;
+    QString m_orderPriority;
+    QString m_customerName;
 };
 
 #endif // ORDERINFORMATION_H

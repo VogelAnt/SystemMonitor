@@ -29,16 +29,13 @@ nlohmann::json RedisClient::make_json_MES() {
     return MES_json;
 }
 
-nlohmann::json RedisClient::test_lists(){
+nlohmann::json RedisClient::test_lists() {
     nlohmann::json OrderPage_json;
     auto order_arr = nlohmann::json::array();
     int r = rand();
     // create a random number,
     std::string rand = std::to_string(r);
-    nlohmann::json order_json{{"orderID", rand},
-                              {"priority", "0"},
-                              {"firstName", "John"},
-                              {"lastName", "Kimble"}};
+    nlohmann::json order_json{{"orderID", rand}, {"priority", "0"}, {"firstName", "John"}, {"lastName", "Kimble"}};
     order_arr.push_back(order_json);
     OrderPage_json = order_arr;
     return OrderPage_json;
@@ -50,10 +47,7 @@ nlohmann::json RedisClient::make_json_orderpage() {
     int r = rand();
     // create a random number,
     std::string rand = std::to_string(r);
-    nlohmann::json order_json{{"orderID", rand},
-                              {"priority", "0"},
-                              {"firstName", "John"},
-                              {"lastName", "Kimble"}};
+    nlohmann::json order_json{{"orderID", rand}, {"priority", "0"}, {"firstName", "John"}, {"lastName", "Kimble"}};
     order_arr.push_back(order_json);
     OrderPage_json["DataOrderPage"] = order_arr;
     return OrderPage_json;
@@ -101,18 +95,12 @@ void RedisClient::GetReply() {
 //    }
 //}
 
-QString RedisClient::on_ReadFromJsonString(std::optional<QString> eJsonString) {
+void RedisClient::on_ReadFromJsonString(std::optional<QString> eJsonString) {
     try {
         QString temp = eJsonString.value();
         temp = temp.replace("\\\"", "\"");
         nlohmann::json parsed = nlohmann::json::parse(temp.toStdString());
         // qDebug() << "parsed[DataOrderPage]" << QString(std::string(parsed["DataOrderPage"][0].dump()).c_str());
-        if (parsed["DataOrderPage"] != nullptr) {
-            // emit send parsed to BuildOrderOverviewTable, initialize instance of OrderList there
-            emit ParsedJson(parsed);
-
-            // emit add to List function
-            return "";
-        }
+        if (parsed["DataOrderPage"] != nullptr) { emit ParsedJson(parsed); }
     } catch (std::exception e) { qDebug() << e.what(); }
 }

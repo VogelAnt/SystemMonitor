@@ -60,11 +60,11 @@ public:
         m_Redis->PUBLISH(eChannel, eMessage);
     }
 
-    void LPOP(const QString &list){
+    void LPOP(const QString &list) {
         m_Redis->LPOP(list);
     }
 
-    void LPUSH(const QString &list, const QStringList &listElement){
+    void LPUSH(const QString &list, const QStringList &listElement) {
         m_Redis->LPUSH(list, listElement);
     }
 
@@ -78,7 +78,7 @@ signals:
 public slots:
     void SendCommand(const QString &command); // doesn't do anything ????
     void GetReply();
-    QString on_ReadFromJsonString(std::optional<QString>);
+    void on_ReadFromJsonString(std::optional<QString>);
 
 private slots:
     /**
