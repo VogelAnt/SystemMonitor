@@ -29,15 +29,15 @@ OrderTableWidget::OrderTableWidget(QWidget *parent) : QTableWidget(parent), ui(n
     connect(this, &OrderTableWidget::cellDoubleClicked, this, &OrderTableWidget::on_TableCellDoubleClicked);
     connect(this, &OrderTableWidget::cellClicked, this, &OrderTableWidget::on_TableCellClicked);
     m_orderPagetimer->start(1000);
-    //    m_orderInformation->m_Redis->SUBSCRIBE("OrderPage");
+    m_orderInformation->m_Redis->SUBSCRIBE("OrderPage");
     m_orderInformation->m_Redis->SUBSCRIBE("orderChannel");
-    //    ReplyElement orderPage_data_received = m_orderInformation->m_Redis->GET("DataOrderPage");
-    //    if (orderPage_data_received.GetBulkString().has_value()) {
-    //        //        qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
-    //        emit m_orderInformation->ReceivedJSONString(orderPage_data_received.GetBulkString());
-    //    }
+    ReplyElement orderPage_data_received = m_orderInformation->m_Redis->GET("DataOrderPage");
+    if (orderPage_data_received.GetBulkString().has_value()) {
+        //        qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
+        emit m_orderInformation->ReceivedJSONString(orderPage_data_received.GetBulkString());
+    }
 
-    ReplyElement orderData = m_orderInformation->m_Redis->LPOP("order");
+    ReplyElement orderData = m_orderInformation->m_Redis->LRANGE("test", 0, 0);
     if (orderData.GetBulkString().has_value()) {
         qDebug() << "CLP data looks like this " << orderData.GetBulkString().value();
         emit m_orderInformation->ReceivedJSONString(orderData.GetBulkString());
