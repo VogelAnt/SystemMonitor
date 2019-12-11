@@ -1,12 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "OrderWidget.h"
 #include "DeviceTabWidget.h"
+#include "OrderWidget.h"
 
-#include <QWidget>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QMainWindow>
 #include <QString>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include <iostream>
 #include <string>
@@ -20,9 +22,6 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-    void MockOrderPage();
-    void MockorderPageList();
 
 private:
     Ui::MainWindow *m_ui = nullptr;

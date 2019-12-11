@@ -9,16 +9,6 @@
 
 #include <iostream>
 
-// Needed for MES Mock
-static std::vector<std::string> ModuleList{"SeedModule", "BufferModule", "SealingModule", "OutputModule", "TransportModule", "TransferModule"};
-static std::vector<std::string> SkillList{"Skill1", "Skill2", "Skill3", "Skill4", "Skill5"};
-
-typedef struct {
-    std::string moduleName;
-    std::string skill;
-    std::string status;
-} MES_test;
-
 class RedisClient : public QObject {
     Q_OBJECT
 
@@ -44,14 +34,6 @@ public:
         m_Redis->PUBLISH(eChannel, eMessage);
     }
 
-    void LPOP(const QString &list) {
-        m_Redis->LPOP(list);
-    }
-
-    void LPUSH(const QString &list, const QStringList &listElement) {
-        m_Redis->LPUSH(list, listElement);
-    }
-
 signals:
     void ReceivedJSONString(QString);
     void SubscriptionMessage(const QString &eChannel, const QString &eMessage);
@@ -59,19 +41,7 @@ signals:
     void ReceivedNewSubscription(std::optional<QString>);
 
 public slots:
-    void SendCommand(const QString &command); // doesn't do anything ????
-    void GetReply();
     void on_ReadFromJsonString(QString);
-
-private slots:
-    /**
-     * @brief update
-     * simulates timed OrderPage & MES
-     */
-    void update();
-
-private:
-    QTimer *m_Timer = nullptr;
 };
 
 #endif // REDISCLIENT_H
