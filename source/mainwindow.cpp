@@ -24,6 +24,6 @@ MainWindow::~MainWindow() {
     delete m_layout;
     delete m_deviceTab;
     delete m_central;
+    // Segmentation fault ?
+    //    delete m_orderTable;
 }
-
-// Create

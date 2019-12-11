@@ -10,27 +10,27 @@ TARGET = system-monitor-gui
 TEMPLATE = app
 
 INCLUDEPATH += \
-$$PWD/external/redistorium/include \
-$$PWD/external/json/include \
-$$PWD/external/open62541 \
-$$PWD/external/opc-ua-server-c/include
+$$PWD/../external/redistorium/include \
+$$PWD/../external/json/include \
+$$PWD/../external/open62541 \
+$$PWD/../external/opc-ua-server-c/include
 
 LIBS += \
--L$$PWD/external/redistorium/build/redistorium.lib/ -lredistorium \
--L$$PWD/external/json/
+-L$$PWD/../external/redistorium/build/redistorium.lib/ -lredistorium \
+-L$$PWD/../external/json/
 
 CONFIG += c++1z
 
 SOURCES += \
-$$PWD/external/open62541/open62541.c \
-$$files($$PWD/external/opc-ua-server-c/source/*.cpp) \
-$$files(source/*.cpp)
+$$PWD/../external/open62541/open62541.c \
+$$files($$PWD/../external/opc-ua-server-c/source/*.cpp) \
+$$files($$PWD/*.cpp)
 
 HEADERS += \
-$$files(source/*.h)
+$$files($$PWD/*.h)
 
 FORMS += \
-$$files(source/*.ui)
+$$files($$PWD/*.ui)
 
 DESTDIR = $$PWD/build
 MOC_DIR = $$DESTDIR/moc

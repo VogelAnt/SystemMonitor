@@ -8,7 +8,7 @@
 #include <redistorium/redis.hpp>
 
 #include <iostream>
-
+// TODO: make m_redis a private member, rework the functions
 class RedisClient : public QObject {
     Q_OBJECT
 
