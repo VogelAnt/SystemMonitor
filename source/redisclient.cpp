@@ -8,51 +8,6 @@ RedisClient::RedisClient(QObject *parent) : QObject(parent) {
     connect(m_Redis, &Redistorium::Redis::Disconnected, []() { qDebug() << "Disconnected"; });
 }
 
-// for testing purposes only
-nlohmann::json RedisClient::make_json_MES() {
-    // std::cout << "Now making MES JSON" << std::endl;
-    nlohmann::json MES_json;
-    auto module_arr = nlohmann::json::array();
-    for (auto &module : ModuleList) {
-        nlohmann::json module_json;
-        module_json["ModuleName"] = module;
-        auto skill_arr = nlohmann::json::array();
-        for (auto &skill : SkillList) {
-            nlohmann::json j_2{{"SkillName", skill}, {"SkillStatus", "OK"}};
-            skill_arr.push_back(j_2);
-        }
-        module_json["skills"] = skill_arr;
-        module_arr.push_back(module_json);
-    }
-    MES_json["data_MES"] = module_arr;
-    // std::cout << MES_json;
-    return MES_json;
-}
-
-nlohmann::json RedisClient::test_lists() {
-    nlohmann::json OrderPage_json;
-    auto order_arr = nlohmann::json::array();
-    int r = rand();
-    // create a random number,
-    std::string rand = std::to_string(r);
-    nlohmann::json order_json{{"orderID", rand}, {"priority", "0"}, {"firstName", "John"}, {"lastName", "Kimble"}};
-    order_arr.push_back(order_json);
-    OrderPage_json = order_arr;
-    return OrderPage_json;
-}
-
-nlohmann::json RedisClient::make_json_orderpage() {
-    nlohmann::json OrderPage_json;
-    auto order_arr = nlohmann::json::array();
-    int r = rand();
-    // create a random number,
-    std::string rand = std::to_string(r);
-    nlohmann::json order_json{{"orderID", rand}, {"priority", "0"}, {"firstName", "John"}, {"lastName", "Kimble"}};
-    order_arr.push_back(order_json);
-    OrderPage_json["DataOrderPage"] = order_arr;
-    return OrderPage_json;
-}
-
 QString RedisClient::stringify_json(nlohmann::json object_to_be_stringified) {
     std::string tempstdstr = object_to_be_stringified.dump();
     QString tempqstring = tempstdstr.c_str();
@@ -95,12 +50,13 @@ void RedisClient::GetReply() {
 //    }
 //}
 
-void RedisClient::on_ReadFromJsonString(std::optional<QString> eJsonString) {
-    try {
-        QString temp = eJsonString.value();
-        temp = temp.replace("\\\"", "\"");
-        nlohmann::json parsed = nlohmann::json::parse(temp.toStdString());
-        // qDebug() << "parsed[DataOrderPage]" << QString(std::string(parsed["DataOrderPage"][0].dump()).c_str());
-        if (parsed["DataOrderPage"] != nullptr) { emit ParsedJson(parsed); }
-    } catch (std::exception e) { qDebug() << e.what(); }
+void RedisClient::on_ReadFromJsonString(QString eJsonString) {
+    std::cout << "reading json string" << std::endl;
+    QString temp = eJsonString;
+    temp = temp.replace("\\\"", "\"");
+    temp.remove(0, 1);
+    temp.remove(temp.length() - 1, 1);
+    nlohmann::json parsed = nlohmann::json::parse(temp.toStdString());
+    // qDebug() << "parsed[DataOrderPage]" << QString(std::string(parsed["DataOrderPage"][0].dump()).c_str());
+    if (parsed["id"] != nullptr) { emit ParsedJson(parsed); }
 }

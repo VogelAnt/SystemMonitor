@@ -3,15 +3,15 @@
 
 using Redistorium::Redis;
 using Redistorium::Reply::ReplyElement;
+using Redistorium::Reply::ReplyType;
 
 OrderTableWidget::OrderTableWidget(QWidget *parent) : QTableWidget(parent), ui(new Ui::OrderWidget) {
-
     ui->setupUi(this);
     m_orderInformation = new RedisClient(this);
     m_orderPagetimer = new QTimer();
     m_headerColumns << "OrderID"
-                    << "Priority"
-                    << "CustomerName";
+                    << "CustomerName"
+                    << "Priority";
     setColumnCount(3);
     setSortingEnabled(false);
     setHorizontalHeaderLabels(m_headerColumns);
@@ -24,82 +24,53 @@ OrderTableWidget::OrderTableWidget(QWidget *parent) : QTableWidget(parent), ui(n
     connect(m_orderInformation, &RedisClient::SubscriptionMessage, [](QString eChannel, QString eMessage) {
         //        std::cout << "New subscription message on channel \"" << eChannel.toStdString() << "\": " << eMessage.toStdString() << std::endl;
     });
-    connect(m_orderPagetimer, &QTimer::timeout, [&]() { OrderTableWidget::MockOrderPage(); }); // only for testing purposes
     connect(this, &OrderTableWidget::ReceivedNewSubscription, m_orderInformation, &RedisClient::on_ReadFromJsonString);
     connect(this, &OrderTableWidget::cellDoubleClicked, this, &OrderTableWidget::on_TableCellDoubleClicked);
     connect(this, &OrderTableWidget::cellClicked, this, &OrderTableWidget::on_TableCellClicked);
     m_orderPagetimer->start(1000);
-    m_orderInformation->m_Redis->SUBSCRIBE("OrderPage");
     m_orderInformation->m_Redis->SUBSCRIBE("orderChannel");
-    ReplyElement orderPage_data_received = m_orderInformation->m_Redis->GET("DataOrderPage");
-    if (orderPage_data_received.GetBulkString().has_value()) {
-        //        qDebug() << "This is what OrderPage_data looks like" << orderPage_data_received.GetBulkString().value();
-        emit m_orderInformation->ReceivedJSONString(orderPage_data_received.GetBulkString());
+    ReplyElement initialOrderlistsize = m_orderInformation->m_Redis->LLEN("order");
+    ReplyElement orderData = m_orderInformation->m_Redis->LRANGE("order", 0, initialOrderlistsize.Integer());
+    if (orderData.Type == ReplyType::Array) {
+        orderData.Print();
+        for (auto &order : orderData.Array()) {
+            try {
+                order.Print();
+                emit m_orderInformation->ReceivedJSONString(order.GetBulkString().value());
+            } catch (std::exception e) { std::cout << __FILE__ << ":" << __LINE__ << ": " << e.what() << std::endl; }
+        }
     }
-
-    ReplyElement orderData = m_orderInformation->m_Redis->LRANGE("test", 0, 0);
-    if (orderData.GetBulkString().has_value()) {
-        qDebug() << "CLP data looks like this " << orderData.GetBulkString().value();
-        emit m_orderInformation->ReceivedJSONString(orderData.GetBulkString());
-    } else {
-        std::cout << "CONTAINS NO DATA" << std::endl;
-    }
-}
-
-void OrderTableWidget::MockOrderPage() {
-    nlohmann::json OrderPage_data = m_orderInformation->make_json_orderpage();
-    QString OrderPage_data_stringified = m_orderInformation->stringify_json(OrderPage_data);
-    // TODO: SEGMENTATION FAULT here
-    m_orderInformation->m_Redis->SET("DataOrderPage", OrderPage_data_stringified);
-    m_orderInformation->m_Redis->PUBLISH("OrderPage", OrderPage_data_stringified);
 }
 
 void OrderTableWidget::on_SubscriptionMessage(QString eChannel, QString eMessage) {
     // qDebug() << "Received Message from subscribed channel " << eChannel << ": \n" << eMessage;
     std::optional<QString> systemMonitor_received = eMessage;
-    emit ReceivedNewSubscription(systemMonitor_received);
+    if (systemMonitor_received.has_value()) { emit ReceivedNewSubscription(systemMonitor_received.value()); }
 }
 
-void OrderTableWidget::on_MakeOrderTable(nlohmann::json eParsed) {
-    qDebug() << "Now in MAKETABLE";
+void OrderTableWidget::on_MakeOrderTable(nlohmann::json eJsonArray) {
+    std::cout << "Data received in table" << eJsonArray << std::endl;
     setSortingEnabled(false);
-    m_order = new OrderInformation(
-        QString::fromStdString(std::string(eParsed["order"][0]["id"])), "0", QString::fromStdString(std::string(eParsed["order"][0]["customerName"])));
-    setRowCount(eParsed["DataOrderPage"].size() + m_orderNumber);
-    setItem(m_orderNumber, 0, new QTableWidgetItem(m_order->GetOrderID()));
-    setItem(m_orderNumber, 1, new QTableWidgetItem(m_order->GetOrderPriority()));
-    setItem(m_orderNumber, 2, new QTableWidgetItem(m_order->GetCustomerName()));
-    ++m_orderNumber;
+    OrderInformation order =
+        OrderInformation(QString::fromStdString(std::string(eJsonArray["id"])), "0", QString::fromStdString(std::string(eJsonArray["customerName"])));
+    // setRowCount(eJsonArray.size() + m_orderNumber)
+    setRowCount(m_orderVector.size() + 1);
+    setItem(m_orderVector.size(), 0, new QTableWidgetItem(order.GetOrderID()));
+    setItem(m_orderVector.size(), 1, new QTableWidgetItem(order.GetCustomerName()));
+    setItem(m_orderVector.size(), 2, new QTableWidgetItem(order.GetOrderPriority()));
+    std::cout << item(m_orderVector.size(), 0) << std::endl;
+    m_orderVector.push_back(order);
     // You can't sort while setting !
     horizontalHeader()->setSortIndicatorShown(true);
     horizontalHeader()->setSortIndicator(0, Qt::DescendingOrder);
     setSortingEnabled(true);
 }
 
-// void OrderTableWidget::on_MakeOrderTable(nlohmann::json eParsed) {
-//    setSortingEnabled(false);
-//    m_order = new OrderInformation(
-//        QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["orderID"])),
-//        QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["priority"])),
-//        QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["firstName"])),
-//        QString::fromStdString(std::string(eParsed["DataOrderPage"][0]["lastName"])));
-//    setRowCount(eParsed["DataOrderPage"].size() + m_orderNumber);
-//    setItem(m_orderNumber, 0, new QTableWidgetItem(m_order->GetOrderID()));
-//    setItem(m_orderNumber, 1, new QTableWidgetItem(m_order->GetOrderPriority()));
-//    setItem(m_orderNumber, 2, new QTableWidgetItem(m_order->GetCustomerFirstName()));
-//    setItem(m_orderNumber, 3, new QTableWidgetItem(m_order->GetCustomerLastName()));
-//    ++m_orderNumber;
-//    // You can't sort while setting...
-//    horizontalHeader()->setSortIndicatorShown(true);
-//    horizontalHeader()->setSortIndicator(0, Qt::DescendingOrder);
-//    setSortingEnabled(true);
-//}
-
 void OrderTableWidget::on_TableCellDoubleClicked(int row, int column) {
-    if (column != 1) {
+    if (column != 2) {
         this->item(row, column)->setFlags(this->item(row, column)->flags() & ~Qt::ItemIsEditable);
     } else {
-        m_dialog = new QInputDialog();
+        m_priorityDialog = new QInputDialog();
         std::cout << " Clicked Row: " << row << " Column: " << column << std::endl;
         int n = QInputDialog::getInt(this, "Alter OrderPriority", "Confirm by entering a different value");
         setItem(row, column, new QTableWidgetItem(QString::number(n)));
@@ -107,9 +78,8 @@ void OrderTableWidget::on_TableCellDoubleClicked(int row, int column) {
         nlohmann::json ChangedOrder_json;
         auto order_arr = nlohmann::json::array();
         nlohmann::json order_json{{"orderID", item(row, 0)->text().toStdString()},
-                                  {"priority", std::to_string(n)},
-                                  {"firstName", item(row, 2)->text().toStdString()},
-                                  {"lastName", item(row, 3)->text().toStdString()}};
+                                  {"CustomerName", item(row, 1)->text().toStdString()},
+                                  {"Priority", item(row, 2)->text().toStdString()}};
         order_arr.push_back(order_json);
         ChangedOrder_json["DataOrderPage"] = order_arr;
         // stringify it
@@ -117,20 +87,20 @@ void OrderTableWidget::on_TableCellDoubleClicked(int row, int column) {
         QString tempqstring = tempstdstr.c_str();
         tempqstring.replace("\"", "\\\"");
         tempqstring = QString("\"" + tempqstring + "\"");
-        // make a QStringList
-        //        m_RedisClient->m_Redis->LPUSH()
         m_orderInformation->m_Redis->SET("AlteredDataOrderPage", tempqstring);
         m_orderInformation->m_Redis->PUBLISH("AltOrderPage", tempqstring);
     }
 }
 
 void OrderTableWidget::on_TableCellClicked(int row, int column) {
-    if (column != 1) { this->item(row, column)->setFlags(this->item(row, column)->flags() & ~Qt::ItemIsEditable); }
+    if (column != 1) {
+        qDebug() << "Row: " << row << " Column:" << column;
+        this->item(row, column)->setFlags(this->item(row, column)->flags() & ~Qt::ItemIsEditable);
+    }
 }
 
 OrderTableWidget::~OrderTableWidget() {
     delete ui;
     delete m_orderInformation;
     delete m_orderPagetimer;
-    delete m_order;
 }

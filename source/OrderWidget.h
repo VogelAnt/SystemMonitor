@@ -1,33 +1,31 @@
 #ifndef ORDERWIDGET_H
 #define ORDERWIDGET_H
 #include "nlohmann/json.hpp"
-#include "redisclient.h"
 #include "orderinformation.h"
+#include "redisclient.h"
 
-#include <QWidget>
-#include <QTableWidget>
 #include <QHeaderView>
-#include <QTimer>
-#include <QStringList>
 #include <QInputDialog>
+#include <QStringList>
+#include <QTableWidget>
+#include <QTimer>
+#include <QWidget>
 
 namespace Ui {
 class OrderWidget;
 }
 
-class OrderTableWidget : public QTableWidget{
+class OrderTableWidget : public QTableWidget {
     Q_OBJECT
 
 public:
     explicit OrderTableWidget(QWidget *parent = nullptr);
     ~OrderTableWidget();
-    void MockOrderPage();
 
 signals:
     void SendCommand(QString);
-    void SendMES_Data(nlohmann::json);
     void GetReply();
-    void ReceivedNewSubscription(std::optional<QString> eParsed);
+    void ReceivedNewSubscription(QString eParsed);
     void OrderPriorityChanged(int);
 
 public slots:
@@ -38,12 +36,11 @@ public slots:
 
 private:
     Ui::OrderWidget *ui;
-    RedisClient *m_orderInformation = nullptr;
     QStringList m_headerColumns;
-    OrderInformation *m_order = nullptr;
-    int m_orderNumber = 0;
-    QInputDialog *m_dialog = nullptr;
+    RedisClient *m_orderInformation = nullptr;
     QTimer *m_orderPagetimer = nullptr;
+    std::vector<OrderInformation> m_orderVector;
+    QInputDialog *m_priorityDialog = nullptr;
 };
 
 #endif // ORDERWIDGET_H

@@ -4,8 +4,7 @@
 #include <QString>
 #include <nlohmann/json.hpp>
 
-class OrderInformation : public QObject {
-    Q_OBJECT
+class OrderInformation {
 public:
     OrderInformation();
     OrderInformation(QString id, QString priority, QString customerName) : m_orderID{id}, m_orderPriority{priority}, m_customerName{customerName} {}

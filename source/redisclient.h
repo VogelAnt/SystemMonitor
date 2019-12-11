@@ -36,22 +36,6 @@ public:
      */
     QString stringify_json(nlohmann::json);
 
-    /**
-     * @brief MES_json
-     * creates mocc JSON from MES
-     * @return
-     */
-    nlohmann::json make_json_MES();
-
-    /**
-     * @brief RedisClient::OrderPage_json
-     * creates JSON for Orders
-     * @return
-     */
-    nlohmann::json make_json_orderpage();
-
-    nlohmann::json test_lists();
-
     void Subscribe(QString eChannel) {
         m_Redis->SUBSCRIBE(eChannel);
     }
@@ -69,8 +53,7 @@ public:
     }
 
 signals:
-    void sendMESdata(nlohmann::json);
-    void ReceivedJSONString(std::optional<QString>);
+    void ReceivedJSONString(QString);
     void SubscriptionMessage(const QString &eChannel, const QString &eMessage);
     void ParsedJson(nlohmann::json);
     void ReceivedNewSubscription(std::optional<QString>);
@@ -78,7 +61,7 @@ signals:
 public slots:
     void SendCommand(const QString &command); // doesn't do anything ????
     void GetReply();
-    void on_ReadFromJsonString(std::optional<QString>);
+    void on_ReadFromJsonString(QString);
 
 private slots:
     /**
