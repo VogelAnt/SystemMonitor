@@ -24,7 +24,8 @@ HEADERS += \
 $$files($$PWD/../external/googletest/googletest/include/gtest/*.h) \
 $$files($$PWD/../external/googletest/googlemock/include/gmock/*.h) \
 $$PWD/../source/OrderInformation.h \
-$$files($$PWD/*.h)
+$$files($$PWD/*.h) \
+    RedisClientTest.h
 
 SOURCES += \
 $$PWD/../external/open62541/open62541.c \

@@ -27,7 +27,7 @@ $$files($$PWD/../external/opc-ua-server-c/source/*.cpp) \
 $$files($$PWD/*.cpp)
 
 HEADERS += \
-$$files($$PWD/*.h)
+$$files($$PWD/*.h) \
 
 FORMS += \
 $$files($$PWD/*.ui)
