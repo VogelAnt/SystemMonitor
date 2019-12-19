@@ -36,6 +36,7 @@ public:
         QWidget *parent = nullptr);
     virtual ~DeviceWidget();
 
+    void MakeButtonLayout();
 signals:
     void ChangeDeviceStatus(int index, QString textColour, QString tabText);
 
