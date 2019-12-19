@@ -36,6 +36,7 @@ DeviceWidget::DeviceWidget(
     std::map<char *, char *> eMap_Device_DisplayName_NodeId,
     std::map<char *, char *> eMap_Skill_DisplayName_NodeId,
     uint8_t index,
+    // TODO: make this a member
     int tabWindex,
     QWidget *parent)
     : QMainWindow(parent), ui(new Ui::DeviceWidget) {
@@ -108,9 +109,10 @@ void DeviceWidget::on_AbortButtonClicked() {
 }
 
 void DeviceWidget::on_SkillButtonClicked() {
-    //    QString test2 = QInputDialog::getItem(this, "sds", "sdsd", sDevice_Triggers, 0, false);
-    QString test = QInputDialog::getItem(this, "Skill X", "Trigger Skill State of X", sDevice_Triggers, 0, false);
-    // TODO: should Display the Name of the Skill on top
+    QPushButton *tmpButton = qobject_cast<QPushButton *>(sender());
+    QString tmpButtontext = tmpButton->text();
+    QString test = QInputDialog::getItem(this, tmpButtontext, "Trigger Skill State of " + tmpButtontext, sDevice_Triggers, 0, false);
+    // TODO: emit signal from here to order information
 }
 
 DeviceWidget::~DeviceWidget() {
