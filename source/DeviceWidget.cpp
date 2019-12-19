@@ -29,6 +29,8 @@ static std::map<QString, QString> sMap_State_Colour{{"Idle", "lightgreen"},
                                                     {"Paused", "pink"},
                                                     {"Blocked", "cyan"}};
 
+static QStringList sDevice_Triggers{"TriggerAbort", "TriggerClear", "TriggerReset", "TriggerStart", "TriggerStop"};
+
 DeviceWidget::DeviceWidget(
     UA_Client *client,
     std::map<char *, char *> eMap_Device_DisplayName_NodeId,
@@ -88,7 +90,7 @@ void DeviceWidget::on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, ch
 }
 
 void DeviceWidget::on_AbortButtonClicked() {
-    int actionValue = QMessageBox::warning(
+    int actionValue = QMessageBox::critical(
         this,
         "ABORTING DEVICE...",
         "The selected device will be aborted, do you really want to proceed?",
@@ -105,7 +107,11 @@ void DeviceWidget::on_AbortButtonClicked() {
     }
 }
 
-void DeviceWidget::on_SkillButtonClicked() {}
+void DeviceWidget::on_SkillButtonClicked() {
+    //    QString test2 = QInputDialog::getItem(this, "sds", "sdsd", sDevice_Triggers, 0, false);
+    QString test = QInputDialog::getItem(this, "Skill X", "Trigger Skill State of X", sDevice_Triggers, 0, false);
+    // TODO: should Display the Name of the Skill on top
+}
 
 DeviceWidget::~DeviceWidget() {
     delete ui;

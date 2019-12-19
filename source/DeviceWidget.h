@@ -5,10 +5,12 @@
 
 #include <QButtonGroup>
 #include <QDebug>
+#include <QInputDialog>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
+#include <QStringList>
 #include <QStyleOptionTab>
 #include <QStylePainter>
 #include <QVBoxLayout>
