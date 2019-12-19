@@ -47,17 +47,22 @@ DeviceWidget::DeviceWidget(
     m_deviceinfo = new DeviceInformation(client, eMap_Device_DisplayName_NodeId, eMap_Skill_DisplayName_NodeId, index);
     m_central = new QWidget(this);
     m_buttonLayout = new QVBoxLayout(m_central);
-
+    m_abortButton = new QPushButton("ABORT", this);
+    m_abortButton->setStyleSheet("font-size : 24px");
+    m_buttonLayout->addWidget(m_abortButton);
     for (auto &pair : SkillMap_Id) {
+        // connect for pop up of each Skill in here
         SkillButton = new QPushButton(pair.first, this);
         SkillMap_Button[pair.first] = SkillButton;
         m_buttonLayout->addWidget(SkillButton);
         SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
+        connect(SkillMap_Button[pair.first], &QPushButton::clicked, this, &DeviceWidget::on_SkillButtonClicked);
     }
 
     m_central->setLayout(m_buttonLayout);
     setCentralWidget(m_central);
     connect(m_timer, &QTimer::timeout, m_deviceinfo, &DeviceInformation::on_UpdateDeviceInformation);
+    connect(m_abortButton, &QPushButton::clicked, this, &DeviceWidget::on_AbortButtonClicked);
     connect(m_deviceinfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
     connect(m_deviceinfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
     m_timer->start(1000);
@@ -81,6 +86,26 @@ void DeviceWidget::on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, ch
     QString tabText = pair.first + node_value;
     ChangeDeviceStatus(tabIndex, tmp, tabText);
 }
+
+void DeviceWidget::on_AbortButtonClicked() {
+    int actionValue = QMessageBox::warning(
+        this,
+        "ABORTING DEVICE...",
+        "The selected device will be aborted, do you really want to proceed?",
+        QMessageBox::Abort | QMessageBox::Cancel,
+        QMessageBox::Cancel);
+    switch (actionValue) {
+    case QMessageBox::Abort:
+        qDebug() << "NOW ABORTING";
+        break;
+    case QMessageBox::Cancel:
+        break;
+    default:
+        break;
+    }
+}
+
+void DeviceWidget::on_SkillButtonClicked() {}
 
 DeviceWidget::~DeviceWidget() {
     delete ui;

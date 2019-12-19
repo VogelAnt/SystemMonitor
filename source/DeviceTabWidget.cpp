@@ -1,5 +1,5 @@
 #include "DeviceTabWidget.h"
-// TODO: fix the redundancies here
+// TODO: ask on stack overflow for a less redundant way
 DeviceTabWidget::DeviceTabWidget(QWidget *parent) : QTabWidget(parent) {
     /** DEVICE CLIENTS
      */
