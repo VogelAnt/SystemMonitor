@@ -26,9 +26,9 @@ public slots:
      */
     void on_UpdateDeviceInformation();
 
-    void on_TriggerSkillStateManually();
+    void on_TriggerSkillStateManually(std::string);
 
-    void on_TriggerDeviceStateManually();
+    void on_TriggerDeviceStateManually(std::string);
 
 signals:
     /**

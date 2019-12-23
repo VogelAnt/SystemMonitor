@@ -44,16 +44,24 @@ void DeviceInformation::on_UpdateDeviceInformation() {
     }
 }
 
-void DeviceInformation::on_TriggerDeviceStateManually() {}
+void DeviceInformation::on_TriggerDeviceStateManually(std::string x) {}
 
 // TODO: Read before you write ....
-void DeviceInformation::on_TriggerSkillStateManually() {
-    //    for (auto &pair : DeviceMap_Id) {
-    //        UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
-    //        UA_Variant value;
-    //        UA_Variant_init(&value);
-    //        UA_Client_writeValueAttribute(m_UaClient, nodeId, &value);
-    //    }
+void DeviceInformation::on_TriggerSkillStateManually(std::string y) {
+    std::map<char *, char *>::iterator it = DeviceMap_Id.begin();
+    QString transitionString = "";
+    QString nodeIdtransitionState = it->second;
+    transitionString = ".stateTransition.abort";
+    int dotPosition = nodeIdtransitionState.lastIndexOf(QChar('.'));
+    transitionString = nodeIdtransitionState.left(dotPosition) + transitionString;
+    std::string transString = transitionString.toStdString();
+    // TODO: how can I get the
+    for (auto &pair : DeviceMap_Id) {
+        UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
+        UA_Variant value;
+        UA_Variant_init(&value);
+        UA_Client_writeValueAttribute(m_UaClient, nodeId, &value);
+    }
 }
 
 DeviceInformation::~DeviceInformation() {

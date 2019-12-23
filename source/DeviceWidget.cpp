@@ -101,13 +101,17 @@ void DeviceWidget::on_AbortButtonClicked() {
         "The selected device will be aborted, do you really want to proceed?",
         QMessageBox::Abort | QMessageBox::Cancel,
         QMessageBox::Cancel);
+    std::map<char *, char *>::iterator it = DeviceMap_Id.begin();
     QString transitionString = "";
+    QString nodeIdtransitionState = it->second;
+    transitionString = ".stateTransition.abort";
+    int dotPosition = nodeIdtransitionState.lastIndexOf(QChar('.'));
+    transitionString = nodeIdtransitionState.left(dotPosition) + transitionString;
+    qDebug() << transitionString;
     switch (actionValue) {
     case QMessageBox::Abort:
         qDebug() << "NOW ABORTING";
-        transitionString = "abort";
-        // TODO:
-        emit TriggerSkillStateManually();
+        emit TriggerDeviceStateManually(transitionString.toStdString());
         break;
     case QMessageBox::Cancel:
         break;
@@ -118,12 +122,22 @@ void DeviceWidget::on_AbortButtonClicked() {
 
 void DeviceWidget::on_SkillButtonClicked() {
     bool ok;
-    QString transitionString = qobject_cast<QPushButton *>(sender())->text();
-    QString test = QInputDialog::getItem(this, transitionString, "Trigger Skill State of " + transitionString, sDevice_Triggers, 0, false);
-    emit TriggerSkillStateManually();
-    //    if (ok && !transitionString.isEmpty()) {
-    //        // TODO: emit signal from here to order information
-    //    }
+    QString trigger = qobject_cast<QPushButton *>(sender())->text();
+    QString test = QInputDialog::getItem(this, trigger, "Trigger Skill State of " + trigger, sDevice_Triggers, 0, false);
+
+    if (ok && !trigger.isEmpty()) {
+        if (trigger == "abort") {
+
+        } else if (trigger == "clear") {
+
+        } else if (trigger == "reset") {
+
+        } else if (trigger == "start") {
+
+        } else if (trigger == "stop") {
+        }
+    }
+    //    emit TriggerSkillStateManually();
 }
 
 DeviceWidget::~DeviceWidget() {
