@@ -52,6 +52,8 @@ DeviceWidget::DeviceWidget(
     connect(m_abortButton, &QPushButton::clicked, this, &DeviceWidget::on_AbortButtonClicked);
     connect(m_deviceinfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
     connect(m_deviceinfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
+    connect(this, &DeviceWidget::TriggerDeviceStateManually, m_deviceinfo, &DeviceInformation::on_TriggerDeviceStateManually);
+    connect(this, &DeviceWidget::TriggerSkillStateManually, m_deviceinfo, &DeviceInformation::on_TriggerSkillStateManually);
     m_timer->start(1000);
 }
 
@@ -59,7 +61,7 @@ void DeviceWidget::MakeButtonLayout() {
     // move this stuff into a separate function
     m_central = new QWidget(this);
     m_buttonLayout = new QVBoxLayout(m_central);
-    m_abortButton = new QPushButton("ABORT", this);
+    m_abortButton = new QPushButton("ABORT DEVICE", this);
     m_abortButton->setStyleSheet("font-size : 24px");
     m_buttonLayout->addWidget(m_abortButton);
     for (auto &pair : SkillMap_Id) {
@@ -102,7 +104,7 @@ void DeviceWidget::on_AbortButtonClicked() {
     switch (actionValue) {
     case QMessageBox::Abort:
         qDebug() << "NOW ABORTING";
-        // trigger stuff for OrderInformation
+        emit TriggerSkillStateManually();
         break;
     case QMessageBox::Cancel:
         break;

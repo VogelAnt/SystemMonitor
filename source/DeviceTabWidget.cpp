@@ -1,5 +1,5 @@
 #include "DeviceTabWidget.h"
-// TODO: ask on stack overflow for a less redundant way
+// TODO: write in a less redundant way
 DeviceTabWidget::DeviceTabWidget(QWidget *parent) : QTabWidget(parent) {
     /** DEVICE CLIENTS
      */
@@ -93,7 +93,6 @@ DeviceTabWidget::DeviceTabWidget(QWidget *parent) : QTabWidget(parent) {
     //        DisplayName_NodeId_SeedSupplySkills["releaseItemToST"]  =
     //        "::AsGlobalPV:opcComMitsubishi.skill.releaseItemToST.state.stateMachine.operationalState";
 
-    // TODO: these will be members
     DeviceWidget *AssemblyTab = new DeviceWidget(uaClientAssembly, DisplayName_NodeId_Assembly, DisplayName_NodeId_AssemblySkills, 6, 0, this);
     DeviceWidget *STTab = new DeviceWidget(uaClientST, DisplayName_NodeId_ST, DisplayName_NodeId_STSkills, 6, 1, this);
     DeviceWidget *LabelingTab = new DeviceWidget(uaClientLabeling, DisplayName_NodeId_Labeling, DisplayName_NodeId_LabelingSkills, 2, 2, this);
@@ -132,20 +131,12 @@ DeviceTabWidget::~DeviceTabWidget() {
     delete m_TabStyle;
 }
 
-QSize TabStyle_HorizontalText::sizeFromContents( //
-    ContentsType eType,
-    const QStyleOption *eOption,
-    const QSize &eSize,
-    const QWidget *eWidget) const {
+QSize TabStyle_HorizontalText::sizeFromContents(ContentsType eType, const QStyleOption *eOption, const QSize &eSize, const QWidget *eWidget) const {
 
     return QProxyStyle::sizeFromContents(eType, eOption, eSize, eWidget).transposed();
 }
 
-void TabStyle_HorizontalText::drawControl( //
-    ControlElement element,
-    const QStyleOption *option,
-    QPainter *painter,
-    const QWidget *widget) const {
+void TabStyle_HorizontalText::drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const {
 
     if (element == CE_TabBarTabLabel) {
         const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option);

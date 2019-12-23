@@ -45,6 +45,18 @@ void DeviceInformation::on_UpdateDeviceInformation() {
     }
 }
 
+void DeviceInformation::on_TriggerDeviceStateManually() {}
+
+// TODO: Read before you write ....
+void DeviceInformation::on_TriggerSkillStateManually() {
+    //    for (auto &pair : DeviceMap_Id) {
+    //        UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
+    //        UA_Variant value;
+    //        UA_Variant_init(&value);
+    //        UA_Client_writeValueAttribute(m_UaClient, nodeId, &value);
+    //    }
+}
+
 DeviceInformation::~DeviceInformation() {
     delete m_UaClient;
 }

@@ -35,10 +35,12 @@ public:
         int tabIndex,
         QWidget *parent = nullptr);
     virtual ~DeviceWidget();
-
     void MakeButtonLayout();
+
 signals:
     void ChangeDeviceStatus(int index, QString textColour, QString tabText);
+    void TriggerSkillStateManually();
+    void TriggerDeviceStateManually();
 
 public slots:
     void on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *> pair);
