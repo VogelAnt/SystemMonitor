@@ -12,8 +12,7 @@ DeviceInformation::DeviceInformation(
 }
 
 void DeviceInformation::on_UpdateDeviceInformation() {
-    // redundancy, call a function from here !
-    // pass into the function a boolean, sth that denotes we are either using a Device or Skill Update
+    // TODO: redundancy, call a function from here ! pass into the function a boolean, sth that denotes we are either using a Device or Skill Update
     for (auto &pair : DeviceMap_Id) {
         UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
         UA_Variant value;
