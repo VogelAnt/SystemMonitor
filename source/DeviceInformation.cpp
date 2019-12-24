@@ -44,10 +44,8 @@ void DeviceInformation::on_UpdateDeviceInformation() {
     }
 }
 
-void DeviceInformation::on_TriggerDeviceStateManually(std::string x) {}
-
-// TODO: Read before you write ....
-void DeviceInformation::on_TriggerSkillStateManually(std::string y) {
+void DeviceInformation::on_TriggerDeviceStateManually(std::string x) {
+    // TODO: I need a UA_String for nodeId
     std::map<char *, char *>::iterator it = DeviceMap_Id.begin();
     QString transitionString = "";
     QString nodeIdtransitionState = it->second;
@@ -55,7 +53,10 @@ void DeviceInformation::on_TriggerSkillStateManually(std::string y) {
     int dotPosition = nodeIdtransitionState.lastIndexOf(QChar('.'));
     transitionString = nodeIdtransitionState.left(dotPosition) + transitionString;
     std::string transString = transitionString.toStdString();
-    // TODO: how can I get the
+}
+
+void DeviceInformation::on_TriggerSkillStateManually(std::string y) {
+    // TODO: I need a UA_String for nodeId
     for (auto &pair : DeviceMap_Id) {
         UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
         UA_Variant value;

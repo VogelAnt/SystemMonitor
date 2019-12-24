@@ -122,6 +122,8 @@ void DeviceWidget::on_AbortButtonClicked() {
 
 void DeviceWidget::on_SkillButtonClicked() {
     bool ok;
+    int pos = m_buttonLayout->indexOf(qobject_cast<QPushButton *>(sender()));
+    qDebug() << pos;
     QString trigger = qobject_cast<QPushButton *>(sender())->text();
     QString test = QInputDialog::getItem(this, trigger, "Trigger Skill State of " + trigger, sDevice_Triggers, 0, false);
 
