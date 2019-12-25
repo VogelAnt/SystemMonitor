@@ -40,6 +40,7 @@ DeviceWidget::DeviceWidget(
     QWidget *parent)
     : QMainWindow(parent), ui(new Ui::DeviceWidget) {
     ui->setupUi(this);
+    m_skillList = new QVector<std::string>();
     m_timer = new QTimer();
     m_UaClient = client;
     tabIndex = tabWindex;
@@ -64,12 +65,18 @@ void DeviceWidget::MakeButtonLayout() {
     m_abortButton = new QPushButton("ABORT DEVICE", this);
     m_abortButton->setStyleSheet("font-size : 24px");
     m_buttonLayout->addWidget(m_abortButton);
+    std::string test = "";
+    int i = 0;
     for (auto &pair : SkillMap_Id) {
         SkillButton = new QPushButton(pair.first, this);
         SkillMap_Button[pair.first] = SkillButton;
         m_buttonLayout->addWidget(SkillButton);
         SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
         connect(SkillMap_Button[pair.first], &QPushButton::clicked, this, &DeviceWidget::on_SkillButtonClicked);
+        m_skillList->push_back(pair.second);
+        test = m_skillList->at(i);
+        qDebug() << QString::fromStdString(test);
+        ++i;
     }
     m_central->setLayout(m_buttonLayout);
     setCentralWidget(m_central);
@@ -126,7 +133,7 @@ void DeviceWidget::on_SkillButtonClicked() {
     qDebug() << pos;
     QString trigger = qobject_cast<QPushButton *>(sender())->text();
     QString test = QInputDialog::getItem(this, trigger, "Trigger Skill State of " + trigger, sDevice_Triggers, 0, false);
-
+    std::map<char *, char *>::iterator it = SkillMap_Id.begin();
     if (ok && !trigger.isEmpty()) {
         if (trigger == "abort") {
 
@@ -149,4 +156,5 @@ DeviceWidget::~DeviceWidget() {
     delete m_deviceinfo;
     delete m_buttonLayout;
     delete m_central;
+    delete m_skillList;
 }

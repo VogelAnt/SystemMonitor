@@ -63,6 +63,7 @@ private:
     QVBoxLayout *m_buttonLayout = nullptr;
     QWidget *m_central = nullptr;
     QMessageBox *m_abortMessage = nullptr;
+    QVector<std::string> *m_skillList = nullptr;
 };
 
 #endif // DYNAMICCUSTOMTAB_H
