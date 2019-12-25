@@ -26,9 +26,9 @@ public slots:
      */
     void on_UpdateDeviceInformation();
 
-    void on_TriggerSkillStateManually(std::string);
+    void on_TriggerSkillStateManually(std::string, int);
 
-    void on_TriggerDeviceStateManually(std::string);
+    void on_AbortDeviceManually();
 
 signals:
     /**
@@ -51,6 +51,7 @@ private:
     std::map<char *, char *> SkillMap_Id;
     std::map<char *, char *> DeviceMap_Id;
     uint8_t DeviceNameSpace;
+    std::vector<std::string> *m_skillVector = nullptr;
 };
 
 #endif // DEVICEINFO_H

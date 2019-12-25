@@ -53,7 +53,7 @@ DeviceWidget::DeviceWidget(
     connect(m_abortButton, &QPushButton::clicked, this, &DeviceWidget::on_AbortButtonClicked);
     connect(m_deviceinfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
     connect(m_deviceinfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
-    connect(this, &DeviceWidget::TriggerDeviceStateManually, m_deviceinfo, &DeviceInformation::on_TriggerDeviceStateManually);
+    connect(this, &DeviceWidget::AbortDeviceManually, m_deviceinfo, &DeviceInformation::on_AbortDeviceManually);
     connect(this, &DeviceWidget::TriggerSkillStateManually, m_deviceinfo, &DeviceInformation::on_TriggerSkillStateManually);
     m_timer->start(1000);
 }
@@ -118,7 +118,7 @@ void DeviceWidget::on_AbortButtonClicked() {
     switch (actionValue) {
     case QMessageBox::Abort:
         qDebug() << "NOW ABORTING";
-        emit TriggerDeviceStateManually(transitionString.toStdString());
+        emit AbortDeviceManually(transitionString.toStdString());
         break;
     case QMessageBox::Cancel:
         break;

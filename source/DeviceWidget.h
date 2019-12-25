@@ -39,8 +39,8 @@ public:
 
 signals:
     void ChangeDeviceStatus(int index, QString textColour, QString tabText);
-    void TriggerSkillStateManually(std::string);
-    void TriggerDeviceStateManually(std::string);
+    void TriggerSkillStateManually(std::string, int);
+    void AbortDeviceManually(std::string);
 
 public slots:
     void on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *> pair);

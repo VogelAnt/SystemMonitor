@@ -9,6 +9,8 @@ DeviceInformation::DeviceInformation(
     SkillMap_Id = eMap_Skill_DisplayName_NodeId;
     DeviceMap_Id = eMap_Device_DisplayName_NodeId;
     DeviceNameSpace = index;
+    m_skillVector = new std::vector<std::string>();
+    for (auto &pair : SkillMap_Id) { m_skillVector->push_back(pair.second); }
 }
 
 void DeviceInformation::on_UpdateDeviceInformation() {
@@ -44,7 +46,7 @@ void DeviceInformation::on_UpdateDeviceInformation() {
     }
 }
 
-void DeviceInformation::on_TriggerDeviceStateManually(std::string x) {
+void DeviceInformation::on_AbortDeviceManually() {
     // TODO: I need a UA_String for nodeId
     std::map<char *, char *>::iterator it = DeviceMap_Id.begin();
     QString transitionString = "";
@@ -53,9 +55,13 @@ void DeviceInformation::on_TriggerDeviceStateManually(std::string x) {
     int dotPosition = nodeIdtransitionState.lastIndexOf(QChar('.'));
     transitionString = nodeIdtransitionState.left(dotPosition) + transitionString;
     std::string transString = transitionString.toStdString();
+    UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, const_cast<char *>(transString.c_str()));
+    UA_Variant value;
+    UA_Variant_init(&value);
+    UA_Client_writeValueAttribute(m_UaClient, nodeId, &value);
 }
 
-void DeviceInformation::on_TriggerSkillStateManually(std::string y) {
+void DeviceInformation::on_TriggerSkillStateManually(std::string y, int z) {
     // TODO: I need a UA_String for nodeId
     for (auto &pair : DeviceMap_Id) {
         UA_NodeId nodeId = UA_NODEID_STRING(DeviceNameSpace, pair.second);
