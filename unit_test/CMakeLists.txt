@@ -3,9 +3,9 @@ project (unit-test)
 
 add_executable (unit-test
     main.cpp
-    ../source/OrderInformation.cpp
-    ../external/googletest/googletest/src/gtest-all.cc
-    ../external/googletest/googlemock/src/gmock-all.cc
+    ../source/orderinformation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../external/googletest/googletest/src/gtest-all.cc
+    ${CMAKE_CURRENT_LIST_DIR}/../external/googletest/googlemock/src/gmock-all.cc
 )
 
 target_include_directories(unit-test
