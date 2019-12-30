@@ -1,7 +1,5 @@
 #ifndef TABSTYLE_HORIZONTALTEXT_H
 #define TABSTYLE_HORIZONTALTEXT_H
-#include "open62541.h"
-
 #include "DeviceWidget.h"
 
 #include <QProxyStyle>

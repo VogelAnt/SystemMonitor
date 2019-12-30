@@ -1,6 +1,6 @@
 #ifndef DEVICEINFO_H
 #define DEVICEINFO_H
-#include "open62541.h"
+#include <open62541.h>
 
 #include <QTimer>
 

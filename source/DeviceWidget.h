@@ -1,7 +1,6 @@
 #ifndef DYNAMICCUSTOMTAB_H
 #define DYNAMICCUSTOMTAB_H
 #include "DeviceInformation.h"
-#include "open62541.h"
 
 #include <QButtonGroup>
 #include <QDebug>

@@ -1,5 +1,7 @@
 #include "DeviceInformation.h"
 
+#include <open62541.h>
+
 DeviceInformation::DeviceInformation(
     UA_Client *client,
     std::map<char *, char *> eMap_Device_DisplayName_NodeId, // the display name and node id of each skill

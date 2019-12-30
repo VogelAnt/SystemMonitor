@@ -1,6 +1,6 @@
 #ifndef ORDERINFORMATIONTEST_H
 #define ORDERINFORMATIONTEST_H
-#include "orderinformation.h"
+#include <orderinformation.h>
 #include "gtest/gtest.h"
 
 TEST(OrderInformation, ConstructorTest) {

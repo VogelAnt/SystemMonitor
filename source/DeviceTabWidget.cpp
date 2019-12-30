@@ -1,21 +1,36 @@
 #include "DeviceTabWidget.h"
+
+#include <open62541.h>
+
 // TODO: write in a less redundant way
 DeviceTabWidget::DeviceTabWidget(QWidget *parent) : QTabWidget(parent) {
-    /** DEVICE CLIENTS
-     */
+    UA_StatusCode retval;
+
     //     save function (load file for addresses) so you don't have to enter all manually again
     //     AssemblyIP 192.168.0.5:4840
-    UA_Client *uaClientAssembly = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
-
+    UA_Client *uaClientAssembly = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(uaClientAssembly));
+    retval = UA_Client_connect(uaClientAssembly, "opc.tcp://localhost:4840");
+    if(retval != UA_STATUSCODE_GOOD){
+        UA_Client_delete(uaClientAssembly);
+        throw std::runtime_error("Assembly device: Could not connect to the server.");
+    }
     // SuperTrakIP 192.168.0.5:4840
-    UA_Client *uaClientST = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
-
+    UA_Client *uaClientST = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(uaClientST));
+    retval = UA_Client_connect(uaClientST, "opc.tcp://localhost:4840");
+    if(retval != UA_STATUSCODE_GOOD){
+        UA_Client_delete(uaClientAssembly);
+        throw std::runtime_error("SuperTrak: Could not connect to the server.");
+    }
     // LabelingIP 192.168.0.102:4840
-    UA_Client *uaClientLabeling = UA_Client_new(UA_ClientConfig_default);
-    UA_Client_connect(uaClientLabeling, "opc.tcp://localhost:4840");
-
+    UA_Client *uaClientLabeling = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(uaClientLabeling));
+    retval = UA_Client_connect(uaClientLabeling, "opc.tcp://localhost:4840");
+    if(retval != UA_STATUSCODE_GOOD){
+        UA_Client_delete(uaClientAssembly);
+        throw std::runtime_error("Labeling device: Could not connect to the server.");
+    }
     //        UA_Client* uaClientImageRecognition = UA_Client_new(UA_ClientConfig_default);
     //        UA_Client_connect(uaClientImageRecognition, "opc.tcp://localhost:4840");
     //        UA_Client* uaClientOutfeed = UA_Client_new(UA_ClientConfig_default);
