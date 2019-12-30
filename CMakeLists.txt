@@ -26,5 +26,5 @@ add_subdirectory(source)
 
 
 if(SMG_BUILD_TESTS)
-    add_subdirectory(unit_test)
+    add_subdirectory(test)
 endif()

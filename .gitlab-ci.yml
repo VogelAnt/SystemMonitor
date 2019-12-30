@@ -1,0 +1,48 @@
+image: gitex.itq.de:4567/smart4i_v3/libraries/redistorium-ci:latest
+
+stages:
+  - prebuild
+  - build
+  - test
+  - qa
+
+prebuild:
+  stage: prebuild
+  script:
+    - ./ci-scripts/prebuild.sh
+  artifacts:
+    paths:
+      - external/
+
+build:
+  stage: build
+  script:
+    - ./ci-scripts/build.sh -f --build-tests
+  dependencies:
+    - prebuild
+  artifacts:
+    paths:
+      - build/
+
+unit-test:
+  stage: test
+  script:
+    - cd build/test
+    - ./unit-test
+  dependencies:
+    - build
+  artifacts:
+    paths:
+      - build/
+
+doc-coverage:
+  stage: qa
+  script:
+    - ./ci-scripts/report-documentation-coverage.sh
+
+test-coverage:
+  stage: qa
+  script:
+    - ./ci-scripts/report-test-coverage.sh
+  dependencies:
+    - unit-test
