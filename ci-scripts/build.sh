@@ -26,5 +26,5 @@ cmake -DSMG_BUILD_TESTS=$BUILD_TESTS_OPTION .. || {
     echo "CMake failed."
     exit 1
 }
-make -j$(proc)
+make -j$(nproc) || { exit 1; }
 cd ..

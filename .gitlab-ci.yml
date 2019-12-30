@@ -10,6 +10,7 @@ prebuild:
   stage: prebuild
   script:
     - ./ci-scripts/prebuild.sh --ci-prefix=gitlab-ci-token:${CI_JOB_TOKEN}@
+    - rm -rf external/open62541/.git/
   artifacts:
     paths:
       - external/

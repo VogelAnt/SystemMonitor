@@ -33,15 +33,12 @@ fi
 
 # nlohmann's JSON library
 if [ ! -d json ]; then
-    echo "Downloading nlohmann json..."
-	git clone https://github.com/nlohmann/json.git || {
-        echo "Could not download nlohmann json." && exit 1
-    }
-else
+    mkdir json
     cd json
-    echo "Updating nlohmann json..." && git pull || {
-        echo "Could not update nlohmann json." && exit 1
-    }
+    echo "Downloading nlohmann json..."
+    curl -L -o json.zip https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip
+    unzip json.zip
+    rm -f json.zip
     cd ..
 fi
 
