@@ -7,6 +7,9 @@ cd build/test
 
 # exclude moc files and source files of unrelated code, including the tests themselves.
 gcovr -r ../.. \
+--exclude ../source/__/ \
+--exclude ../source/system-monitor-gui_autogen/ \
+--exclude ../external/ \
 --exclude ../../external/ \
 --exclude ../../test/ \
 || {
