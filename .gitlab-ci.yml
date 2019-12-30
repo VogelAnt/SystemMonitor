@@ -31,6 +31,7 @@ unit-test:
     - cd build/test
     - ./unit-test
   dependencies:
+    - prebuild
     - build
   artifacts:
     paths:
@@ -46,4 +47,8 @@ test-coverage:
   script:
     - ./ci-scripts/report-test-coverage.sh
   dependencies:
+    - prebuild
     - unit-test
+  artifacts:
+    paths:
+      - build/
