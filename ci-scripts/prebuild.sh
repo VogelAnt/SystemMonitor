@@ -1,5 +1,9 @@
+CI_PREFIX=""
 for i in "$@"; do
     case $i in
+    --ci-prefix=*)
+        CI_PREFIX="${i#*=}"
+        ;;
     -f|--force)
         if [ -d external ]; then
             rm -rf external
@@ -70,7 +74,7 @@ cd ../..
 # redistorium
 if [ ! -d redistorium ]; then
     echo "Downloading redistorium..."
-	git clone https://gitex.itq.de/smart4i_v3/libraries/redistorium.git || {
+	git clone https://${CI_PREFIX}gitex.itq.de/smart4i_v3/libraries/redistorium.git || {
         echo "Could not download redistorium." && exit 1
     }
 else

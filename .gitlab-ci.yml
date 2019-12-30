@@ -9,7 +9,7 @@ stages:
 prebuild:
   stage: prebuild
   script:
-    - ./ci-scripts/prebuild.sh
+    - ./ci-scripts/prebuild.sh --ci-prefix=gitlab-ci-token:${CI_JOB_TOKEN}@
   artifacts:
     paths:
       - external/
