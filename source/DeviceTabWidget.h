@@ -2,9 +2,13 @@
 #define TABSTYLE_HORIZONTALTEXT_H
 #include "DeviceWidget.h"
 
+#include "devices/OpcuaDevice.h"
+
 #include <QProxyStyle>
 #include <QStyleOption>
 #include <QTabWidget>
+
+#include <memory>
 
 /**
  * @brief The TabStyle_HorizontalText class is used as a custom tab style for a tab widget
@@ -35,20 +39,24 @@ public:
     void drawControl(ControlElement eElement, const QStyleOption *eOption, QPainter *ePainter, const QWidget *eWidget) const override;
 };
 
-
-class DeviceTabWidget : public QTabWidget{
+class DeviceTabWidget : public QTabWidget {
     Q_OBJECT
 public:
     DeviceTabWidget(QWidget *parent = nullptr);
-    virtual ~DeviceTabWidget();
 
+    virtual ~DeviceTabWidget();
+    void Initialize(std::map<std::string, IDevice *> *eDeviceList);
 public slots:
     void on_ChangeDeviceStatus(int index, QString textColour, QString tabText);
 
 private:
     TabStyle_HorizontalText *m_TabStyle = nullptr;
+    std::map<std::string, IDevice *> *m_DeviceMap;
+    IDevice *m_Assembly;
+    IDevice *m_ImageRecognition;
+    IDevice *m_Labeling;
+
+    IDevice *m_SuperTrak;
 };
-
-
 
 #endif // TABSTYLE_HORIZONTALTEXT_H

@@ -1,6 +1,7 @@
-#ifndef DYNAMICCUSTOMTAB_H
-#define DYNAMICCUSTOMTAB_H
-#include "DeviceInformation.h"
+#ifndef SMG_DEVICEWIDGET_H
+#define SMG_DEVICEWIDGET_H
+
+#include "devices/IDevice.h"
 
 #include <QButtonGroup>
 #include <QDebug>
@@ -26,43 +27,32 @@ class DeviceWidget : public QMainWindow {
     Q_OBJECT
 public:
     //
-    explicit DeviceWidget(
-        UA_Client *eUaClient,
-        std::map<char *, char *> eMap_Device_DisplayName_NodeId,
-        std::map<char *, char *> eMap_DisplayName_NodeId,
-        uint8_t index,
-        int tabIndex,
-        QWidget *parent = nullptr);
-    virtual ~DeviceWidget();
+    explicit DeviceWidget(IDevice *eDevice, int tabIndex, QWidget *parent = nullptr);
+    ~DeviceWidget() final;
     void MakeButtonLayout();
 
 signals:
-    void ChangeDeviceStatus(int index, QString textColour, QString tabText);
-    void TriggerSkillStateManually(std::string, int);
-    void AbortDeviceManually(std::string);
+    void DeviceStatusChanged(int index, QString textColour, QString tabText);
+    void TriggerSkillStateManually(QString, int);
+    void AbortDeviceManually(QString);
 
 public slots:
-    void on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *> pair);
-    void on_UpdateSkillsUI(std::string nodevalue, std::pair<char *, char *> pair);
+    void UpdateDeviceInfo();
     void on_AbortButtonClicked();
     void on_SkillButtonClicked();
 
 private:
     Ui::DeviceWidget *ui;
     QPushButton *SkillButton = nullptr;
-    UA_Client *m_UaClient = nullptr;
     QTimer *m_timer = nullptr;
-    std::map<char *, char *> SkillMap_Id;
     QPushButton *m_abortButton = nullptr;
-    std::map<char *, char *> DeviceMap_Id;
-    std::map<char *, QPushButton *> SkillMap_Button;
-    uint8_t DeviceNameSpace;
+    std::map<QString, QPushButton *> SkillMap_Button;
     int tabIndex;
-    DeviceInformation *m_deviceinfo = nullptr;
+
+    IDevice *m_Device = nullptr;
     QVBoxLayout *m_buttonLayout = nullptr;
     QWidget *m_central = nullptr;
     QMessageBox *m_abortMessage = nullptr;
-    QVector<std::string> *m_skillList = nullptr;
 };
 
-#endif // DYNAMICCUSTOMTAB_H
+#endif // SMG_DEVICEWIDGET_H

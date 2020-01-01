@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 
-#include <nlohmann/json.hpp>
-
 #include <QApplication>
 
 int main(int argc, char *argv[]) {

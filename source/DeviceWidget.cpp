@@ -1,60 +1,77 @@
 #include "DeviceWidget.h"
 #include "ui_DeviceWidget.h"
 
-static std::map<int, QString> sMap_String_OPCUAState{{0, "Idle"},
-                                                     {2, "Running"},
-                                                     {12, "Complete"},
-                                                     {17, "Aborted"},
-                                                     {15, "Stopped"},
-                                                     {1, "Starting"},
-                                                     {4, "Paused"},
-                                                     {11, "Completing"},
-                                                     {18, "Clearing"},
-                                                     {13, "Resetting"},
-                                                     {14, "Stopping"},
-                                                     {16, "Aborting"},
-                                                     {19, "Blocked"}};
+#include <QTimer>
 
-static std::map<QString, QString> sMap_State_Colour{{"Idle", "lightgreen"},
-                                                    {"Running", "green"},
-                                                    {"Complete", "lightblue"},
-                                                    {"Aborted", "red"},
-                                                    {"Stopped", "grey"},
-                                                    {"Starting", "grey"},
-                                                    {"Completing", "grey"},
-                                                    {"Clearing", "grey"},
-                                                    {"Resetting", "grey"},
-                                                    {"Stopping", "grey"},
-                                                    {"Aborting", "lightred"},
-                                                    {"Paused", "pink"},
-                                                    {"Blocked", "cyan"}};
+QStringList sDevice_Triggers{"abort", "clear", "reset", "start", "stop"};
 
-static QStringList sDevice_Triggers{"TriggerAbort", "TriggerClear", "TriggerReset", "TriggerStart", "TriggerStop"};
+std::string StateToColorString(PackMLState eState) {
+    switch (eState) {
+    case PackMLState::Idle:
+        return "lightgreen";
+    case PackMLState::Running:
+        return "green";
+    case PackMLState::Complete:
+        return "lightblue";
+    case PackMLState::Aborted:
+        return "red";
+    case PackMLState::Stopped:
+        return "stopped";
+    case PackMLState::Starting:
+        return "starting";
+    case PackMLState::Completing:
+        return "completing";
+    case PackMLState::Clearing:
+        return "clearing";
+    case PackMLState::Resetting:
+        return "resetting";
+    case PackMLState::Stopping:
+        return "stopping";
+    case PackMLState::Aborting:
+        return "lightred";
+    default:
+        return "grey";
+    }
+}
 
-DeviceWidget::DeviceWidget(
-    UA_Client *client,
-    std::map<char *, char *> eMap_Device_DisplayName_NodeId,
-    std::map<char *, char *> eMap_Skill_DisplayName_NodeId,
-    uint8_t index,
-    int tabWindex,
-    QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::DeviceWidget) {
+std::string StateToString(PackMLState eState) {
+    switch (eState) {
+    case PackMLState::Idle:
+        return "idle";
+    case PackMLState::Running:
+        return "running";
+    case PackMLState::Complete:
+        return "complete";
+    case PackMLState::Aborted:
+        return "aborted";
+    case PackMLState::Stopped:
+        return "stopped";
+    case PackMLState::Starting:
+        return "starting";
+    case PackMLState::Completing:
+        return "completing";
+    case PackMLState::Clearing:
+        return "clearing";
+    case PackMLState::Resetting:
+        return "resetting";
+    case PackMLState::Stopping:
+        return "stopping";
+    case PackMLState::Aborting:
+        return "aborting";
+    default:
+        throw std::invalid_argument(std::to_string((uint8_t)eState));
+    }
+}
+
+DeviceWidget::DeviceWidget(IDevice *eDevice, int tabIndex, QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
     ui->setupUi(this);
-    m_skillList = new QVector<std::string>();
     m_timer = new QTimer();
-    m_UaClient = client;
-    tabIndex = tabWindex;
-    DeviceMap_Id = eMap_Device_DisplayName_NodeId;
-    SkillMap_Id = eMap_Skill_DisplayName_NodeId;
-    DeviceNameSpace = index;
-    m_deviceinfo = new DeviceInformation(client, eMap_Device_DisplayName_NodeId, eMap_Skill_DisplayName_NodeId, index);
+    tabIndex = tabIndex;
+
+    m_Device = eDevice;
     MakeButtonLayout();
-    connect(m_timer, &QTimer::timeout, m_deviceinfo, &DeviceInformation::on_UpdateDeviceInformation);
+    connect(m_timer, &QTimer::timeout, this, &DeviceWidget::UpdateDeviceInfo);
     connect(m_abortButton, &QPushButton::clicked, this, &DeviceWidget::on_AbortButtonClicked);
-    connect(m_deviceinfo, &DeviceInformation::UpdateUiDeviceState, this, &DeviceWidget::on_UpdateDeviceUI);
-    connect(m_deviceinfo, &DeviceInformation::UpdateUiSkillState, this, &DeviceWidget::on_UpdateSkillsUI);
-    connect(this, &DeviceWidget::AbortDeviceManually, m_deviceinfo, &DeviceInformation::on_AbortDeviceManually);
-    connect(this, &DeviceWidget::TriggerSkillStateManually, m_deviceinfo, &DeviceInformation::on_TriggerSkillStateManually);
     m_timer->start(1000);
 }
 
@@ -65,40 +82,18 @@ void DeviceWidget::MakeButtonLayout() {
     m_abortButton = new QPushButton("ABORT DEVICE", this);
     m_abortButton->setStyleSheet("font-size : 24px");
     m_buttonLayout->addWidget(m_abortButton);
-    std::string test = "";
     int i = 0;
-    for (auto &pair : SkillMap_Id) {
-        SkillButton = new QPushButton(pair.first, this);
-        SkillMap_Button[pair.first] = SkillButton;
+    for (auto &pair : m_Device->SkillMap()) {
+        auto skill = pair.second;
+        SkillButton = new QPushButton(skill->Name, this);
+        SkillMap_Button[skill->Name] = SkillButton;
         m_buttonLayout->addWidget(SkillButton);
-        SkillMap_Button[pair.first]->setStyleSheet("font-size: 24px");
-        connect(SkillMap_Button[pair.first], &QPushButton::clicked, this, &DeviceWidget::on_SkillButtonClicked);
-        m_skillList->push_back(pair.second);
-        test = m_skillList->at(i);
-        qDebug() << QString::fromStdString(test);
+        SkillMap_Button[skill->Name]->setStyleSheet("font-size: 24px");
+        connect(SkillMap_Button[skill->Name], &QPushButton::clicked, this, &DeviceWidget::on_SkillButtonClicked);
         ++i;
     }
     m_central->setLayout(m_buttonLayout);
     setCentralWidget(m_central);
-}
-
-void DeviceWidget::on_UpdateSkillsUI(std::string nodevalue, std::pair<char *, char *> pair) {
-    int n = std::stoi(nodevalue);
-    QString n_value = sMap_String_OPCUAState.find(n)->second;
-    QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
-    SkillMap_Button[pair.first]->setText(pair.first + node_value);
-    QString backgroundColor = sMap_State_Colour.find(n_value)->second;
-    QString temp_buttoncolour = "background-color : " + backgroundColor + "; font-size: 24px";
-    SkillMap_Button[pair.first]->setStyleSheet(temp_buttoncolour);
-}
-
-void DeviceWidget::on_UpdateDeviceUI(std::string nodevalue, std::pair<char *, char *> pair) {
-    int n = std::stoi(nodevalue);
-    QString n_value = sMap_String_OPCUAState.find(n)->second;
-    QString node_value = " : " + sMap_String_OPCUAState.find(n)->second;
-    QString tmp = sMap_State_Colour.find(n_value)->second;
-    QString tabText = pair.first + node_value;
-    ChangeDeviceStatus(tabIndex, tmp, tabText);
 }
 
 void DeviceWidget::on_AbortButtonClicked() {
@@ -108,18 +103,11 @@ void DeviceWidget::on_AbortButtonClicked() {
         "The selected device will be aborted, do you really want to proceed?",
         QMessageBox::Abort | QMessageBox::Cancel,
         QMessageBox::Cancel);
-    std::map<char *, char *>::iterator it = DeviceMap_Id.begin();
-    QString transitionString = "";
-    QString nodeIdtransitionState = it->second;
-    transitionString = ".stateTransition.abort";
-    int dotPosition = nodeIdtransitionState.lastIndexOf(QChar('.'));
-    transitionString = nodeIdtransitionState.left(dotPosition) + transitionString;
-    qDebug() << transitionString;
+
     switch (actionValue) {
     case QMessageBox::Abort:
         qDebug() << "NOW ABORTING";
-        emit AbortDeviceManually(transitionString.toStdString());
-        break;
+        m_Device->TriggerAbort();
     case QMessageBox::Cancel:
         break;
     default:
@@ -133,7 +121,6 @@ void DeviceWidget::on_SkillButtonClicked() {
     qDebug() << pos;
     QString trigger = qobject_cast<QPushButton *>(sender())->text();
     QString test = QInputDialog::getItem(this, trigger, "Trigger Skill State of " + trigger, sDevice_Triggers, 0, false);
-    std::map<char *, char *>::iterator it = SkillMap_Id.begin();
     if (ok && !trigger.isEmpty()) {
         if (trigger == "abort") {
 
@@ -153,8 +140,25 @@ DeviceWidget::~DeviceWidget() {
     delete ui;
     delete SkillButton;
     delete m_timer;
-    delete m_deviceinfo;
     delete m_buttonLayout;
     delete m_central;
-    delete m_skillList;
+}
+
+void DeviceWidget::UpdateDeviceInfo() {
+    auto state = m_Device->GetDeviceState();
+    std::string nodeId = m_Device->Name().toStdString();
+    nodeId += ": " + StateToString(state);
+    emit DeviceStatusChanged(tabIndex, StateToColorString(state).c_str(), nodeId.c_str());
+    for (auto &pair : m_Device->SkillMap()) {
+        auto &skill = pair.second;
+        auto skillState = m_Device->GetSkillState(skill->Name);
+
+        std::string buttonText = skill->Name.toStdString();
+        std::string skillStateString = StateToString(skillState);
+        buttonText += ": " + skillStateString;
+        auto button = SkillMap_Button[skill->Name];
+        button->setText(buttonText.c_str());
+        QString temp_buttoncolour = QString("background-color : ") + StateToColorString(skillState).c_str() + "; font-size: 24px";
+        button->setStyleSheet(temp_buttoncolour);
+    }
 }

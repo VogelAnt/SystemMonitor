@@ -20,8 +20,15 @@ add_executable (${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/../external/open62541/build/open62541.c
     ${redistorium_MOC}
     ${smg_MOC}
-    DeviceInformation.cpp
-    DeviceInformation.h
+    adapters/OpcuaClient.cpp
+    adapters/OpcuaClient.h
+
+    devices/IDevice.h
+    devices/OpcuaDevice.cpp
+    devices/OpcuaDevice.h
+
+    devices/skills/ISkill.h
+
     DeviceTabWidget.cpp
     DeviceTabWidget.h
     DeviceWidget.cpp
@@ -35,6 +42,7 @@ add_executable (${PROJECT_NAME}
     OrderWidget.ui
     redisclient.cpp
     redisclient.h
+    smgCommon.h
 )
 
 set_target_properties (${PROJECT_NAME} PROPERTIES
@@ -44,6 +52,7 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 
 target_include_directories (${PROJECT_NAME}
     PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_CURRENT_LIST_DIR}/../external/json/include
     ${CMAKE_CURRENT_LIST_DIR}/../external/open62541/build
     ${CMAKE_CURRENT_LIST_DIR}/../external/redistorium/include

@@ -24,9 +24,12 @@ public:
     ~MainWindow();
 
 private:
+    void InitializeDevices();
     Ui::MainWindow *m_ui = nullptr;
     QHBoxLayout *m_layout = nullptr;
-    DeviceTabWidget *m_deviceTab = nullptr;
+
+    std::map<std::string, IDevice *> m_DeviceMap;
+    std::unique_ptr<DeviceTabWidget> m_deviceTab = nullptr;
     QWidget *m_central = nullptr;
     OrderTableWidget *m_orderTable = nullptr;
 };
