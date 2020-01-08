@@ -6,7 +6,14 @@
 
 ## Compilation
 - Install dependencies: `./scripts/prebuild.sh`
-- Compile: `qmake && make`
+- Compilation:
+```
+mkdir build && cd build
+cmake .. && make
+```
+  - Compile options:
+    - SMG_BUILD_TESTS=ON if unit tests are needed. Default: OFF
 
 ## Usage
-- The built executable in the `build` folder should be called `system-monitor-gui`
+- Start the SMG: `./build/source/system-monitor-gui`
+- Monitor the state of each device/skill in the device tab widget. Each tab represents a device.

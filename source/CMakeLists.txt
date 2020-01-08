@@ -12,14 +12,9 @@ qt5_wrap_cpp (redistorium_MOC
     ${CMAKE_CURRENT_LIST_DIR}/../external/redistorium/include/redistorium/networking.hpp
 )
 
-qt5_wrap_cpp (smg_MOC
-    redisclient.h
-)
-
 add_executable (${PROJECT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/../external/open62541/build/open62541.c
     ${redistorium_MOC}
-    ${smg_MOC}
     adapters/OpcuaClient.cpp
     adapters/OpcuaClient.h
 
