@@ -18,8 +18,8 @@ if (WIN32)
     set (CMAKE_PREFIX_PATH "C:/Qt/5.13.2/msvc2017_64")
 endif(WIN32)
 
-set (REDISTORIUM_BUILD_EXAMPLES OFF)
-set (REDISTORIUM_BUILD_TESTS OFF)
+set (REDISTORIUM_BUILD_EXAMPLES OFF CACHE BOOL "Build examples." FORCE)
+set (REDISTORIUM_BUILD_TESTS  OFF CACHE BOOL "Build tests." FORCE)
 add_subdirectory(external/redistorium)
 
 add_subdirectory(source)
