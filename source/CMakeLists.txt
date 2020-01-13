@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.13.4)
+cmake_minimum_required (VERSION 3.10.2)
 project (system-monitor-gui)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
