@@ -66,6 +66,19 @@ QString OpcuaClient::ReadNode(uint8_t eNamespace, const QString &eNodeIdString) 
     return VariantToString(value);
 }
 
+template <typename t> void OpcuaClient::WriteNode(uint8_t eNamespace, const QString &eNodeIdString, t value) {
+    // create node id structure to write to
+    unique_ptr<char> temp(new char[eNodeIdString.size() + 1]);
+    strncpy(temp.get(), eNodeIdString.toStdString().c_str(), eNodeIdString.size() + 1);
+    UA_NodeId nodeId = UA_NODEID_STRING(eNamespace, temp.get());
+
+    // TODO: assign value to v before writing it, otherwise undefined behavior (server probably will crash).
+    UA_Variant v;
+    UA_Variant_init(&v);
+
+    UA_Client_writeValueAttribute(m_Client, nodeId, &v);
+}
+
 void OpcuaClient::InitClient() {
     m_Client = UA_Client_new();
     auto config = UA_Client_getConfig(m_Client);

@@ -53,7 +53,8 @@ public:
             return static_cast<PackMLState>(temp.toInt());
         }
     }
-    void TriggerAbort() final {}
+    void TriggerAbort() final { // TODO: fill in the functionality of the trigger functions
+    }
     void TriggerClear() final {}
     void TriggerReset() final {}
     void TriggerStart() final {}

@@ -34,6 +34,7 @@ public:
     }
 
     QString ReadNode(uint8_t eNamespace, const QString &eNodeIdString);
+    template <typename t> void WriteNode(uint8_t eNameSpace, const QString &eNodeIdString, t value);
 
 private:
     void MaintainConnection();

@@ -63,10 +63,10 @@ std::string StateToString(PackMLState eState) {
     }
 }
 
-DeviceWidget::DeviceWidget(IDevice *eDevice, int tabIndex, QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
+DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
     ui->setupUi(this);
     m_timer = new QTimer();
-    tabIndex = tabIndex;
+    m_tabIndex = eTabIndex;
 
     m_Device = eDevice;
     MakeButtonLayout();
@@ -148,7 +148,7 @@ void DeviceWidget::UpdateDeviceInfo() {
     auto state = m_Device->GetDeviceState();
     std::string nodeId = m_Device->Name().toStdString();
     nodeId += ": " + StateToString(state);
-    emit DeviceStatusChanged(tabIndex, StateToColorString(state).c_str(), nodeId.c_str());
+    emit DeviceStatusChanged(m_tabIndex, StateToColorString(state).c_str(), nodeId.c_str());
     for (auto &pair : m_Device->SkillMap()) {
         auto &skill = pair.second;
         auto skillState = m_Device->GetSkillState(skill->Name);

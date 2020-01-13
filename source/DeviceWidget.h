@@ -47,7 +47,7 @@ private:
     QTimer *m_timer = nullptr;
     QPushButton *m_abortButton = nullptr;
     std::map<QString, QPushButton *> SkillMap_Button;
-    int tabIndex;
+    int m_tabIndex;
 
     IDevice *m_Device = nullptr;
     QVBoxLayout *m_buttonLayout = nullptr;
