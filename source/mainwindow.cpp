@@ -12,19 +12,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_central = new QWidget(this);
     m_layout = new QHBoxLayout(m_central);
     m_orderTable = new OrderTableWidget(this);
-
+    // TODO: Rename to deviceTabWidget ?
     m_deviceTab = std::make_unique<DeviceTabWidget>(this);
-
     InitializeDevices();
-
     m_deviceTab->Initialize(&m_DeviceMap);
-
     m_layout->addWidget(m_orderTable);
     m_layout->addWidget(m_deviceTab.get());
     m_central->setLayout(m_layout);
     setCentralWidget(m_central);
 }
-
+// TODO: just delete the central widget that will clean all layouts and other added widgets automatically
 MainWindow::~MainWindow() {
     delete m_ui;
     delete m_layout;
@@ -36,9 +33,9 @@ void MainWindow::InitializeDevices() {
     bool monitor_supertrak = true;
     bool monitor_labeling = true;
     bool monitor_image_recognition = false;
-    bool monitor_sealing = true;
+    bool monitor_sealing = false;
     bool monitor_seed_supply = false;
-    bool monitor_outfeed = true;
+    bool monitor_outfeed = false;
 
     if (monitor_assembly) {
         IDevice *assembly = new OpcuaDevice("Assembly", 6, "::AsGlobalPV:gAssemblyModule", this);

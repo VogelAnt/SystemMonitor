@@ -53,8 +53,13 @@ public:
             return static_cast<PackMLState>(temp.toInt());
         }
     }
-    void TriggerAbort() final { // TODO: fill in the functionality of the trigger functions
+
+    void TriggerSkillStateTransition() final {
+        //        m_Client.WriteNode();
     }
+
+    // TODO: fill in the functionality of the trigger functions
+    void TriggerAbort() final {}
     void TriggerClear() final {}
     void TriggerReset() final {}
     void TriggerStart() final {}

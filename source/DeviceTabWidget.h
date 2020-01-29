@@ -55,7 +55,6 @@ private:
     IDevice *m_Assembly;
     IDevice *m_ImageRecognition;
     IDevice *m_Labeling;
-
     IDevice *m_SuperTrak;
 };
 

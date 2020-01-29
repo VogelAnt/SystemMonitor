@@ -67,7 +67,6 @@ QString OpcuaClient::ReadNode(uint8_t eNamespace, const QString &eNodeIdString) 
 }
 
 template <typename t> void OpcuaClient::WriteNode(uint8_t eNamespace, const QString &eNodeIdString, t value) {
-    // create node id structure to write to
     unique_ptr<char> temp(new char[eNodeIdString.size() + 1]);
     strncpy(temp.get(), eNodeIdString.toStdString().c_str(), eNodeIdString.size() + 1);
     UA_NodeId nodeId = UA_NODEID_STRING(eNamespace, temp.get());

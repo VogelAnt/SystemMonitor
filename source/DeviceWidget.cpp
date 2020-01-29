@@ -76,7 +76,6 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
 }
 
 void DeviceWidget::MakeButtonLayout() {
-    // move this stuff into a separate function
     m_central = new QWidget(this);
     m_buttonLayout = new QVBoxLayout(m_central);
     m_abortButton = new QPushButton("ABORT DEVICE", this);
@@ -96,14 +95,24 @@ void DeviceWidget::MakeButtonLayout() {
     setCentralWidget(m_central);
 }
 
+// TODO: implement the write bullshti with open62541 here
 void DeviceWidget::on_AbortButtonClicked() {
+    // TODO: make these members
+    QString deviceName = m_Device->Name();
+    QString nameSpace = m_Device->NodeId();
+    qDebug() << "name of the device is " << deviceName << "and nodeID " << nameSpace;
     int actionValue = QMessageBox::critical(
         this,
         "ABORTING DEVICE...",
         "The selected device will be aborted, do you really want to proceed?",
         QMessageBox::Abort | QMessageBox::Cancel,
         QMessageBox::Cancel);
-
+    QString transitionString = ".state.stateMachine.stateTransition.abort";
+    QString nodeIdtransitionstate = m_Device->NodeId();
+    qDebug() << "m_device->NodeId()" << nodeIdtransitionstate;
+    int dotPosition = nodeIdtransitionstate.lastIndexOf(QChar('.'));
+    transitionString = nodeIdtransitionstate.left(dotPosition) + transitionString;
+    qDebug() << transitionString;
     switch (actionValue) {
     case QMessageBox::Abort:
         qDebug() << "NOW ABORTING";
@@ -114,26 +123,40 @@ void DeviceWidget::on_AbortButtonClicked() {
         break;
     }
 }
-
+// namespace.skill.skillName.state.stateMachine.stateTransition. --> add rest in switch
 void DeviceWidget::on_SkillButtonClicked() {
-    bool ok;
-    int pos = m_buttonLayout->indexOf(qobject_cast<QPushButton *>(sender()));
-    qDebug() << pos;
-    QString trigger = qobject_cast<QPushButton *>(sender())->text();
-    QString test = QInputDialog::getItem(this, trigger, "Trigger Skill State of " + trigger, sDevice_Triggers, 0, false);
-    if (ok && !trigger.isEmpty()) {
-        if (trigger == "abort") {
-
-        } else if (trigger == "clear") {
-
-        } else if (trigger == "reset") {
-
-        } else if (trigger == "start") {
-
-        } else if (trigger == "stop") {
-        }
+    QString nodeId = m_Device->NodeId() + ".skill.";
+    qDebug() << "nodeId.skill." << nodeId;
+    QString skillClicked = qobject_cast<QPushButton *>(sender())->text();
+    int colonPosition = skillClicked.lastIndexOf(QChar(':'));
+    skillClicked = skillClicked.left(colonPosition);
+    qDebug() << "skillClicked : " << skillClicked;
+    QString transitionString = "state.stateMachine.stateTransition.";
+    QString selection = QInputDialog::getItem(this, skillClicked, "Trigger Skill State of " + skillClicked, sDevice_Triggers, 0, false);
+    bool ok = true;
+    if (ok && !selection.isEmpty()) {
+        skillClicked = nodeId + skillClicked;
+        skillClicked = skillClicked + transitionString;
+        skillClicked = skillClicked + selection;
+        qDebug() << skillClicked;
+        emit TriggerSkillStateTransition(skillClicked);
     }
-    //    emit TriggerSkillStateManually();
+    // TODO: do we really need this if I trigger with just one function ?
+    //    if (ok && !selection.isEmpty()) {
+    //        skillClicked = nodeId + skillClicked;
+    //        skillClicked = skillClicked + transitionString;
+    //        if (selection == "abort") {
+    //            qDebug() << skillClicked + selection;
+    //        } else if (selection == "clear") {
+    //            qDebug() << transitionString + selection;
+    //        } else if (selection == "reset") {
+    //            qDebug() << transitionString + selection;
+    //        } else if (selection == "start") {
+    //            qDebug() << transitionString + selection;
+    //        } else if (selection == "stop") {
+    //            qDebug() << transitionString + selection;
+    //        }
+    //    }
 }
 
 DeviceWidget::~DeviceWidget() {

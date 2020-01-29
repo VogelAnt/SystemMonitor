@@ -2,10 +2,8 @@
 
 #include <open62541.h>
 
-// TODO: write in a less redundant way
 DeviceTabWidget::DeviceTabWidget(QWidget *parent) : QTabWidget(parent) {
     tabBar()->setStyleSheet("font-size : 24px");
-
     this->setTabPosition(West);
     m_TabStyle = new TabStyle_HorizontalText();
     tabBar()->setStyle(m_TabStyle);
@@ -28,11 +26,6 @@ void DeviceTabWidget::Initialize(std::map<std::string, IDevice *> *eDeviceList) 
     auto *AssemblyTab = new DeviceWidget(m_Assembly, 0, this);
     connect(AssemblyTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
     addTab(AssemblyTab, "Assembly");
-
-    //    m_ImageRecognition = m_DeviceMap->at("ImageRecognition");
-    //    auto *ImgRecTab = new DeviceWidget(m_ImageRecognition, 0, this);
-    //    connect(ImgRecTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
-    //    addTab(ImgRecTab, "ImageRecognition");
 
     m_Labeling = m_DeviceMap->at("Labeling");
     auto *LabelingTab = new DeviceWidget(m_Labeling, 1, this);

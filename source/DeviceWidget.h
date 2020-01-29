@@ -33,7 +33,7 @@ public:
 
 signals:
     void DeviceStatusChanged(int index, QString textColour, QString tabText);
-    void TriggerSkillStateManually(QString, int);
+    void TriggerSkillStateTransition(QString);
     void AbortDeviceManually(QString);
 
 public slots:
