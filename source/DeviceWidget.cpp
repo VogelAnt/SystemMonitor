@@ -78,13 +78,14 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
 void DeviceWidget::MakeButtonLayout() {
     m_central = new QWidget(this);
     m_buttonLayout = new QVBoxLayout(m_central);
-    m_abortButton = new QPushButton("ABORT DEVICE", this);
+    // TODO: move buttons into the actual widget
+    m_abortButton = new QPushButton("ABORT DEVICE", m_central);
     m_abortButton->setStyleSheet("font-size : 24px");
     m_buttonLayout->addWidget(m_abortButton);
     int i = 0;
     for (auto &pair : m_Device->SkillMap()) {
         auto skill = pair.second;
-        SkillButton = new QPushButton(skill->Name, this);
+        SkillButton = new QPushButton(skill->Name, m_central);
         SkillMap_Button[skill->Name] = SkillButton;
         m_buttonLayout->addWidget(SkillButton);
         SkillMap_Button[skill->Name]->setStyleSheet("font-size: 24px");
