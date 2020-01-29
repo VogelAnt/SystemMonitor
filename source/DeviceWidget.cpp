@@ -64,7 +64,8 @@ std::string StateToString(PackMLState eState) {
 }
 
 DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
-    ui->setupUi(this);
+    //    ui->setupUi(this);
+
     m_timer = new QTimer();
     m_tabIndex = eTabIndex;
 
@@ -76,9 +77,8 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
 }
 
 void DeviceWidget::MakeButtonLayout() {
-    m_central = new QWidget(this);
-    m_buttonLayout = new QVBoxLayout(m_central);
-    // TODO: move buttons into the actual widget
+    m_central = new QWidget();
+    m_buttonLayout = new QVBoxLayout();
     m_abortButton = new QPushButton("ABORT DEVICE", m_central);
     m_abortButton->setStyleSheet("font-size : 24px");
     m_buttonLayout->addWidget(m_abortButton);
