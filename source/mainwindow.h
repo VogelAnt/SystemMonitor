@@ -29,7 +29,8 @@ private:
     QHBoxLayout *m_layout = nullptr;
 
     std::map<std::string, IDevice *> m_DeviceMap;
-    std::unique_ptr<DeviceTabWidget> m_deviceTab = nullptr;
+    //    std::unique_ptr<DeviceTabWidget> m_deviceTab = nullptr;
+    DeviceTabWidget *m_deviceTab = nullptr;
     QWidget *m_central = nullptr;
     OrderTableWidget *m_orderTable = nullptr;
 };

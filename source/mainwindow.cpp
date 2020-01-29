@@ -10,21 +10,21 @@ using Redistorium::Reply::ReplyElement;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow) {
     m_ui->setupUi(this);
     m_central = new QWidget(this);
-    // TODO: make widgets part of central widget
     m_layout = new QHBoxLayout(m_central);
     m_orderTable = new OrderTableWidget(m_central);
-    m_deviceTab = std::make_unique<DeviceTabWidget>(m_central);
+    //    m_deviceTab = std::make_unique<DeviceTabWidget>(m_central);
+    m_deviceTab = new DeviceTabWidget(m_central);
     InitializeDevices();
     m_deviceTab->Initialize(&m_DeviceMap);
     m_layout->addWidget(m_orderTable);
-    m_layout->addWidget(m_deviceTab.get());
+    m_layout->addWidget(m_deviceTab);
+    //    m_layout->addWidget(m_deviceTab.get());
     m_central->setLayout(m_layout);
     setCentralWidget(m_central);
 }
 // TODO: just delete the central widget that will clean all layouts and other added widgets automatically
 MainWindow::~MainWindow() {
     delete m_ui;
-    //    delete m_layout;
     delete m_central;
 }
 
