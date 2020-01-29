@@ -54,7 +54,8 @@ public:
         }
     }
 
-    void TriggerSkillStateTransition() final {
+    void TriggerSkillStateTransition(QString) final {
+        // TODO: namespace, NodeId, value
         //        m_Client.WriteNode();
     }
 

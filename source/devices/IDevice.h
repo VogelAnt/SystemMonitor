@@ -45,7 +45,7 @@ public:
     virtual PackMLState GetDeviceState() = 0;
     virtual PackMLState GetSkillState(QString eSkillName) = 0;
 
-    virtual void TriggerSkillStateTransition() = 0;
+    virtual void TriggerSkillStateTransition(QString) = 0;
 
     // TODO: remove ?
     virtual void TriggerAbort() = 0;

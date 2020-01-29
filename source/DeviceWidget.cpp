@@ -139,7 +139,8 @@ void DeviceWidget::on_SkillButtonClicked() {
         skillClicked = skillClicked + transitionString;
         skillClicked = skillClicked + selection;
         qDebug() << skillClicked;
-        emit TriggerSkillStateTransition(skillClicked);
+        m_Device->TriggerSkillStateTransition(skillClicked);
+        //        TriggerSkillStateTransition(skillClicked);
     }
     // TODO: do we really need this if I trigger with just one function ?
     //    if (ok && !selection.isEmpty()) {

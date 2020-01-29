@@ -66,6 +66,7 @@ QString OpcuaClient::ReadNode(uint8_t eNamespace, const QString &eNodeIdString) 
     return VariantToString(value);
 }
 
+// TODO: pass namespace (how tf do I get it?)
 template <typename t> void OpcuaClient::WriteNode(uint8_t eNamespace, const QString &eNodeIdString, t value) {
     unique_ptr<char> temp(new char[eNodeIdString.size() + 1]);
     strncpy(temp.get(), eNodeIdString.toStdString().c_str(), eNodeIdString.size() + 1);
