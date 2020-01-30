@@ -165,7 +165,6 @@ DeviceWidget::~DeviceWidget() {
     delete ui;
     delete SkillButton;
     delete m_timer;
-    delete m_buttonLayout;
     delete m_central;
 }
 
