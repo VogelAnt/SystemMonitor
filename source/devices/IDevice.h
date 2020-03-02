@@ -34,6 +34,8 @@ public:
 
     virtual QString NodeId() const = 0;
 
+    virtual unsigned int NameSpace() const = 0;
+
     virtual std::map<QString, ISkill *> SkillMap() const = 0;
     virtual void AddSkill(QString eSkillName) = 0;
     virtual void SetUrl(QString) = 0;

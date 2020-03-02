@@ -10,6 +10,10 @@ public:
     explicit OpcuaDevice(const QString &eName, const uint8_t &eNamespace, const QString &eNodeId, QObject *parent = nullptr);
     ~OpcuaDevice() final;
 
+    unsigned int NameSpace() const final {
+        return m_Namespace;
+    }
+
     QString Name() const final {
         return m_Name;
     }
@@ -43,13 +47,13 @@ public:
     }
 
     PackMLState GetDeviceState() final {
-        auto temp = m_Client.ReadNode(Namespace, m_NodeId + ".state.stateMachine.operationalState");
+        auto temp = m_Client.ReadNode(m_Namespace, m_NodeId + ".state.stateMachine.operationalState");
         return static_cast<PackMLState>(temp.toInt());
     }
 
     PackMLState GetSkillState(QString eSkillName) final {
         if (m_SkillMap.find(eSkillName) != m_SkillMap.end()) {
-            auto temp = m_Client.ReadNode(Namespace, m_SkillMap[eSkillName]->NodeId + ".state.stateMachine.operationalState");
+            auto temp = m_Client.ReadNode(m_Namespace, m_SkillMap[eSkillName]->NodeId + ".state.stateMachine.operationalState");
             return static_cast<PackMLState>(temp.toInt());
         }
     }
@@ -65,7 +69,7 @@ public:
     void TriggerReset() final {}
     void TriggerStart() final {}
     void TriggerStop() final {}
-    unsigned int Namespace;
+    unsigned int m_Namespace;
 
 private:
     QString m_Url;

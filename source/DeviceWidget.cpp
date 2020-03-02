@@ -68,6 +68,10 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
     m_timer = new QTimer();
     m_tabIndex = eTabIndex;
     m_Device = eDevice;
+    qDebug() << "Device Name:" << m_Device->Name();
+    qDebug() << "Node ID: " << m_Device->NodeId();
+    //    qDebug() << "state: " << m_Device->GetDeviceState();
+
     MakeButtonLayout();
     connect(m_timer, &QTimer::timeout, this, &DeviceWidget::UpdateDeviceInfo);
     connect(m_abortButton, &QPushButton::clicked, this, &DeviceWidget::on_AbortButtonClicked);
@@ -122,6 +126,7 @@ void DeviceWidget::on_AbortButtonClicked() {
         break;
     }
 }
+
 // namespace.skill.skillName.state.stateMachine.stateTransition. --> add rest in switch
 void DeviceWidget::on_SkillButtonClicked() {
     QString nodeId = m_Device->NodeId() + ".skill.";
