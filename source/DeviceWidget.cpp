@@ -65,10 +65,8 @@ std::string StateToString(PackMLState eState) {
 
 DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
     //    ui->setupUi(this);
-
     m_timer = new QTimer();
     m_tabIndex = eTabIndex;
-
     m_Device = eDevice;
     MakeButtonLayout();
     connect(m_timer, &QTimer::timeout, this, &DeviceWidget::UpdateDeviceInfo);
@@ -136,10 +134,13 @@ void DeviceWidget::on_SkillButtonClicked() {
     QString selection = QInputDialog::getItem(this, skillClicked, "Trigger Skill State of " + skillClicked, sDevice_Triggers, 0, false);
     bool ok = true;
     if (ok && !selection.isEmpty()) {
-        skillClicked = nodeId + skillClicked;
+        skillClicked = nodeId + skillClicked + ".";
+        qDebug() << "node ID + SKill clicked : " << skillClicked;
         skillClicked = skillClicked + transitionString;
+        qDebug() << "skillClicked + transitionString : " << skillClicked;
         skillClicked = skillClicked + selection;
-        qDebug() << skillClicked;
+        qDebug() << "skillClicked + selection: " << skillClicked;
+        // skillClicked is the nodId string
         m_Device->TriggerSkillStateTransition(skillClicked);
         //        TriggerSkillStateTransition(skillClicked);
     }
