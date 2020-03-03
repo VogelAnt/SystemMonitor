@@ -60,7 +60,7 @@ public:
 
     void TriggerSkillStateTransition(QString eNodeid, const QString eValue) final {
         // TODO: namespace, NodeId, value
-        m_Client.WriteNode(m_Namespace, eNodeid, eValue);
+        //        m_Client.WriteNode<QString>(m_Namespace, nodeId, eValue);
     }
 
     // TODO: fill in the functionality of the trigger functions
@@ -69,7 +69,8 @@ public:
     void TriggerReset() final {}
     void TriggerStart() final {}
     void TriggerStop() final {}
-    unsigned int m_Namespace;
+    //    unsigned int m_Namespace;
+    uint8_t m_Namespace;
 
 private:
     QString m_Url;
