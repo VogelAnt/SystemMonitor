@@ -70,6 +70,7 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
     m_Device = eDevice;
     qDebug() << "Device Name:" << m_Device->Name();
     qDebug() << "Node ID: " << m_Device->NodeId();
+    qDebug() << "Namespace: " << m_Device->NameSpace();
     //    qDebug() << "state: " << m_Device->GetDeviceState();
 
     MakeButtonLayout();
@@ -138,6 +139,7 @@ void DeviceWidget::on_SkillButtonClicked() {
     QString transitionString = "state.stateMachine.stateTransition.";
     QString selection = QInputDialog::getItem(this, skillClicked, "Trigger Skill State of " + skillClicked, sDevice_Triggers, 0, false);
     bool ok = true;
+    // TODO: implement a popup here telling you which string you will send
     if (ok && !selection.isEmpty()) {
         skillClicked = nodeId + skillClicked + ".";
         qDebug() << "node ID + SKill clicked : " << skillClicked;
