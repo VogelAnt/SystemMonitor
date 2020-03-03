@@ -132,23 +132,24 @@ void DeviceWidget::on_AbortButtonClicked() {
 void DeviceWidget::on_SkillButtonClicked() {
     QString nodeId = m_Device->NodeId() + ".skill.";
     qDebug() << "nodeId.skill." << nodeId;
-    QString skillClicked = qobject_cast<QPushButton *>(sender())->text();
-    int colonPosition = skillClicked.lastIndexOf(QChar(':'));
-    skillClicked = skillClicked.left(colonPosition);
-    qDebug() << "skillClicked : " << skillClicked;
+    QString skillNodeid = qobject_cast<QPushButton *>(sender())->text();
+    int colonPosition = skillNodeid.lastIndexOf(QChar(':'));
+    skillNodeid = skillNodeid.left(colonPosition);
+    qDebug() << "skillClicked : " << skillNodeid;
     QString transitionString = "state.stateMachine.stateTransition.";
-    QString selection = QInputDialog::getItem(this, skillClicked, "Trigger Skill State of " + skillClicked, sDevice_Triggers, 0, false);
+    QString selection = QInputDialog::getItem(this, skillNodeid, "Trigger Skill State of " + skillNodeid, sDevice_Triggers, 0, false);
     bool ok = true;
     // TODO: implement a popup here telling you which string you will send
     if (ok && !selection.isEmpty()) {
-        skillClicked = nodeId + skillClicked + ".";
-        qDebug() << "node ID + SKill clicked : " << skillClicked;
-        skillClicked = skillClicked + transitionString;
-        qDebug() << "skillClicked + transitionString : " << skillClicked;
-        skillClicked = skillClicked + selection;
-        qDebug() << "skillClicked + selection: " << skillClicked;
+        // this part here is SkillNodeId
+        skillNodeid = nodeId + skillNodeid + ".";
+        qDebug() << "node ID + SKill clicked : " << skillNodeid;
+        QString selectionString = skillNodeid + transitionString;
+        qDebug() << "selectionString + transitionString : " << selectionString;
+        selectionString = selectionString + selection;
+        qDebug() << "selectionString + selection: " << selectionString;
         // skillClicked is the nodId string
-        m_Device->TriggerSkillStateTransition(skillClicked);
+        m_Device->TriggerSkillStateTransition(skillNodeid, selection);
         //        TriggerSkillStateTransition(skillClicked);
     }
     // TODO: do we really need this if I trigger with just one function ?

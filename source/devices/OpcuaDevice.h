@@ -58,9 +58,9 @@ public:
         }
     }
 
-    void TriggerSkillStateTransition(QString) final {
+    void TriggerSkillStateTransition(QString eNodeid, const QString eValue) final {
         // TODO: namespace, NodeId, value
-        //        m_Client.WriteNode();
+        m_Client.WriteNode(m_Namespace, eNodeid, eValue);
     }
 
     // TODO: fill in the functionality of the trigger functions
