@@ -24,6 +24,8 @@ enum class PackMLState {
 
 enum class PackMLStateTransition { Abort, Clear, Reset, Start, Stop };
 
+QString StateTransitionToString(PackMLStateTransition transition);
+
 class IDevice : public QObject {
     Q_OBJECT
 public:
@@ -47,14 +49,7 @@ public:
     virtual PackMLState GetDeviceState() = 0;
     virtual PackMLState GetSkillState(QString eSkillName) = 0;
 
-    virtual void TriggerSkillStateTransition(const QString, QString) = 0;
-
-    // TODO: remove ?
-    virtual void TriggerAbort() = 0;
-    virtual void TriggerClear() = 0;
-    virtual void TriggerReset() = 0;
-    virtual void TriggerStart() = 0;
-    virtual void TriggerStop() = 0;
+    virtual void TriggerSkillStateTransition(const QString, const PackMLStateTransition) = 0;
 
     unsigned int Namespace;
 };

@@ -54,7 +54,7 @@ void OpcuaClient::Disconnect() {
 
 QString OpcuaClient::ReadNode(uint8_t eNamespace, const QString &eNodeIdString) {
     // create node id structure to read from
-    std::cout << "########## NodeID " << eNodeIdString.toStdString() << std::endl;
+    //    std::cout << "########## NodeID " << eNodeIdString.toStdString() << std::endl;
     unique_ptr<char> temp(new char[eNodeIdString.size() + 1]);
     strncpy(temp.get(), eNodeIdString.toStdString().c_str(), eNodeIdString.size() + 1);
     UA_NodeId nodeId = UA_NODEID_STRING(eNamespace, temp.get());
@@ -63,20 +63,8 @@ QString OpcuaClient::ReadNode(uint8_t eNamespace, const QString &eNodeIdString) 
     UA_Variant value; // ie. 17 for idle etc
     UA_Variant_init(&value);
     UA_Client_readValueAttribute(m_Client, nodeId, &value);
-    std::cout << "########## OPCUA VALUE " << VariantToString(value).toStdString() << std::endl;
+    //    std::cout << "########## OPCUA VALUE " << VariantToString(value).toStdString() << std::endl;
     return VariantToString(value);
-}
-
-template <typename t> void OpcuaClient::WriteNode(uint8_t eNamespace, const QString &eNodeIdString, t value) {
-    unique_ptr<char> temp(new char[eNodeIdString.size() + 1]);
-    strncpy(temp.get(), eNodeIdString.toStdString().c_str(), eNodeIdString.size() + 1);
-    UA_NodeId nodeId = UA_NODEID_STRING(eNamespace, temp.get());
-
-    // TODO: assign value to v before writing it, otherwise undefined behavior (server probably will crash).
-    UA_Variant v = value;
-    UA_Variant_init(&v);
-
-    UA_Client_writeValueAttribute(m_Client, nodeId, &v);
 }
 
 void OpcuaClient::InitClient() {

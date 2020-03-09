@@ -34,7 +34,19 @@ public:
     }
 
     QString ReadNode(uint8_t eNamespace, const QString &eNodeIdString);
-    template <typename t> void WriteNode(uint8_t eNameSpace, const QString &eNodeIdString, t value);
+
+    template <typename t> void WriteNode(uint8_t eNameSpace, const QString &eNodeIdString, t value) {
+        std::unique_ptr<char> temp(new char[eNodeIdString.size() + 1]);
+        strncpy(temp.get(), eNodeIdString.toStdString().c_str(), eNodeIdString.size() + 1);
+        UA_NodeId nodeId = UA_NODEID_STRING(eNameSpace, temp.get());
+
+        // TODO: assign value to v before writing it, otherwise undefined behavior (server probably will crash).
+        UA_Variant v;
+
+        UA_Variant_setScalar(&v, &value, &UA_TYPES[UA_TYPES_BOOLEAN]);
+
+        UA_Client_writeValueAttribute(m_Client, nodeId, &v);
+    }
 
 private:
     void MaintainConnection();

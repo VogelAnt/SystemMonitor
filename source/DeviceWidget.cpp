@@ -34,6 +34,20 @@ std::string StateToColorString(PackMLState eState) {
     }
 }
 
+PackMLStateTransition StringToStateTransition(QString eString) {
+    if (eString == "abort") {
+        return PackMLStateTransition::Abort;
+    } else if (eString == "clear") {
+        return PackMLStateTransition::Clear;
+    } else if (eString == "reset") {
+        return PackMLStateTransition::Reset;
+    } else if (eString == "start") {
+        return PackMLStateTransition::Start;
+    } else if (eString == "stop") {
+        return PackMLStateTransition::Stop;
+    }
+}
+
 std::string StateToString(PackMLState eState) {
     switch (eState) {
     case PackMLState::Idle:
@@ -120,7 +134,8 @@ void DeviceWidget::on_AbortButtonClicked() {
     switch (actionValue) {
     case QMessageBox::Abort:
         qDebug() << "NOW ABORTING";
-        m_Device->TriggerAbort();
+        m_Device->TriggerSkillStateTransition(m_Device->NodeId(), PackMLStateTransition::Abort);
+        break;
     case QMessageBox::Cancel:
         break;
     default:
@@ -142,14 +157,14 @@ void DeviceWidget::on_SkillButtonClicked() {
     // TODO: implement a popup here telling you which string you will send
     if (ok && !selection.isEmpty()) {
         // this part here is SkillNodeId
-        skillNodeid = nodeId + skillNodeid + ".";
+        skillNodeid = nodeId + skillNodeid;
         qDebug() << "node ID + SKill clicked : " << skillNodeid;
-        QString selectionString = skillNodeid + transitionString;
+        QString selectionString = skillNodeid + "." + transitionString;
         qDebug() << "selectionString + transitionString : " << selectionString;
         selectionString = selectionString + selection;
         qDebug() << "selectionString + selection: " << selectionString;
         // skillClicked is the nodId string
-        m_Device->TriggerSkillStateTransition(skillNodeid, selection);
+        m_Device->TriggerSkillStateTransition(skillNodeid, StringToStateTransition(selection));
         //        TriggerSkillStateTransition(skillClicked);
     }
     // TODO: do we really need this if I trigger with just one function ?

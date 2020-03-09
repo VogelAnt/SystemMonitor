@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "DeviceWidget.h"
-#include "orderinformation.h"
-#include "redisclient.h"
+//#include "DeviceWidget.h"
+//#include "orderinformation.h"
+//#include "redisclient.h"
 #include "ui_mainwindow.h"
 
 using Redistorium::Redis;
@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_layout = new QHBoxLayout(m_central);
     m_orderTable = new OrderTableWidget(m_central);
     //    m_deviceTab = std::make_unique<DeviceTabWidget>(m_central);
+    m_orderTable->setMaximumSize(299, 900);
+    m_orderTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_deviceTab = new DeviceTabWidget(m_central);
     InitializeDevices();
     m_deviceTab->Initialize(&m_DeviceMap);
@@ -23,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_central->setLayout(m_layout);
     setCentralWidget(m_central);
 }
-// TODO: just delete the central widget that will clean all layouts and other added widgets automatically
+
 MainWindow::~MainWindow() {
     delete m_ui;
     delete m_central;

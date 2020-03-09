@@ -58,17 +58,12 @@ public:
         }
     }
 
-    void TriggerSkillStateTransition(QString eNodeid, const QString eValue) final {
+    void TriggerSkillStateTransition(QString eNodeid, const PackMLStateTransition eTransition) final {
         // TODO: namespace, NodeId, value
-        //        m_Client.WriteNode<QString>(m_Namespace, nodeId, eValue);
+
+        m_Client.WriteNode(m_Namespace, eNodeid + ".state.stateMachine.stateTransition." + StateTransitionToString(eTransition), true);
     }
 
-    // TODO: fill in the functionality of the trigger functions
-    void TriggerAbort() final {}
-    void TriggerClear() final {}
-    void TriggerReset() final {}
-    void TriggerStart() final {}
-    void TriggerStop() final {}
     //    unsigned int m_Namespace;
     uint8_t m_Namespace;
 

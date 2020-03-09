@@ -19,6 +19,7 @@ add_executable (${PROJECT_NAME}
     adapters/OpcuaClient.h
 
     devices/IDevice.h
+    devices/IDevice.cpp
     devices/OpcuaDevice.cpp
     devices/OpcuaDevice.h
 
