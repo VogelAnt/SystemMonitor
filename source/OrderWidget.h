@@ -14,7 +14,10 @@
 namespace Ui {
 class OrderWidget;
 }
-
+/**
+ * @brief The OrderTableWidget class is a QTableWidget that displays parsed order
+ * information as a table
+ */
 class OrderTableWidget : public QTableWidget {
     Q_OBJECT
 

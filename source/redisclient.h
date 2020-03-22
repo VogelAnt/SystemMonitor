@@ -9,8 +9,12 @@
 
 #include <iostream>
 // TODO: make m_redis a private member, rework the functions
+/**
+ * @brief The RedisClient class utilizes a redis client based on the QT friendly
+ * framework redistorium. It can subscribe, publish and perform the operation LGET
+ */
 class RedisClient : public QObject {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     RedisClient(QObject *parent = nullptr);

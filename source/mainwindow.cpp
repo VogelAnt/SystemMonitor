@@ -6,8 +6,7 @@
 
 using Redistorium::Redis;
 using Redistorium::Reply::ReplyElement;
-
-// TODO: showmaximized()
+// TODO: showmaximized()?
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow) {
     m_ui->setupUi(this);
     m_central = new QWidget(this);

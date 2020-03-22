@@ -22,7 +22,13 @@
 namespace Ui {
 class DeviceWidget;
 }
-
+/**
+ * @brief The DeviceWidget class is a QMainWindow with a central Widget
+ * containing buttons representing individual skill state as well as a
+ * "Trigger Device State" button.
+ * individual Skills as well as device state transitions can be triggered by
+ * pressing the corresponding button
+ */
 class DeviceWidget : public QMainWindow {
     Q_OBJECT
 public:

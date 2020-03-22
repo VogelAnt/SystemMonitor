@@ -16,14 +16,28 @@
 namespace Ui {
 class MainWindow;
 }
-
+/**
+ * @brief The MainWindow class is the core of the user interface consisting of
+ * a central widget in which either a customized QTabWidget, QTableWidget
+ * or both can be displayed
+ *
+ */
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
+    /**
+     * @brief MainWindow
+     * Call function InitiallizeDevices and set up ui
+     * @param parent is nullpointer
+     */
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
+    /**
+     * @brief InitializeDevices
+     * Instantiates new Devices and sets respective Skills
+     */
     void InitializeDevices();
     Ui::MainWindow *m_ui = nullptr;
     QHBoxLayout *m_layout = nullptr;

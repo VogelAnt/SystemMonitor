@@ -13,7 +13,10 @@
 #include <memory>
 #include <mutex>
 #include <string>
-
+/**
+ * @brief The OpcuaClient class is an open62541 based OPCUA client with the ability
+ * to read and write to the corresponding server node
+ */
 class OpcuaClient : public QObject {
     Q_OBJECT
 public:
