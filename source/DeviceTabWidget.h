@@ -40,7 +40,9 @@ public:
 };
 
 /**
- * @brief The DeviceTabWidget class
+ * @brief The DeviceTabWidget class is a customized QTabWidget in which each
+ * individual tab represents a device with its current state information gained
+ * from the corresponding OPCUA server
  */
 class DeviceTabWidget : public QTabWidget {
     Q_OBJECT
