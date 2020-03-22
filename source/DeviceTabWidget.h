@@ -40,7 +40,7 @@ public:
 };
 
 /**
- * @brief The DeviceTabWidget class is representing an individual tab
+ * @brief The DeviceTabWidget class
  */
 class DeviceTabWidget : public QTabWidget {
     Q_OBJECT
