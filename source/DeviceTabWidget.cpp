@@ -3,7 +3,7 @@
 #include <open62541.h>
 
 DeviceTabWidget::DeviceTabWidget(QWidget *parent) : QTabWidget(parent) {
-    tabBar()->setStyleSheet("font-size : 24px");
+    tabBar()->setStyleSheet("font-size : 18px");
     this->setTabPosition(West);
     m_TabStyle = new TabStyle_HorizontalText();
     tabBar()->setStyle(m_TabStyle);

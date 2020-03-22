@@ -16,7 +16,7 @@ std::string StateToColorString(PackMLState eState) {
     case PackMLState::Aborted:
         return "red";
     case PackMLState::Stopped:
-        return "stopped";
+        return "darkgrey";
     case PackMLState::Starting:
         return "starting";
     case PackMLState::Completing:
@@ -96,7 +96,7 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
 void DeviceWidget::MakeButtonLayout() {
     m_central = new QWidget();
     m_buttonLayout = new QVBoxLayout();
-    m_abortButton = new QPushButton("ABORT DEVICE", m_central);
+    m_abortButton = new QPushButton("Trigger Device State", m_central);
     m_abortButton->setStyleSheet("font-size : 24px");
     m_buttonLayout->addWidget(m_abortButton);
     int i = 0;
@@ -109,6 +109,7 @@ void DeviceWidget::MakeButtonLayout() {
         connect(SkillMap_Button[skill->Name], &QPushButton::clicked, this, &DeviceWidget::on_SkillButtonClicked);
         ++i;
     }
+    m_buttonLayout->insertStretch(-1, 1);
     m_central->setLayout(m_buttonLayout);
     setCentralWidget(m_central);
 }

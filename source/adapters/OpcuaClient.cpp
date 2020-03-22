@@ -1,7 +1,4 @@
-
-
 #include "OpcuaClient.h"
-
 #include "smgCommon.h"
 
 #include <iostream>

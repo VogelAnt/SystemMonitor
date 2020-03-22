@@ -39,6 +39,9 @@ public:
     void drawControl(ControlElement eElement, const QStyleOption *eOption, QPainter *ePainter, const QWidget *eWidget) const override;
 };
 
+/**
+ * @brief The DeviceTabWidget class is representing an individual tab
+ */
 class DeviceTabWidget : public QTabWidget {
     Q_OBJECT
 public:
