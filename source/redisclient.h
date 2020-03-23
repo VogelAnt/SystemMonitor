@@ -8,7 +8,6 @@
 #include <redistorium/redis.hpp>
 
 #include <iostream>
-// TODO: make m_redis a private member, rework the functions
 /**
  * @brief The RedisClient class utilizes a redis client based on the QT friendly
  * framework redistorium. It can subscribe, publish and perform the operation LGET

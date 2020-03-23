@@ -56,12 +56,16 @@ public slots:
     void on_MakeOrderTable(nlohmann::json);
     /**
      * @brief on_TableCellDoubleClicked
+     * If a cell in column 2 (except for the headers) has been double clicked,
+     * a QInputDialog is prompted from which priority alterations can be chosen
+     * If confirmed the changes willl be set and published to redis
      * @param row
      * @param column
      */
     void on_TableCellDoubleClicked(int row, int column);
     /**
      * @brief on_TableCellClicked
+     * prints the position that has been clicked
      * @param row
      * @param column
      */
