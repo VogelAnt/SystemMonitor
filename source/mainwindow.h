@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow {
 public:
     /**
      * @brief MainWindow
-     * Call function InitiallizeDevices and set up ui
+     * Calls function InitiallizeDevices and sets up ui
      * @param parent is nullpointer
      */
     explicit MainWindow(QWidget *parent = nullptr);

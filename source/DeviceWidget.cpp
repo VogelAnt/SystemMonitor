@@ -82,9 +82,9 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
     m_timer = new QTimer();
     m_tabIndex = eTabIndex;
     m_Device = eDevice;
-    qDebug() << "Device Name:" << m_Device->Name();
-    qDebug() << "Node ID: " << m_Device->NodeId();
-    qDebug() << "Namespace: " << m_Device->NameSpace();
+    //    qDebug() << "Device Name:" << m_Device->Name();
+    //    qDebug() << "Node ID: " << m_Device->NodeId();
+    //    qDebug() << "Namespace: " << m_Device->NameSpace();
     //    qDebug() << "state: " << m_Device->GetDeviceState();
 
     MakeButtonLayout();
@@ -114,7 +114,6 @@ void DeviceWidget::MakeButtonLayout() {
     setCentralWidget(m_central);
 }
 
-// TODO: implement the write bullshti with open62541 here
 void DeviceWidget::on_AbortButtonClicked() {
     // TODO: make these members
     QString deviceName = m_Device->Name();
@@ -168,22 +167,6 @@ void DeviceWidget::on_SkillButtonClicked() {
         m_Device->TriggerSkillStateTransition(skillNodeid, StringToStateTransition(selection));
         //        TriggerSkillStateTransition(skillClicked);
     }
-    // TODO: do we really need this if I trigger with just one function ?
-    //    if (ok && !selection.isEmpty()) {
-    //        skillClicked = nodeId + skillClicked;
-    //        skillClicked = skillClicked + transitionString;
-    //        if (selection == "abort") {
-    //            qDebug() << skillClicked + selection;
-    //        } else if (selection == "clear") {
-    //            qDebug() << transitionString + selection;
-    //        } else if (selection == "reset") {
-    //            qDebug() << transitionString + selection;
-    //        } else if (selection == "start") {
-    //            qDebug() << transitionString + selection;
-    //        } else if (selection == "stop") {
-    //            qDebug() << transitionString + selection;
-    //        }
-    //    }
 }
 
 DeviceWidget::~DeviceWidget() {

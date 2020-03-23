@@ -22,19 +22,56 @@ class OrderTableWidget : public QTableWidget {
     Q_OBJECT
 
 public:
+    /**
+     * @brief OrderTableWidget
+     * instantiates redis client and timer for polling of redis server
+     * sets up header configuration and connects parsing related functions
+     * between redis client and the table
+     * @param parent
+     * MainWindow
+     */
     explicit OrderTableWidget(QWidget *parent = nullptr);
+
     ~OrderTableWidget();
 
 signals:
-    void SendCommand(QString);
-    void GetReply();
+    /**
+     * @brief ReceivedNewSubscription
+     * @param eParsed
+     */
     void ReceivedNewSubscription(QString eParsed);
+
+    /**
+     * @brief OrderPriorityChanged
+     * Emitted whenever the priority has been changed by double clicking the priority
+     * column and confirming changes
+     */
     void OrderPriorityChanged(int);
 
 public slots:
+    /**
+     * @brief on_MakeOrderTable
+     * Fills table columns with data from parsed order
+     */
     void on_MakeOrderTable(nlohmann::json);
+    /**
+     * @brief on_TableCellDoubleClicked
+     * @param row
+     * @param column
+     */
     void on_TableCellDoubleClicked(int row, int column);
+    /**
+     * @brief on_TableCellClicked
+     * @param row
+     * @param column
+     */
     void on_TableCellClicked(int row, int column);
+    /**
+     * @brief on_SubscriptionMessage
+     * converts received message to QString and checks if content is empty
+     * @param eChannel
+     * @param eMessage
+     */
     void on_SubscriptionMessage(QString eChannel, QString eMessage);
 
 private:

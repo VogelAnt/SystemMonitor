@@ -32,18 +32,46 @@ class DeviceWidget;
 class DeviceWidget : public QMainWindow {
     Q_OBJECT
 public:
-    //
+    /**
+     * @brief DeviceWidget
+     * Create UI for buttons in layout,start timer for polling servers
+     * @param eDevice
+     * @param tabIndex
+     * @param parent
+     */
     explicit DeviceWidget(IDevice *eDevice, int tabIndex, QWidget *parent = nullptr);
     ~DeviceWidget() final;
+    /**
+     * @brief MakeButtonLayout
+     * Create new Widget with vertical layout, add buttons for triggering
+     * skills and device status changes
+     *
+     */
     void MakeButtonLayout();
 
 signals:
+    /**
+     * @brief DeviceStatusChanged
+     * Updates device information in Tab
+     * Emitted whenever new information has been polled
+     * @param index
+     * @param textColour
+     * @param tabText
+     */
     void DeviceStatusChanged(int index, QString textColour, QString tabText);
-    void AbortDeviceManually(QString);
+    /**
+     * @brief TriggerDeviceState
+     *
+     */
+    void TriggerDeviceState(QString);
 
 public slots:
     void UpdateDeviceInfo();
     void on_AbortButtonClicked();
+    /**
+     * @brief on_SkillButtonClicked
+     * Prompts a Q
+     */
     void on_SkillButtonClicked();
 
 private:

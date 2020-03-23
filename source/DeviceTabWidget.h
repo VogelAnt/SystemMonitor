@@ -47,11 +47,34 @@ public:
 class DeviceTabWidget : public QTabWidget {
     Q_OBJECT
 public:
+    /**
+     * @brief DeviceTabWidget
+     * set tab style
+     * @param parent
+     */
     DeviceTabWidget(QWidget *parent = nullptr);
 
+    /**
+     * @brief ~DeviceTabWidget
+     * destroy custom tab style
+     */
     virtual ~DeviceTabWidget();
+
+    /**
+     * @brief Initialize
+     * Create map containing string name of device to technical opcua name
+     * @param eDeviceList
+     * A map from easily readable device name to technical name used in opcua
+     */
     void Initialize(std::map<std::string, IDevice *> *eDeviceList);
 public slots:
+    /**
+     * @brief on_ChangeDeviceStatus
+     * Slot changing the text colour of the tab depending on status updated
+     * @param index
+     * @param textColour
+     * @param tabText
+     */
     void on_ChangeDeviceStatus(int index, QString textColour, QString tabText);
 
 private:

@@ -46,6 +46,7 @@ void OrderTableWidget::on_SubscriptionMessage(QString eChannel, QString eMessage
     // qDebug() << "Received Message from subscribed channel " << eChannel << ": \n" << eMessage;
     std::optional<QString> systemMonitor_received = eMessage;
     if (systemMonitor_received.has_value()) { emit ReceivedNewSubscription(systemMonitor_received.value()); }
+    // TODO: Make an exception here
 }
 
 void OrderTableWidget::on_MakeOrderTable(nlohmann::json eJsonArray) {
