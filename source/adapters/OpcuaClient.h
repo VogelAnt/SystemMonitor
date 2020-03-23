@@ -20,13 +20,16 @@
 class OpcuaClient : public QObject {
     Q_OBJECT
 public:
+    /**
+     * @brief OpcuaClient
+     * @param parent
+     */
     explicit OpcuaClient(QObject *parent = nullptr);
     OpcuaClient(const OpcuaClient &a) = delete;
     OpcuaClient &operator=(const OpcuaClient &a) = delete;
 
     OpcuaClient(const OpcuaClient &&a) = delete;
     OpcuaClient &operator=(OpcuaClient &&a) = delete;
-
     ~OpcuaClient() final;
 
     UA_StatusCode Connect(const QString &eUrl);

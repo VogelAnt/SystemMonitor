@@ -25,7 +25,10 @@ enum class PackMLState {
 enum class PackMLStateTransition { Abort, Clear, Reset, Start, Stop };
 
 QString StateTransitionToString(PackMLStateTransition transition);
-
+/**
+ * @brief The IDevice class
+ * see MES documentation
+ */
 class IDevice : public QObject {
     Q_OBJECT
 public:

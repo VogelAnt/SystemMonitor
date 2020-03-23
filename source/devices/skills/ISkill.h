@@ -1,7 +1,10 @@
 #ifndef SMG_DEVICES_SKILLS_ISKILL_H
 #define SMG_DEVICES_SKILLS_ISKILL_H
 #include <QString>
-
+/**
+ * @brief The ISkill class
+ * see MES documentation
+ */
 class ISkill {
 public:
     ISkill(const QString &eName, const QString &eParentNodeId) : Name(eName), NodeId(eParentNodeId + ".skill." + eName) {}

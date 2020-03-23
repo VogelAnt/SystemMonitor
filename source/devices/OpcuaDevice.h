@@ -4,7 +4,10 @@
 
 #include "adapters/OpcuaClient.h"
 #include "skills/ISkill.h"
-
+/**
+ * @brief The OpcuaDevice class
+ * see MES documentation
+ */
 class OpcuaDevice : public IDevice {
 public:
     explicit OpcuaDevice(const QString &eName, const uint8_t &eNamespace, const QString &eNodeId, QObject *parent = nullptr);
