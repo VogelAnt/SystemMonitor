@@ -66,7 +66,13 @@ signals:
     void TriggerDeviceState(QString);
 
 public slots:
+    /**
+     * @brief UpdateDeviceInfo
+     */
     void UpdateDeviceInfo();
+    /**
+     * @brief on_AbortButtonClicked
+     */
     void on_AbortButtonClicked();
     /**
      * @brief on_SkillButtonClicked
@@ -75,16 +81,45 @@ public slots:
     void on_SkillButtonClicked();
 
 private:
+    /**
+     * @brief ui
+     */
     Ui::DeviceWidget *ui;
+    /**
+     * @brief SkillButton
+     */
     QPushButton *SkillButton = nullptr;
+    /**
+     * @brief m_timer
+     */
     QTimer *m_timer = nullptr;
+    /**
+     * @brief m_abortButton
+     */
     QPushButton *m_abortButton = nullptr;
+    /**
+     * @brief SkillMap_Button
+     */
     std::map<QString, QPushButton *> SkillMap_Button;
+    /**
+     * @brief m_tabIndex
+     */
     int m_tabIndex;
-
+    /**
+     * @brief m_Device
+     */
     IDevice *m_Device = nullptr;
+    /**
+     * @brief m_buttonLayout
+     */
     QVBoxLayout *m_buttonLayout = nullptr;
+    /**
+     * @brief m_central
+     */
     QWidget *m_central = nullptr;
+    /**
+     * @brief m_abortMessage
+     */
     QMessageBox *m_abortMessage = nullptr;
 };
 

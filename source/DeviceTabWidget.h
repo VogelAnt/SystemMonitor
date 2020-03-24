@@ -94,9 +94,25 @@ private:
      * map from device name as string to
      */
     std::map<std::string, IDevice *> *m_DeviceMap;
+    /**
+     * @brief m_Assembly
+     * Assembly device
+     */
     IDevice *m_Assembly;
+    /**
+     * @brief m_ImageRecognition
+     * Image Recognition device
+     */
     IDevice *m_ImageRecognition;
+    /**
+     * @brief m_Labeling
+     * labeling device
+     */
     IDevice *m_Labeling;
+    /**
+     * @brief m_SuperTrak
+     * SuperTrak device
+     */
     IDevice *m_SuperTrak;
 };
 
