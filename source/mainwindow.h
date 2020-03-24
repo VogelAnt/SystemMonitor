@@ -1,3 +1,7 @@
+/**
+ * @file mainwindow.h
+ * @brief This file contains the declaration of the mainwindow class
+ */
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include "DeviceTabWidget.h"

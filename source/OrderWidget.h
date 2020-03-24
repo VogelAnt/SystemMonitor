@@ -1,3 +1,8 @@
+/**
+ * @file OrderWidget.h
+ * @brief This file contains the declaration of the order widget class
+ */
+
 #ifndef ORDERWIDGET_H
 #define ORDERWIDGET_H
 #include "nlohmann/json.hpp"
@@ -79,11 +84,29 @@ public slots:
     void on_SubscriptionMessage(QString eChannel, QString eMessage);
 
 private:
+    /**
+     * @brief ui
+     */
     Ui::OrderWidget *ui;
+    /**
+     * @brief m_headerColumns
+     */
     QStringList m_headerColumns;
+    /**
+     * @brief m_orderInformation
+     */
     RedisClient *m_orderInformation = nullptr;
+    /**
+     * @brief m_orderPagetimer
+     */
     QTimer *m_orderPagetimer = nullptr;
+    /**
+     * @brief m_orderVector
+     */
     std::vector<OrderInformation> m_orderVector;
+    /**
+     * @brief m_priorityDialog
+     */
     QInputDialog *m_priorityDialog = nullptr;
 };
 

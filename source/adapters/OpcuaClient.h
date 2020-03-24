@@ -1,3 +1,7 @@
+/**
+ * @file OpcuaClient.h
+ * @brief This file contains the OpcuaClient class
+ */
 #ifndef SMG_ADAPTERS_OPCUACLIENT_H
 #define SMG_ADAPTERS_OPCUACLIENT_H
 #include <QObject>

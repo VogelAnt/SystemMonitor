@@ -1,3 +1,8 @@
+/**
+ * @file redisclient.h
+ * @brief This file contains the declaration of the RedisClient class
+ *
+ */
 #ifndef REDISCLIENT_H
 #define REDISCLIENT_H
 

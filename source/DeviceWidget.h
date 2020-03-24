@@ -1,3 +1,7 @@
+/**
+ * @file DeviceWidget.h
+ * @brief This file contains the declaration of the DeviceWidget class
+ */
 #ifndef SMG_DEVICEWIDGET_H
 #define SMG_DEVICEWIDGET_H
 
@@ -18,7 +22,9 @@
 
 #include <iostream>
 #include <memory>
-
+/**
+ *@brief ui namespace of Device Widget
+ */
 namespace Ui {
 class DeviceWidget;
 }
