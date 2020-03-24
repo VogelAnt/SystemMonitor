@@ -1,5 +1,6 @@
 PROJECT_NAME = "System Monitor GUI v 0.0.0.1"
 
+EXCLUDE_PATTERNS = *.cpp
 GENERATE_XML = TRUE
 INPUT = "source"
 OUTPUT_DIRECTORY = "build/documentation"

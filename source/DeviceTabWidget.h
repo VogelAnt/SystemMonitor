@@ -1,3 +1,9 @@
+/**
+ * @file DeviceTabWidget.h
+ * @brief This file contains the declarations of the TabStyle_HorizontalText class
+ * and the DeviceTabWidget class
+ */
+
 #ifndef TABSTYLE_HORIZONTALTEXT_H
 #define TABSTYLE_HORIZONTALTEXT_H
 #include "DeviceWidget.h"
@@ -78,7 +84,15 @@ public slots:
     void on_ChangeDeviceStatus(int index, QString textColour, QString tabText);
 
 private:
+    /**
+     * @brief m_TabStyle
+     * Instantiation of horizontal text style for tab text
+     */
     TabStyle_HorizontalText *m_TabStyle = nullptr;
+    /**
+     * @brief m_DeviceMap
+     * map from device name as string to
+     */
     std::map<std::string, IDevice *> *m_DeviceMap;
     IDevice *m_Assembly;
     IDevice *m_ImageRecognition;

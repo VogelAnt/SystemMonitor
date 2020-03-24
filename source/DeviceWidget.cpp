@@ -94,10 +94,10 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
 }
 
 void DeviceWidget::MakeButtonLayout() {
-    m_central = new QWidget();
-    m_buttonLayout = new QVBoxLayout();
-    m_abortButton = new QPushButton("Trigger Device State", m_central);
-    m_abortButton->setStyleSheet("font-size : 24px");
+    m_central = new QWidget(this);
+    m_buttonLayout = new QVBoxLayout(m_central);
+    m_abortButton = new QPushButton("Trigger Device", m_central);
+    m_abortButton->setStyleSheet("font-size : 18px");
     m_buttonLayout->addWidget(m_abortButton);
     int i = 0;
     for (auto &pair : m_Device->SkillMap()) {
@@ -105,7 +105,7 @@ void DeviceWidget::MakeButtonLayout() {
         SkillButton = new QPushButton(skill->Name, m_central);
         SkillMap_Button[skill->Name] = SkillButton;
         m_buttonLayout->addWidget(SkillButton);
-        SkillMap_Button[skill->Name]->setStyleSheet("font-size: 24px");
+        SkillMap_Button[skill->Name]->setStyleSheet("font-size: 18px");
         connect(SkillMap_Button[skill->Name], &QPushButton::clicked, this, &DeviceWidget::on_SkillButtonClicked);
         ++i;
     }
@@ -154,7 +154,6 @@ void DeviceWidget::on_SkillButtonClicked() {
     QString transitionString = "state.stateMachine.stateTransition.";
     QString selection = QInputDialog::getItem(this, skillNodeid, "Trigger Skill State of " + skillNodeid, sDevice_Triggers, 0, false);
     bool ok = true;
-    // TODO: implement a popup here telling you which string you will send
     if (ok && !selection.isEmpty()) {
         // this part here is SkillNodeId
         skillNodeid = nodeId + skillNodeid;
@@ -165,7 +164,6 @@ void DeviceWidget::on_SkillButtonClicked() {
         qDebug() << "selectionString + selection: " << selectionString;
         // skillClicked is the nodId string
         m_Device->TriggerSkillStateTransition(skillNodeid, StringToStateTransition(selection));
-        //        TriggerSkillStateTransition(skillClicked);
     }
 }
 

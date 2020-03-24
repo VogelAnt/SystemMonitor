@@ -6,7 +6,7 @@
 #include "skills/ISkill.h"
 /**
  * @brief The OpcuaDevice class
- * see MES documentation
+ *
  */
 class OpcuaDevice : public IDevice {
 public:
@@ -62,8 +62,6 @@ public:
     }
 
     void TriggerSkillStateTransition(QString eNodeid, const PackMLStateTransition eTransition) final {
-        // TODO: namespace, NodeId, value
-
         m_Client.WriteNode(m_Namespace, eNodeid + ".state.stateMachine.stateTransition." + StateTransitionToString(eTransition), true);
     }
 

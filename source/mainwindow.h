@@ -3,9 +3,11 @@
 #include "DeviceTabWidget.h"
 #include "OrderWidget.h"
 
-#include <QGridLayout>
+#include <QAction>
 #include <QHBoxLayout>
 #include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -39,6 +41,9 @@ private:
      * Instantiates new Devices and sets respective Skills
      */
     void InitializeDevices();
+
+    QAction *m_quit = nullptr;
+    QMenu *m_test = nullptr;
     Ui::MainWindow *m_ui = nullptr;
     QHBoxLayout *m_layout = nullptr;
 
