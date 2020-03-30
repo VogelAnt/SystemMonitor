@@ -96,7 +96,7 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
 void DeviceWidget::MakeButtonLayout() {
     m_central = new QWidget(this);
     m_buttonLayout = new QVBoxLayout(m_central);
-    m_abortButton = new QPushButton("Trigger Device", m_central);
+    m_abortButton = new QPushButton("Trigger Device State", m_central);
     m_abortButton->setStyleSheet("font-size : 18px");
     m_buttonLayout->addWidget(m_abortButton);
     int i = 0;
@@ -114,6 +114,8 @@ void DeviceWidget::MakeButtonLayout() {
     setCentralWidget(m_central);
 }
 
+// TODO: This should be called "on_TriggerDeviceState"
+// TODO: copy procedure from on_SkillButtonClicked
 void DeviceWidget::on_AbortButtonClicked() {
     // TODO: make these members
     QString deviceName = m_Device->Name();
@@ -188,7 +190,7 @@ void DeviceWidget::UpdateDeviceInfo() {
         buttonText += ": " + skillStateString;
         auto button = SkillMap_Button[skill->Name];
         button->setText(buttonText.c_str());
-        QString temp_buttoncolour = QString("background-color : ") + StateToColorString(skillState).c_str() + "; font-size: 24px";
+        QString temp_buttoncolour = QString("background-color : ") + StateToColorString(skillState).c_str() + "; font-size: 18px";
         button->setStyleSheet(temp_buttoncolour);
     }
 }

@@ -1,8 +1,8 @@
 PROJECT_NAME = "System Monitor GUI v 0.0.0.1"
 
 EXCLUDE_PATTERNS = *.cpp
-EXCLUDE_PATTERNS = */source/adapters/*
-EXCLUDE_PATTERNS = */source/devices/*
+EXCLUDE_PATTERNS += */source/adapters/*
+EXCLUDE_PATTERNS += */source/devices/*
 EXTRACT_PRIVATE = YES
 GENERATE_XML = TRUE
 HIDE_UNDOC_MEMBERS = YES
