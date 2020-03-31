@@ -45,7 +45,9 @@ private slots:
      * @brief ToggleStatusBar
      * Toggle visibility of the displayed widgets by checking or unchecking
      */
-    void ToggleStatusBar();
+    void on_ToggleDeviceTab();
+    void on_ToggleOrdertable();
+    void on_ToggleBoth();
 
 private:
     /**
@@ -53,6 +55,7 @@ private:
      * Instantiates new Devices and sets respective Skills
      */
     void InitializeDevices();
+    void InitializeMenubar();
     /**
      * @brief viewst
      * action for checkable menu

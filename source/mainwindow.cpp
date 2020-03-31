@@ -11,35 +11,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_ui->setupUi(this);
     m_central = new QWidget(this);
     m_layout = new QHBoxLayout(m_central);
-    m_viewOrdertable = new QAction("&Order Table", this);
-    m_viewOrdertable->setCheckable(true);
-    m_viewOrdertable->setChecked(false);
-    m_viewDeviceTab = new QAction("&Device Tab", this);
-    m_viewDeviceTab->setCheckable(true);
-    m_viewDeviceTab->setChecked(true);
-    m_viewBothwidgets = new QAction("&Show both", this);
-    m_viewBothwidgets->setCheckable(true);
-    m_viewBothwidgets->setChecked(false);
-    m_selectionView = menuBar()->addMenu("&View");
-    m_selectionView->addAction(m_viewOrdertable);
-    m_selectionView->addAction(m_viewDeviceTab);
-    m_selectionView->addAction(m_viewBothwidgets);
-    connect(m_viewOrdertable, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
-    connect(m_viewDeviceTab, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
-    connect(m_viewBothwidgets, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
-
-    QMenu *test = nullptr;
-    test = menuBar()->addMenu("&View");
-    test->addAction(m_viewOrdertable);
-    connect(m_viewOrdertable, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
-    m_quit = new QAction("&Quit", this);
-    m_test = menuBar()->addMenu("&File");
-    m_test->addAction(m_quit);
-    connect(m_quit, &QAction::triggered, this, &QApplication::quit);
     m_orderTable = new OrderTableWidget(m_central);
     m_orderTable->setMaximumSize(299, 900);
     m_orderTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_deviceTab = new DeviceTabWidget(m_central);
+    InitializeMenubar();
     InitializeDevices();
     m_deviceTab->Initialize(&m_DeviceMap);
     m_layout->addWidget(m_orderTable);
@@ -54,27 +30,47 @@ MainWindow::~MainWindow() {
     delete m_central;
 }
 
-void MainWindow::ToggleStatusBar() {
-    if (m_viewBothwidgets->isChecked()) {
-        m_viewBothwidgets->setChecked(true);
-        m_viewOrdertable->setChecked(false);
-        m_viewDeviceTab->setChecked(false);
-        m_orderTable->setHidden(false);
-        m_deviceTab->setHidden(false);
-    } else if (m_viewOrdertable->isChecked() && ~m_viewDeviceTab->isChecked()) {
-        m_orderTable->setHidden(false);
-        m_deviceTab->setHidden(true);
-        m_viewDeviceTab->setChecked(false);
-    } else if (m_viewDeviceTab->isChecked() && ~m_viewOrdertable->isChecked()) {
-        m_orderTable->setHidden(true);
-        m_deviceTab->setHidden(false);
-        m_viewOrdertable->setChecked(false);
+void MainWindow::InitializeMenubar() {
+    m_viewOrdertable = new QAction("&Order Table", this);
+    m_viewOrdertable->setCheckable(true);
+    m_viewOrdertable->setChecked(false);
+    m_viewDeviceTab = new QAction("&Device Tab", this);
+    m_viewDeviceTab->setCheckable(true);
+    m_viewDeviceTab->setChecked(true);
+    m_viewBothwidgets = new QAction("&Show both", this);
+    m_viewBothwidgets->setCheckable(true);
+    m_viewBothwidgets->setChecked(false);
+    m_selectionView = menuBar()->addMenu("&View");
+    m_selectionView->addAction(m_viewOrdertable);
+    m_selectionView->addAction(m_viewDeviceTab);
+    m_selectionView->addAction(m_viewBothwidgets);
+    connect(m_viewOrdertable, &QAction::triggered, this, &MainWindow::on_ToggleOrdertable);
+    connect(m_viewDeviceTab, &QAction::triggered, this, &MainWindow::on_ToggleDeviceTab);
+    connect(m_viewBothwidgets, &QAction::triggered, this, &MainWindow::on_ToggleBoth);
+}
 
-    } else if (~m_viewDeviceTab->isChecked() && ~m_viewOrdertable->isChecked()) {
-        m_orderTable->setHidden(true);
-        m_deviceTab->setHidden(false);
-        m_viewDeviceTab->setChecked(true);
-    }
+void MainWindow::on_ToggleBoth() {
+    m_viewBothwidgets->setChecked(true);
+    m_viewDeviceTab->setChecked(true);
+    m_viewOrdertable->setChecked(true);
+    m_orderTable->setHidden(false);
+    m_deviceTab->setHidden(false);
+}
+
+void MainWindow::on_ToggleDeviceTab() {
+    m_viewBothwidgets->setChecked(false);
+    m_viewDeviceTab->setChecked(true);
+    m_viewOrdertable->setChecked(false);
+    m_orderTable->setHidden(true);
+    m_deviceTab->setHidden(false);
+}
+
+void MainWindow::on_ToggleOrdertable() {
+    m_viewBothwidgets->setChecked(false);
+    m_viewDeviceTab->setChecked(false);
+    m_viewOrdertable->setChecked(true);
+    m_orderTable->setHidden(false);
+    m_deviceTab->setHidden(true);
 }
 
 void MainWindow::InitializeDevices() {
