@@ -166,6 +166,8 @@ void DeviceWidget::on_SkillButtonClicked() {
         qDebug() << "selectionString + selection: " << selectionString;
         // skillClicked is the nodId string
         m_Device->TriggerSkillStateTransition(skillNodeid, StringToStateTransition(selection));
+    } else {
+        qDebug() << "Cancelled";
     }
 }
 

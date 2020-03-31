@@ -37,10 +37,10 @@ void MainWindow::InitializeMenubar() {
     m_viewBothwidgets = new QAction("&Show both", this);
     m_viewBothwidgets->setCheckable(true);
     m_viewBothwidgets->setChecked(false);
-    m_selectionView = menuBar()->addMenu("&View");
-    m_selectionView->addAction(m_viewOrdertable);
-    m_selectionView->addAction(m_viewDeviceTab);
-    m_selectionView->addAction(m_viewBothwidgets);
+    m_widgetSelectionmenu = menuBar()->addMenu("&View");
+    m_widgetSelectionmenu->addAction(m_viewOrdertable);
+    m_widgetSelectionmenu->addAction(m_viewDeviceTab);
+    m_widgetSelectionmenu->addAction(m_viewBothwidgets);
     connect(m_viewOrdertable, &QAction::triggered, this, &MainWindow::on_ToggleOrdertable);
     connect(m_viewDeviceTab, &QAction::triggered, this, &MainWindow::on_ToggleDeviceTab);
     connect(m_viewBothwidgets, &QAction::triggered, this, &MainWindow::on_ToggleBoth);
