@@ -46,8 +46,6 @@ private slots:
      * Toggle visibility of the displayed widgets by checking or unchecking
      */
     void ToggleStatusBar();
-    void ToggleOrderTableView();
-    void ToggleTabDeviceView();
 
 private:
     /**
@@ -61,6 +59,7 @@ private:
      */
     QAction *m_viewOrdertable = nullptr;
     QAction *m_viewDeviceTab = nullptr;
+    QAction *m_viewBothwidgets = nullptr;
     QMenu *m_selectionView = nullptr;
 
     /**

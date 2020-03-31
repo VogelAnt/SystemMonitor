@@ -11,17 +11,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_ui->setupUi(this);
     m_central = new QWidget(this);
     m_layout = new QHBoxLayout(m_central);
-    m_viewOrdertable = new QAction("&Show Order Table", this);
+    m_viewOrdertable = new QAction("&Order Table", this);
     m_viewOrdertable->setCheckable(true);
     m_viewOrdertable->setChecked(false);
-    m_viewDeviceTab = new QAction("&Show Device Tab", this);
+    m_viewDeviceTab = new QAction("&Device Tab", this);
     m_viewDeviceTab->setCheckable(true);
-    m_viewDeviceTab->setChecked(true);
+    m_viewDeviceTab->setChecked(false);
+    m_viewBothwidgets = new QAction("&Show both", this);
+    m_viewBothwidgets->setCheckable(true);
+    m_viewBothwidgets->setChecked(false);
     m_selectionView = menuBar()->addMenu("&View");
     m_selectionView->addAction(m_viewOrdertable);
     m_selectionView->addAction(m_viewDeviceTab);
+    m_selectionView->addAction(m_viewBothwidgets);
     connect(m_viewOrdertable, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
     connect(m_viewDeviceTab, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
+    connect(m_viewBothwidgets, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
 
     QMenu *test = nullptr;
     test = menuBar()->addMenu("&View");
@@ -50,7 +55,8 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::ToggleStatusBar() {
-    if (m_viewOrdertable->isChecked() && m_viewDeviceTab->isChecked()) {
+    if (m_viewBothwidgets->isChecked()) {
+        m_viewBothwidgets->setChecked(true);
         m_orderTable->setHidden(false);
         m_deviceTab->setHidden(false);
     } else if (m_viewOrdertable->isChecked() && ~m_viewDeviceTab->isChecked()) {
