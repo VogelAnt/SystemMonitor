@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_selectionView = menuBar()->addMenu("&View");
     m_selectionView->addAction(m_viewOrdertable);
     m_selectionView->addAction(m_viewDeviceTab);
-    connect(m_viewOrdertable, &QAction::triggered, this, &MainWindow::ToggleOrderTableView);
-    connect(m_viewDeviceTab, &QAction::triggered, this, &MainWindow::ToggleTabDeviceView);
+    connect(m_viewOrdertable, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
+    connect(m_viewDeviceTab, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
 
     QMenu *test = nullptr;
     test = menuBar()->addMenu("&View");
@@ -49,29 +49,23 @@ MainWindow::~MainWindow() {
     delete m_central;
 }
 
-void MainWindow::ToggleOrderTableView() {
-    if (m_viewOrdertable->isChecked()) {
-        m_orderTable->setHidden(false);
-        m_deviceTab->setHidden(true);
-        m_viewDeviceTab->setChecked(false);
-    } else {
-        m_orderTable->setHidden(true);
-        m_deviceTab->setHidden(false);
-    }
-}
 void MainWindow::ToggleStatusBar() {
-    if (m_viewOrdertable->isChecked()) {
+    if (m_viewOrdertable->isChecked() && m_viewDeviceTab->isChecked()) {
+        m_orderTable->setHidden(false);
+        m_deviceTab->setHidden(false);
+    } else if (m_viewOrdertable->isChecked() && ~m_viewDeviceTab->isChecked()) {
         m_orderTable->setHidden(false);
         m_deviceTab->setHidden(true);
         m_viewDeviceTab->setChecked(false);
-    } else if (m_viewDeviceTab->isChecked()) {
+    } else if (m_viewDeviceTab->isChecked() && ~m_viewOrdertable->isChecked()) {
         m_orderTable->setHidden(true);
         m_deviceTab->setHidden(false);
         m_viewOrdertable->setChecked(false);
 
-    } else {
+    } else if (~m_viewDeviceTab->isChecked() && ~m_viewOrdertable->isChecked()) {
         m_orderTable->setHidden(true);
         m_deviceTab->setHidden(false);
+        m_viewDeviceTab->setChecked(true);
     }
 }
 
