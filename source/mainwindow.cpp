@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_viewOrdertable->setChecked(false);
     m_viewDeviceTab = new QAction("&Device Tab", this);
     m_viewDeviceTab->setCheckable(true);
-    m_viewDeviceTab->setChecked(false);
+    m_viewDeviceTab->setChecked(true);
     m_viewBothwidgets = new QAction("&Show both", this);
     m_viewBothwidgets->setCheckable(true);
     m_viewBothwidgets->setChecked(false);
@@ -57,6 +57,8 @@ MainWindow::~MainWindow() {
 void MainWindow::ToggleStatusBar() {
     if (m_viewBothwidgets->isChecked()) {
         m_viewBothwidgets->setChecked(true);
+        m_viewOrdertable->setChecked(false);
+        m_viewDeviceTab->setChecked(false);
         m_orderTable->setHidden(false);
         m_deviceTab->setHidden(false);
     } else if (m_viewOrdertable->isChecked() && ~m_viewDeviceTab->isChecked()) {

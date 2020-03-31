@@ -63,17 +63,6 @@ private:
     QMenu *m_selectionView = nullptr;
 
     /**
-     * @brief m_quit
-     * action for test menu
-     */
-    QAction *m_quit = nullptr;
-    /**
-     * @brief m_test
-     * test menu
-     */
-    QMenu *m_test = nullptr;
-
-    /**
      * @brief m_ui
      * the ui of the main window
      */
