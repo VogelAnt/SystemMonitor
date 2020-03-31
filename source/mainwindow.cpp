@@ -1,7 +1,4 @@
 #include "mainwindow.h"
-//#include "DeviceWidget.h"
-//#include "orderinformation.h"
-//#include "redisclient.h"
 #include "ui_mainwindow.h"
 
 using Redistorium::Redis;
