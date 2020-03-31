@@ -11,6 +11,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_ui->setupUi(this);
     m_central = new QWidget(this);
     m_layout = new QHBoxLayout(m_central);
+    m_viewOrdertable = new QAction("&Show Order Table", this);
+    m_viewOrdertable->setCheckable(true);
+    m_viewOrdertable->setChecked(false);
+    QMenu *test = nullptr;
+    test = menuBar()->addMenu("&View");
+    test->addAction(m_viewOrdertable);
+    connect(m_viewOrdertable, &QAction::triggered, this, &MainWindow::ToggleStatusBar);
     m_quit = new QAction("&Quit", this);
     m_test = menuBar()->addMenu("&File");
     m_test->addAction(m_quit);
@@ -31,6 +38,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
 MainWindow::~MainWindow() {
     delete m_ui;
     delete m_central;
+}
+
+void MainWindow::ToggleStatusBar() {
+    if (m_viewOrdertable->isChecked()) {
+        m_orderTable->setHidden(false);
+        m_deviceTab->setHidden(true);
+    } else {
+        m_orderTable->setHidden(true);
+        m_deviceTab->setHidden(false);
+    }
 }
 
 void MainWindow::InitializeDevices() {

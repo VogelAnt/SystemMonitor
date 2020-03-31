@@ -12,6 +12,7 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
+#include <QStatusBar>
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -39,6 +40,13 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    /**
+     * @brief ToggleStatusBar
+     * Toggle visibility of the displayed widgets by checking or unchecking
+     */
+    void ToggleStatusBar();
+
 private:
     /**
      * @brief InitializeDevices
@@ -46,13 +54,24 @@ private:
      */
     void InitializeDevices();
     /**
+     * @brief viewst
+     * action for checkable menu
+     */
+    QAction *m_viewOrdertable = nullptr;
+
+    QMenu *m_selectionView = nullptr;
+
+    /**
      * @brief m_quit
+     * action for test menu
      */
     QAction *m_quit = nullptr;
     /**
      * @brief m_test
+     * test menu
      */
     QMenu *m_test = nullptr;
+
     /**
      * @brief m_ui
      * the ui of the main window
