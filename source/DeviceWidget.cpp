@@ -120,29 +120,39 @@ void DeviceWidget::on_AbortButtonClicked() {
     // TODO: make these members
     QString deviceName = m_Device->Name();
     QString nameSpace = m_Device->NodeId();
-    qDebug() << "name of the device is " << deviceName << "and nodeID " << nameSpace;
-    int actionValue = QMessageBox::critical(
-        this,
-        "ABORTING DEVICE...",
-        "The selected device will be aborted, do you really want to proceed?",
-        QMessageBox::Abort | QMessageBox::Cancel,
-        QMessageBox::Cancel);
-    QString transitionString = ".state.stateMachine.stateTransition.abort";
-    QString nodeIdtransitionstate = m_Device->NodeId();
-    qDebug() << "m_device->NodeId()" << nodeIdtransitionstate;
-    int dotPosition = nodeIdtransitionstate.lastIndexOf(QChar('.'));
-    transitionString = nodeIdtransitionstate.left(dotPosition) + transitionString;
-    qDebug() << transitionString;
-    switch (actionValue) {
-    case QMessageBox::Abort:
-        qDebug() << "NOW ABORTING";
-        m_Device->TriggerSkillStateTransition(m_Device->NodeId(), PackMLStateTransition::Abort);
-        break;
-    case QMessageBox::Cancel:
-        break;
-    default:
-        break;
+    QString triggerString = nameSpace + ".state.stateMachine.stateTransition.";
+    qDebug() << "trigger string:" << triggerString;
+    bool ok;
+    QString selection = QInputDialog::getItem(this, triggerString, "Trigger Skill State of " + triggerString, sDevice_Triggers, 0, false, &ok);
+    if (ok && !(selection.isEmpty())) {
+        triggerString += selection;
+    } else {
+        qDebug() << "selection process for triggering device cancelled";
     }
+    qDebug() << "name of the device is " << deviceName << "and nodeID " << nameSpace;
+
+    //    int actionValue = QMessageBox::critical(
+    //        this,
+    //        "ABORTING DEVICE...",
+    //        "The selected device will be aborted, do you really want to proceed?",
+    //        QMessageBox::Abort | QMessageBox::Cancel,
+    //        QMessageBox::Cancel);
+    //    QString transitionString = ".state.stateMachine.stateTransition.abort";
+    //    QString nodeIdtransitionstate = m_Device->NodeId();
+    //    qDebug() << "m_device->NodeId()" << nodeIdtransitionstate;
+    //    int dotPosition = nodeIdtransitionstate.lastIndexOf(QChar('.'));
+    //    transitionString = nodeIdtransitionstate.left(dotPosition) + transitionString;
+    //    qDebug() << transitionString;
+    //    switch (actionValue) {
+    //    case QMessageBox::Abort:
+    //        qDebug() << "NOW ABORTING";
+    //        m_Device->TriggerSkillStateTransition(m_Device->NodeId(), PackMLStateTransition::Abort);
+    //        break;
+    //    case QMessageBox::Cancel:
+    //        break;
+    //    default:
+    //        break;
+    //    }
 }
 
 // namespace.skill.skillName.state.stateMachine.stateTransition. --> add rest in switch
@@ -154,10 +164,9 @@ void DeviceWidget::on_SkillButtonClicked() {
     skillNodeid = skillNodeid.left(colonPosition);
     qDebug() << "skillClicked : " << skillNodeid;
     QString transitionString = "state.stateMachine.stateTransition.";
-    QString selection = QInputDialog::getItem(this, skillNodeid, "Trigger Skill State of " + skillNodeid, sDevice_Triggers, 0, false);
-    bool ok = true;
-    // TODO: will choose something even if I press cancel, look up this error !
-    if (ok && !selection.isEmpty()) {
+    bool ok;
+    QString selection = QInputDialog::getItem(this, skillNodeid, "Trigger Skill State of " + skillNodeid, sDevice_Triggers, 0, false, &ok);
+    if (ok && !(selection.isEmpty())) {
         // this part here is SkillNodeId
         skillNodeid = nodeId + skillNodeid;
         qDebug() << "node ID + SKill clicked : " << skillNodeid;
@@ -167,6 +176,8 @@ void DeviceWidget::on_SkillButtonClicked() {
         qDebug() << "selectionString + selection: " << selectionString;
         // skillClicked is the nodId string
         m_Device->TriggerSkillStateTransition(skillNodeid, StringToStateTransition(selection));
+    } else {
+        qDebug() << "Selection of skill state trigger cancelled";
     }
 }
 
