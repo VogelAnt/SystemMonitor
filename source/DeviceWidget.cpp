@@ -156,6 +156,7 @@ void DeviceWidget::on_SkillButtonClicked() {
     QString transitionString = "state.stateMachine.stateTransition.";
     QString selection = QInputDialog::getItem(this, skillNodeid, "Trigger Skill State of " + skillNodeid, sDevice_Triggers, 0, false);
     bool ok = true;
+    // TODO: will choose something even if I press cancel, look up this error !
     if (ok && !selection.isEmpty()) {
         // this part here is SkillNodeId
         skillNodeid = nodeId + skillNodeid;
@@ -166,8 +167,6 @@ void DeviceWidget::on_SkillButtonClicked() {
         qDebug() << "selectionString + selection: " << selectionString;
         // skillClicked is the nodId string
         m_Device->TriggerSkillStateTransition(skillNodeid, StringToStateTransition(selection));
-    } else {
-        qDebug() << "Cancelled";
     }
 }
 
