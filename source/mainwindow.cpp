@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_layout = new QHBoxLayout(m_central);
     m_orderTable = new OrderTableWidget(m_central);
     m_orderTable->setMaximumSize(299, 900);
+    this->setMaximumSize(500, 350);
     m_orderTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_deviceTab = new DeviceTabWidget(m_central);
     InitializeMenubar();
@@ -74,10 +75,10 @@ void MainWindow::InitializeDevices() {
     bool monitor_assembly = true;
     bool monitor_supertrak = true;
     bool monitor_labeling = true;
-    bool monitor_image_recognition = false;
-    bool monitor_sealing = false;
+    bool monitor_image_recognition = true;
+    bool monitor_sealing = true;
     bool monitor_seed_supply = false;
-    bool monitor_outfeed = false;
+    bool monitor_outfeed = true;
 
     if (monitor_assembly) {
         IDevice *assembly = new OpcuaDevice("Assembly", 6, "::AsGlobalPV:gAssemblyModule", this);

@@ -78,7 +78,6 @@ std::string StateToString(PackMLState eState) {
 }
 
 DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : QMainWindow(parent), ui(new Ui::DeviceWidget) {
-    //    ui->setupUi(this);
     m_timer = new QTimer();
     m_tabIndex = eTabIndex;
     m_Device = eDevice;
@@ -86,7 +85,6 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
     //    qDebug() << "Node ID: " << m_Device->NodeId();
     //    qDebug() << "Namespace: " << m_Device->NameSpace();
     //    qDebug() << "state: " << m_Device->GetDeviceState();
-
     MakeButtonLayout();
     connect(m_timer, &QTimer::timeout, this, &DeviceWidget::UpdateDeviceInfo);
     connect(m_abortButton, &QPushButton::clicked, this, &DeviceWidget::on_TriggerDeviceState);
@@ -114,8 +112,6 @@ void DeviceWidget::MakeButtonLayout() {
     setCentralWidget(m_central);
 }
 
-// TODO: This should be called "on_TriggerDeviceState"
-// TODO: copy procedure from on_SkillButtonClicked
 void DeviceWidget::on_TriggerDeviceState() {
     // TODO: make these members
     QString deviceName = m_Device->Name();

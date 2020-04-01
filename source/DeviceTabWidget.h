@@ -98,22 +98,37 @@ private:
      * @brief m_Assembly
      * Assembly device
      */
-    IDevice *m_Assembly;
+    IDevice *m_Assembly = nullptr;
     /**
      * @brief m_ImageRecognition
      * Image Recognition device
      */
-    IDevice *m_ImageRecognition;
+    IDevice *m_ImageRecognition = nullptr;
     /**
      * @brief m_Labeling
-     * labeling device
+     * Labeling device
      */
-    IDevice *m_Labeling;
+    IDevice *m_Labeling = nullptr;
     /**
      * @brief m_SuperTrak
      * SuperTrak device
      */
-    IDevice *m_SuperTrak;
+    IDevice *m_SuperTrak = nullptr;
+    /**
+     * @brief m_Sealing
+     * Sealing device
+     */
+    IDevice *m_Sealing = nullptr;
+    /**
+     * @brief m_SeedSupply
+     * SeedSupply device
+     */
+    IDevice *m_SeedSupply = nullptr;
+    /**
+     * @brief m_Outfeed
+     * Outfeed device
+     */
+    IDevice *m_Outfeed = nullptr;
 };
 
 #endif // TABSTYLE_HORIZONTALTEXT_H
