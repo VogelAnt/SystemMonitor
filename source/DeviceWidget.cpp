@@ -89,7 +89,7 @@ DeviceWidget::DeviceWidget(IDevice *eDevice, int eTabIndex, QWidget *parent) : Q
 
     MakeButtonLayout();
     connect(m_timer, &QTimer::timeout, this, &DeviceWidget::UpdateDeviceInfo);
-    connect(m_abortButton, &QPushButton::clicked, this, &DeviceWidget::on_AbortButtonClicked);
+    connect(m_abortButton, &QPushButton::clicked, this, &DeviceWidget::on_TriggerDeviceState);
     m_timer->start(1000);
 }
 
@@ -116,7 +116,7 @@ void DeviceWidget::MakeButtonLayout() {
 
 // TODO: This should be called "on_TriggerDeviceState"
 // TODO: copy procedure from on_SkillButtonClicked
-void DeviceWidget::on_AbortButtonClicked() {
+void DeviceWidget::on_TriggerDeviceState() {
     // TODO: make these members
     QString deviceName = m_Device->Name();
     QString nameSpace = m_Device->NodeId();
@@ -134,29 +134,6 @@ void DeviceWidget::on_AbortButtonClicked() {
     } else {
         qDebug() << "selection process for triggering device cancelled";
     }
-
-    //    int actionValue = QMessageBox::critical(
-    //        this,
-    //        "ABORTING DEVICE...",
-    //        "The selected device will be aborted, do you really want to proceed?",
-    //        QMessageBox::Abort | QMessageBox::Cancel,
-    //        QMessageBox::Cancel);
-    //    QString transitionString = ".state.stateMachine.stateTransition.abort";
-    //    QString nodeIdtransitionstate = m_Device->NodeId();
-    //    qDebug() << "m_device->NodeId()" << nodeIdtransitionstate;
-    //    int dotPosition = nodeIdtransitionstate.lastIndexOf(QChar('.'));
-    //    transitionString = nodeIdtransitionstate.left(dotPosition) + transitionString;
-    //    qDebug() << transitionString;
-    //    switch (actionValue) {
-    //    case QMessageBox::Abort:
-    //        qDebug() << "NOW ABORTING";
-    //        m_Device->TriggerSkillStateTransition(m_Device->NodeId(), PackMLStateTransition::Abort);
-    //        break;
-    //    case QMessageBox::Cancel:
-    //        break;
-    //    default:
-    //        break;
-    //    }
 }
 
 // namespace.skill.skillName.state.stateMachine.stateTransition. --> add rest in switch

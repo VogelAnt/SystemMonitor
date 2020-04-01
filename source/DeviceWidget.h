@@ -79,7 +79,7 @@ public slots:
     /**
      * @brief on_AbortButtonClicked
      */
-    void on_AbortButtonClicked();
+    void on_TriggerDeviceState();
     /**
      * @brief on_SkillButtonClicked
      * Prompts a Q
