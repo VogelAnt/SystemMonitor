@@ -36,6 +36,11 @@ void DeviceTabWidget::Initialize(std::map<std::string, IDevice *> *eDeviceList) 
     auto *STTab = new DeviceWidget(m_SuperTrak, 2, this);
     connect(STTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
     addTab(STTab, "SuperTrak");
+
+    m_ImageRecognition = m_DeviceMap->at("ImageRecognition");
+    auto *IRTab = new DeviceWidget(m_ImageRecognition, 3, this);
+    connect(IRTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
+    addTab(IRTab, "ImageRecognition");
 }
 
 QSize TabStyle_HorizontalText::sizeFromContents(ContentsType eType, const QStyleOption *eOption, const QSize &eSize, const QWidget *eWidget) const {

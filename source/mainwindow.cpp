@@ -92,7 +92,7 @@ void MainWindow::InitializeDevices() {
         IDevice *image_recognition = new OpcuaDevice("ImageRecognition", 2, "ImageRecognitionModule", this);
         image_recognition->SetUrl("opc.tcp://localhost:4840");
         image_recognition->AddSkill("findSeed");
-        image_recognition->AddSkill("recognize");
+        //        image_recognition->AddSkill("recognize");
         m_DeviceMap["ImageRecognition"] = image_recognition;
     }
 
