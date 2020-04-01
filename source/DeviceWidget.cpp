@@ -120,16 +120,20 @@ void DeviceWidget::on_AbortButtonClicked() {
     // TODO: make these members
     QString deviceName = m_Device->Name();
     QString nameSpace = m_Device->NodeId();
-    QString triggerString = nameSpace + ".state.stateMachine.stateTransition.";
+    //    QString triggerString = nameSpace + ".state.stateMachine.stateTransition.";
+    QString triggerString = nameSpace;
+
     qDebug() << "trigger string:" << triggerString;
     bool ok;
     QString selection = QInputDialog::getItem(this, triggerString, "Trigger Skill State of " + triggerString, sDevice_Triggers, 0, false, &ok);
     if (ok && !(selection.isEmpty())) {
-        triggerString += selection;
+        //        triggerString += selection;
+        qDebug() << "triggerstring : " << triggerString;
+        // TODO: build the Message Box here
+        m_Device->TriggerSkillStateTransition(triggerString, StringToStateTransition(selection));
     } else {
         qDebug() << "selection process for triggering device cancelled";
     }
-    qDebug() << "name of the device is " << deviceName << "and nodeID " << nameSpace;
 
     //    int actionValue = QMessageBox::critical(
     //        this,
@@ -169,7 +173,7 @@ void DeviceWidget::on_SkillButtonClicked() {
     if (ok && !(selection.isEmpty())) {
         // this part here is SkillNodeId
         skillNodeid = nodeId + skillNodeid;
-        qDebug() << "node ID + SKill clicked : " << skillNodeid;
+        qDebug() << "node ID + SKill clicked/ skillnodeId: " << skillNodeid;
         QString selectionString = skillNodeid + "." + transitionString;
         qDebug() << "selectionString + transitionString : " << selectionString;
         selectionString = selectionString + selection;

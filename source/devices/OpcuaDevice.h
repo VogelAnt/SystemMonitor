@@ -62,6 +62,7 @@ public:
     }
 
     void TriggerSkillStateTransition(QString eNodeid, const PackMLStateTransition eTransition) final {
+        std::cout << "Now Writing into node " << std::endl;
         m_Client.WriteNode(m_Namespace, eNodeid + ".state.stateMachine.stateTransition." + StateTransitionToString(eTransition), true);
     }
 
