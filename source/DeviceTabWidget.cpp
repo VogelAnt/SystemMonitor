@@ -42,8 +42,13 @@ void DeviceTabWidget::Initialize(std::map<std::string, IDevice *> *eDeviceList) 
     connect(IRTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
     addTab(IRTab, "ImageRecognition");
 
+    m_Sealing = m_DeviceMap->at("Sealing");
+    auto *SealingTab = new DeviceWidget(m_Sealing, 4, this);
+    connect(SealingTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
+    addTab(SealingTab, "Sealing");
+
     m_SeedSupply = m_DeviceMap->at("SeedSupply");
-    auto *SSTab = new DeviceWidget(m_SeedSupply, 4, this);
+    auto *SSTab = new DeviceWidget(m_SeedSupply, 5, this);
     connect(SSTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
     addTab(SSTab, "SeedSupply");
 }

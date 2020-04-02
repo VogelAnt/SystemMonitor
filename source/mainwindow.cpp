@@ -77,8 +77,8 @@ void MainWindow::InitializeDevices() {
     bool monitor_labeling = true;
     bool monitor_image_recognition = true;
     bool monitor_sealing = true;
-    bool monitor_seed_supply = false;
-    bool monitor_outfeed = true;
+    bool monitor_seed_supply = true;
+    bool monitor_outfeed = false;
 
     if (monitor_assembly) {
         IDevice *assembly = new OpcuaDevice("Assembly", 6, "::AsGlobalPV:gAssemblyModule", this);
@@ -114,22 +114,25 @@ void MainWindow::InitializeDevices() {
     }
 
     if (monitor_sealing) {
-        IDevice *sealing = new OpcuaDevice("Sealing", 2, "StOpcCom:opcComSealingModule", this);
+        IDevice *sealing = new OpcuaDevice("Sealing", 6, "::StOpcCom:opcComSealingModule", this);
         sealing->SetUrl("opc.tcp://localhost:4840");
         sealing->AddSkill("sealing");
         m_DeviceMap["Sealing"] = sealing;
     }
 
     if (monitor_seed_supply) {
-        IDevice *seed_supply = new OpcuaDevice("SeedSupply", 2, "::AsGlobalPV:opcComMitsubishi", this);
-        seed_supply->SetUrl("opc.tcp://192.168.0.180:4840");
-        seed_supply->AddSkill("moveToSTHomePosition");
-        seed_supply->AddSkill("provideItemFromSTToWelding");
-        seed_supply->AddSkill("provideItemFromWeldingToST");
-        seed_supply->AddSkill("provideItemToST");
-        seed_supply->AddSkill("provideItemToWelding");
-        seed_supply->AddSkill("releaseItemToST");
-
+        IDevice *seed_supply = new OpcuaDevice("SeedSupply", 6, "::AsGlobalPV:gModuleMitsubishi", this);
+        seed_supply->SetUrl("opc.tcp://localhost:4840"); // opc.tcp://192.168.0.180:4840
+        seed_supply->AddSkill("goToPos");
+        seed_supply->AddSkill("provideSeed");
+        seed_supply->AddSkill("provideLid");
+        // Skill setup altered for mock purposes
+        //        seed_supply->AddSkill("moveToSTHomePosition");
+        //        seed_supply->AddSkill("provideItemFromSTToWelding");
+        //        seed_supply->AddSkill("provideItemFromWeldingToST");
+        //        seed_supply->AddSkill("provideItemToST");
+        //        seed_supply->AddSkill("provideItemToWelding");
+        //        seed_supply->AddSkill("releaseItemToST");
         m_DeviceMap["SeedSupply"] = seed_supply;
     }
 
