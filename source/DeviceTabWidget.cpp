@@ -41,6 +41,11 @@ void DeviceTabWidget::Initialize(std::map<std::string, IDevice *> *eDeviceList) 
     auto *IRTab = new DeviceWidget(m_ImageRecognition, 3, this);
     connect(IRTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
     addTab(IRTab, "ImageRecognition");
+
+    m_SeedSupply = m_DeviceMap->at("SeedSupply");
+    auto *SSTab = new DeviceWidget(m_SeedSupply, 4, this);
+    connect(SSTab, &DeviceWidget::DeviceStatusChanged, this, &DeviceTabWidget::on_ChangeDeviceStatus);
+    addTab(SSTab, "SeedSupply");
 }
 
 QSize TabStyle_HorizontalText::sizeFromContents(ContentsType eType, const QStyleOption *eOption, const QSize &eSize, const QWidget *eWidget) const {
