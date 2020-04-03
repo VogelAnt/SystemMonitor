@@ -6,10 +6,11 @@ using Redistorium::Reply::ReplyElement;
 // TODO: showmaximized()?
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow) {
     m_ui->setupUi(this);
+    this->setWindowTitle("System Monitor");
     m_central = new QWidget(this);
     m_layout = new QHBoxLayout(m_central);
     m_orderTable = new OrderTableWidget(m_central);
-    m_orderTable->setMaximumSize(299, 900);
+    //    m_orderTable->setMaximumSize(299, 900);
     this->setMaximumSize(500, 350);
     m_orderTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_deviceTab = new DeviceTabWidget(m_central);
@@ -66,7 +67,7 @@ void MainWindow::on_ToggleDeviceTab() {
 }
 
 void MainWindow::on_ToggleOrdertable() {
-    this->setMinimumSize(299, 900);
+    this->setMinimumSize(2000, 400);
     m_viewBothwidgets->setChecked(false);
     m_viewDeviceTab->setChecked(false);
     m_viewOrdertable->setChecked(true);

@@ -11,8 +11,25 @@ OrderTableWidget::OrderTableWidget(QWidget *parent) : QTableWidget(parent), ui(n
     m_orderPagetimer = new QTimer();
     m_headerColumns << "OrderID"
                     << "CustomerName"
-                    << "Priority";
-    setColumnCount(3);
+                    << "Priority"
+                    << "age"
+                    << "barbequeAnswer"
+                    << "cookAnswer"
+                    << "cupType"
+                    << "email"
+                    << "eventName"
+                    << "firstName"
+                    << "foodAnswer"
+                    << "lastName"
+                    << "orderID"
+                    << "origin"
+                    << "seedAmount"
+                    << "seedTypes"
+                    << "starSign"
+                    << "userText"
+                    << "creationTime"
+                    << "uuid";
+    setColumnCount(20);
     setSortingEnabled(false);
     setHorizontalHeaderLabels(m_headerColumns);
     verticalHeader()->setVisible(false);
