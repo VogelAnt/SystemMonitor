@@ -48,6 +48,7 @@ void MainWindow::InitializeMenubar() {
 }
 
 void MainWindow::on_ToggleBoth() {
+    this->setMinimumSize(800, 400);
     m_viewBothwidgets->setChecked(true);
     m_viewDeviceTab->setChecked(true);
     m_viewOrdertable->setChecked(true);
@@ -56,6 +57,7 @@ void MainWindow::on_ToggleBoth() {
 }
 
 void MainWindow::on_ToggleDeviceTab() {
+    this->setMinimumSize(500, 350);
     m_viewBothwidgets->setChecked(false);
     m_viewDeviceTab->setChecked(true);
     m_viewOrdertable->setChecked(false);
@@ -64,6 +66,7 @@ void MainWindow::on_ToggleDeviceTab() {
 }
 
 void MainWindow::on_ToggleOrdertable() {
+    this->setMinimumSize(299, 900);
     m_viewBothwidgets->setChecked(false);
     m_viewDeviceTab->setChecked(false);
     m_viewOrdertable->setChecked(true);

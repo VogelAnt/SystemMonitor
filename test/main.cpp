@@ -1,4 +1,5 @@
 #include "OrderInformationTest.h"
+#include "RedisClientTest.h"
 #include <iostream>
 
 using namespace std;
