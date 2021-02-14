@@ -1,9 +1,4 @@
-# System monitor GUI
-## Purpose
-- Gives an overview of the current orders.
-- Displays the current status of all MES modules.
-- Modifies order priorities.
-
+# System monitor GUI mocc
 ## Compilation
 - Install dependencies: `./scripts/prebuild.sh`
 - Compilation:
